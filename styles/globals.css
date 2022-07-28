@@ -1,26 +1,41 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 
-* {
-  box-sizing: border-box;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+@layer base {
+    html {
+      font-family: 'Open Sans', sans-serif;
+    }
   }
-  body {
-    color: white;
-    background: black;
-  }
+.h-screen-80{
+    height: 80vh;
+
+}
+
+.overflow-show-scroll{
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+.h-screen-10{
+    height: 10vh;
+}
+
+div::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+div::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  background-color: #555;
+}
+
+div::-webkit-scrollbar-thumb {
+  border-radius: 15px;
+  background-color: #333;
+  outline: 1px solid #0051c3;
 }
