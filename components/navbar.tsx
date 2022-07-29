@@ -3,13 +3,13 @@ import Link from 'next/link'
 const Navbar = () => {
   return (
     <>
-      <nav className="flex justify-around pt-4">
+      <nav className="flex justify-around p-4 bg-gradient-to-r from-violet-500 to-violet-800 rounded-lg">
       <Link href='/'>
             <a className='btn btn-secondary'>Home</a>
         </Link>
  
         <Link href='/tutorial'>
-            <a className='btn btn-accent btn-xl'>Take the tutorial!</a>
+            <a className='btn btn-secondary'>Take the tutorial!</a>
         </Link>
       </nav>
     </>
