@@ -7,7 +7,7 @@ const Chapters = () => {
   const [chapters, setChapters] = useState<number[]>([])
   useEffect(() => {
     let arr = []
-    for (let i = 1; i < 16; i++) {
+    for (let i = 1; i < 31; i++) {
       arr.push(i)
     }
     console.log(arr)

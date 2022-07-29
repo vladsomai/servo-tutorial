@@ -12,7 +12,7 @@ const Tutorial: NextPageWithLayout = () => {
       <Head>
         <title>Tutorial</title>
       </Head>
-      <div className="flex animate__animated animate__fadeIn ">
+      <div className="flex animate__animated animate__fadeIn mt-5">
         <Chapters />
         <div className="divider divider-horizontal"></div>
         <Main />
