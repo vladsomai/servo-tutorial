@@ -17,7 +17,6 @@ const Chapters = (props: ChaptersProps) => {
       arr.push(i)
     }
     setChapters(arr)
-    props.setCurrentChapter(1)
   }, [])
 
   return (

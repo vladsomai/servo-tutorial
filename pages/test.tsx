@@ -4,6 +4,7 @@ import { ReactElement, useEffect, useRef, useState } from 'react'
 import type { NextPageWithLayout } from './_app'
 import 'animate.css'
 import { stringToUint8Array, Uint8ArrayToString } from '../servo-engine/utils'
+import TestComponent from '../components/testComponent'
 
 const Test: NextPageWithLayout = () => {
   const portSer = useRef<SerialPort | null>(null)
@@ -123,6 +124,13 @@ const Test: NextPageWithLayout = () => {
       <Head>
         <title>Test</title>
       </Head>
+      <div className="flex text-center justify-center">
+        <TestComponent>
+          <div>
+            <p>I am a child 1 p</p> <p>I am a child 2 p</p>
+          </div>
+        </TestComponent>
+      </div>
       <div className="flex justify-around">
         <label htmlFor="my-modal-4" className="btn modal-button">
           open modal

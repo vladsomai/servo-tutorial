@@ -4,18 +4,46 @@ import {
   useRef,
   useEffect,
   useState,
-  Children,
   ReactComponentElement,
+  ReactElement,
 } from 'react'
 import { MotorCommands } from '../servo-engine/motor-commands'
 import { MainWindowProps } from './main-window'
 
 interface CommandWindowProps extends MainWindowProps {
   sendDataToSerialPort: Function
+  children:ReactElement
 }
-const Command = (props: CommandWindowProps) => {
+const Command = (props: CommandWindowProps, children: ReactElement) => {
   const GlobalState: GlobalStateType = useContext(GlobalContext)
   const rawCommandInputBox = useRef<HTMLInputElement | null>(null)
+  const [input, setInput] = useState<string>('')
+
+  //***************************** TODO - THIS WILL SPLIT MULTIPLE INPUTS IN SEPARATE LINES ****************************
+  // useEffect(()=>{
+  //   let inputStr = props.currentCommandDictionary.Input
+  //   const multipleInputs: string[] = [];
+
+  //   let breakFound =false;
+  //   let i=0;
+  //   do
+  //   {
+  //     const indexOfBreak = inputStr.indexOf('\n')
+  //     if(indexOfBreak)
+  //     {
+  //       multipleInputs[i] = inputStr.slice(0,indexOfBreak)
+  //       i++;
+  //       console.log("input contains a break line at: ", indexOfBreak)
+  //       breakFound=true;
+  //     }
+  //     else
+  //     {
+  //       breakFound=false;
+  //     }
+  //   }while(!breakFound)
+
+  // },[props.currentCommandDictionary.CommandString])
+
   return (
     <>
       <div className="w-full">
@@ -36,6 +64,8 @@ const Command = (props: CommandWindowProps) => {
             {props.currentCommandDictionary.Output}
           </p>
         </div>
+        {props.children}
+        <hr className='my-10'></hr>
         <div className="border rounded-box p-5">
           <div
             className="tooltip w-full"
@@ -47,9 +77,6 @@ const Command = (props: CommandWindowProps) => {
                 hexadecimal.
               </b>
             </p>
-          </div>
-          <div>
-            
           </div>
           <div className="flex flex-row justify-evenly items-center">
             <input
@@ -63,7 +90,7 @@ const Command = (props: CommandWindowProps) => {
               data-tip="You will send a raw command to the servo motor."
             >
               <button
-                className="btn btn-active btn-secondary max-w-xs btn-sm place-self-center"
+                className="btn btn-primary max-w-xs btn-sm place-self-center"
                 onClick={() => {
                   props.sendDataToSerialPort(rawCommandInputBox.current?.value)
                 }}

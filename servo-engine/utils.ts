@@ -1,7 +1,7 @@
 /*
 This Class will be used to register any values like 'F', Since TypeScript does not have a char type.
-toString(): will return the string representation of that char: e.g.:"A"
-toASCII(): will return the ASCII number of that char: e.g. 'A' = 65
+toString(): will return the string representation of that char: e.g.:'A'
+getASCII_Code(): will return the ASCII number of that char: e.g. 'A' = 65
 */
 export class Char {
     readonly char: string;
@@ -16,7 +16,7 @@ export class Char {
         return this.char;
     }
 
-    toASCII(): number {
+    getASCII_Code(): number {
         return this.char.charCodeAt(0);
     }
 }
@@ -165,7 +165,7 @@ export class ByteStringType {
 }
 
 //Input: "FF00A2"
-//Output: [FF,0,A2]
+//Output: [0xFF,0,0xA2]
 export const stringToUint8Array = (_value: string): Uint8Array => {
     const message = _value;
 
@@ -189,7 +189,7 @@ export const stringToUint8Array = (_value: string): Uint8Array => {
     return RawBytes;
 }
 
-//Input: Uint8Array e.g. [FF,A0,0]
+//Input: Uint8Array e.g. [0xFF,0xA0,0]
 //Output: hexString e.g. "FFA000"
 export const Uint8ArrayToString = (data: Uint8Array | undefined): string => {
     if (data != undefined) {
