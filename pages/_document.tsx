@@ -1,4 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
+import Modal from '../components/modal'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: any) {
@@ -10,10 +11,11 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          <meta content="Tom's servo tutorial" name="Servo"/>
+          <meta content="Tom's servo tutorial" name="Servo" />
           <meta charSet="utf-8" />
           <link rel="main icon" href="/favicon.ico" />
         </Head>
+        <Modal {...{Description:"",Title:""}}/>
         <body>
           <Main />
           <NextScript />

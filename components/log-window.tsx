@@ -1,8 +1,53 @@
-const Log = () => {
-    return (
-        <>
-        </>
-    )
-  }
-  export default Log
-  
+import { useState, useEffect, useRef } from 'react'
+
+export type LogType = {
+  lineNumber: number
+  date: Date
+  log: string
+}
+const Log = (props: { logs: LogType[] }) => {
+  const logWindow = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (logWindow && logWindow.current)
+      logWindow.current.scrollTop =
+        logWindow.current.scrollHeight - logWindow.current.clientHeight
+  }, [props.logs])
+
+  return (
+    <>
+      <div
+        ref={logWindow}
+        className="mockup-code border bg-base-200 w-full overflow-show-scroll rounded-box h-96 my-5"
+      >
+        <p className="text center text-lg flex justify-center">
+          <b>Log window</b>
+        </p>
+        <div className="flex flex-col justify-center px-5 bg-base-100">
+          {props.logs.map((log: LogType) => {
+            return (
+              <pre key={log.lineNumber} data-prefix={log.lineNumber.toString()}>
+                <code>
+                  {log.date.getDate() +
+                    '/' +
+                    (log.date.getMonth() + 1) +
+                    '/' +
+                    log.date.getFullYear() +
+                    '|' +
+                    log.date.getHours() +
+                    ':' +
+                    log.date.getMinutes() +
+                    ':' +
+                    log.date.getSeconds() +
+                    ' : ' +
+                    log.log}
+                </code>
+              </pre>
+            )
+          })}
+        </div>
+      </div>
+    </>
+  )
+}
+export default Log

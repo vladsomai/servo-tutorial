@@ -1,18 +1,23 @@
 import { useEffect, useState } from 'react'
-
+import { MotorCommands } from '../servo-engine/motor-commands'
+import Link from 'next/link'
 import 'animate.css'
 
-const Chapters = () => {
-  const [currentChapter, setCurrentChapter] = useState(1)
+export type ChaptersProps = {
+  currentChapter: number
+  setCurrentChapter: Function
+}
+
+const Chapters = (props: ChaptersProps) => {
   const [chapters, setChapters] = useState<number[]>([])
+
   useEffect(() => {
     let arr = []
-    for (let i = 1; i < 31; i++) {
+    for (let i = 1; i <= MotorCommands.length; i++) {
       arr.push(i)
     }
-    console.log(arr)
     setChapters(arr)
-    setCurrentChapter(1)
+    props.setCurrentChapter(1)
   }, [])
 
   return (
@@ -26,19 +31,21 @@ const Chapters = () => {
           <div className="flex flex-col items-center">
             {chapters.map((i) => {
               return (
-                <button
+                // <Link  href={`/tutorial/${i}`}>
+                <a
                   key={i}
                   className={`btn animate__animated animate__fadeIn ${
-                    currentChapter === i
+                    props.currentChapter === i
                       ? ' btn-active btn-accent '
                       : ' btn-link '
                   } `}
                   onClick={() => {
-                    setCurrentChapter(i)
+                    props.setCurrentChapter(i)
                   }}
                 >
                   CHAPTER {i}
-                </button>
+                </a>
+                // </Link>
               )
             })}
           </div>
