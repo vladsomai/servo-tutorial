@@ -170,6 +170,16 @@ const Main = (props: MainWindowProps) => {
     }
   }
 
+  /*
+  This function will create a raw command containg an array of unsigned integers that represent the data.
+  Parameters to the function are only the axis and the payload, the rest of the bytes will be automatically deduced from the given arguments.
+
+  ############### How the command is constructed ###############
+  First byte: Targeted axis of the command
+  Second byte: Command for the axis (what action should the axis do?)
+  Third byte: Length of the payload
+  Payload bytes: arguments that will be applied to the command. Each command has different arguments, in case no arguments are needed you must specify the Third byte as 0x00
+  */
   const constructCommand = (_axis: string, _payload: string): Uint8Array => {
     //allocate the raw array
     const axisSize = 1
