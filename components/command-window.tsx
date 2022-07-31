@@ -12,12 +12,41 @@ import { MainWindowProps } from './main-window'
 
 interface CommandWindowProps extends MainWindowProps {
   sendDataToSerialPort: Function
-  children:ReactElement
+  connectToSerialPort: Function
+  disconnectFromSerialPort: Function
+  children: ReactElement
 }
 const Command = (props: CommandWindowProps, children: ReactElement) => {
   const GlobalState: GlobalStateType = useContext(GlobalContext)
   const rawCommandInputBox = useRef<HTMLInputElement | null>(null)
+  const AvailableBaudrates = useRef<number[]>([
+    9600,
+    14400,
+    19200,
+    28800,
+    38400,
+    57600,
+    115200,
+    230400,
+  ])
   const [input, setInput] = useState<string>('')
+
+  const BaudrateSelection = useRef<HTMLSelectElement | null>(null)
+  const getBaudrateSelection = (): number => {
+    if (BaudrateSelection && BaudrateSelection.current) {
+      let selectedBaudrate =
+        BaudrateSelection.current.options[
+          BaudrateSelection.current.selectedIndex
+        ].text
+
+      return parseInt(selectedBaudrate)
+    }
+
+    //return default baudrate as the largest baudrate
+    return AvailableBaudrates.current.at(
+      AvailableBaudrates.current.length - 1,
+    ) as number
+  }
 
   //***************************** TODO - THIS WILL SPLIT MULTIPLE INPUTS IN SEPARATE LINES ****************************
   // useEffect(()=>{
@@ -65,17 +94,51 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
           </p>
         </div>
         {props.children}
-        <hr className='my-10'></hr>
+        <hr className="my-10"></hr>
         <div className="border rounded-box p-5">
+          <p className="text-center mb-5 text-2xl font-bold">Control Panel</p>
+          <div className="flex justify-evenly w-full mb-5">
+            <div className="form-control">
+              <div className="input-group">
+                <select
+                  ref={BaudrateSelection}
+                  className="select select-bordered select-sm w-full max-w-xs "
+                  defaultValue="230400"
+                >
+                  {AvailableBaudrates.current.map((baudrate: number) => (
+                    <option key={baudrate}>{baudrate}</option>
+                  ))}
+                </select>
+                <div className="tooltip" data-tip="Connect to the serial port!">
+                  <button
+                    className="btn btn-success btn-sm hover:bg-green-500"
+                    onClick={() => {
+                      props.connectToSerialPort(getBaudrateSelection())
+                    }}
+                  >
+                    Connect
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="tooltip" data-tip="Disonnect from the serial port!">
+              <button
+                className="btn btn-error btn-sm hover:bg-red-500"
+                onClick={() => {
+                  props.disconnectFromSerialPort()
+                }}
+              >
+                Disconnect
+              </button>
+            </div>
+          </div>
           <div
             className="tooltip w-full"
             data-tip="Only experts may use this feature dear scholar, are you hardcore enough?"
           >
             <p className="text-center mb-5 ">
-              <b>
-                Lets send some raw commands! &nbsp; The value you input must be
-                hexadecimal.
-              </b>
+              Lets send some raw commands! &nbsp; The value you input must be
+              hexadecimal.
             </p>
           </div>
           <div className="flex flex-row justify-evenly items-center">

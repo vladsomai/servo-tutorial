@@ -43,7 +43,7 @@ const Main = (props: MainWindowProps) => {
       await portSer.current.open({ baudRate: BaudRate })
       readDataFromSerialPortUntilClosed()
       isSerialPortClosed.current = false
-      LogAction('Connected!')
+      LogAction('Connected with baudrate '+BaudRate.toString()+"!")
     } catch (err) {
       if (err instanceof Error) {
         LogAction(err!.message)
@@ -374,29 +374,8 @@ const Main = (props: MainWindowProps) => {
   return (
     <>
       <div className="grid w-full card bg-base-300 rounded-box place-items-center h-screen-80 overflow-show-scroll px-5 pt-10">
-        <div className="flex justify-evenly w-full mb-5">
-          <div className="tooltip" data-tip="Connect to the serial port!">
-            <button
-              className="btn btn-success btn-sm"
-              onClick={() => {
-                connectToSerialPort(230400)
-              }}
-            >
-              Connect
-            </button>
-          </div>
-          <div className="tooltip" data-tip="Disonnect from the serial port!">
-            <button
-              className="btn btn-error btn-sm"
-              onClick={() => {
-                disconnectFromSerialPort()
-              }}
-            >
-              Disconnect
-            </button>
-          </div>
-        </div>
-        <Command {...props} sendDataToSerialPort={sendDataToSerialPort}>
+
+        <Command {...props} sendDataToSerialPort={sendDataToSerialPort} connectToSerialPort={connectToSerialPort} disconnectFromSerialPort={disconnectFromSerialPort}>
           {currentCommandLayout}
         </Command>
         <Log logs={logs} />
