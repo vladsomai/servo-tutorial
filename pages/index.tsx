@@ -17,7 +17,7 @@ const Home: NextPageWithLayout = () => {
       <div className="text-center animate__animated animate__fadeIn overflow-show-scroll h-screen-80 flex flex-col justify-center">
         <h1 className="text-6xl text-center m-12 ">Welcome Scholar!</h1>
         <p className="text-center text-2xl m-6">
-          We are happy to see you, this tutorial will teach you on how to use a
+          We are happy to see you, this tutorial will teach you how to use a
           servo motor.
         </p>
         <div>

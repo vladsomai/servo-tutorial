@@ -21,7 +21,7 @@ const Log = (props: { logs: LogType[] }) => {
         className="mockup-code border w-full overflow-show-scroll rounded-box h-96 my-5"
       >
         <p className="text center text-lg flex justify-center">
-          <b>Log window</b>
+          <b>Log Window</b>
         </p>
         <div className="flex flex-col justify-center px-5 ">
           {props.logs.map((log: LogType) => {
