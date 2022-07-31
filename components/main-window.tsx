@@ -96,7 +96,7 @@ const Main = (props: MainWindowProps) => {
 
       let data: Uint8Array = new Uint8Array([])
       try {
-        if (typeof dataToSend == 'string') data = stringToUint8Array(dataToSend)
+        if (typeof dataToSend == 'string') data = stringToUint8Array(dataToSend.toUpperCase())
         else data = dataToSend
       } catch (err) {
         if (err instanceof Error) {
@@ -106,6 +106,14 @@ const Main = (props: MainWindowProps) => {
         }
 
         writer.releaseLock()
+        try{
+          LogAction(err as string)
+        }
+        catch(err)
+        {
+          console.log("We could not log this error in the log window because it is not a string, please check the error object below: ")
+          console.log(err)
+        }
         console.log(err)
         return
       }
