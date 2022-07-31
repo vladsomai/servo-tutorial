@@ -18,12 +18,12 @@ const Log = (props: { logs: LogType[] }) => {
     <>
       <div
         ref={logWindow}
-        className="mockup-code border bg-base-200 w-full overflow-show-scroll rounded-box h-96 my-5"
+        className="mockup-code border w-full overflow-show-scroll rounded-box h-96 my-5"
       >
         <p className="text center text-lg flex justify-center">
           <b>Log window</b>
         </p>
-        <div className="flex flex-col justify-center px-5 bg-base-100">
+        <div className="flex flex-col justify-center px-5 ">
           {props.logs.map((log: LogType) => {
             return (
               <pre key={log.lineNumber} data-prefix={log.lineNumber.toString()}>

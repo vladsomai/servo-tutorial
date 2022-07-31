@@ -35,7 +35,7 @@ const Chapters = (props: ChaptersProps) => {
                   key={i}
                   className={`btn animate__animated animate__fadeIn ${
                     props.currentChapter === i
-                      ? ' btn-active btn-accent '
+                      ? ' btn-active btn-info '
                       : ' btn-link '
                   } `}
                   onClick={() => {

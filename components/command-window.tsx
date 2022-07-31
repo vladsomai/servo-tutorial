@@ -95,7 +95,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
         </div>
         {props.children}
         <hr className="my-10"></hr>
-        <div className="border rounded-box p-5">
+        <div className="mockup-code border rounded-box p-5">
           <p className="text-center mb-5 text-2xl font-bold">Control Panel</p>
           <div className="flex justify-evenly w-full mb-5">
             <div className="form-control">
@@ -142,24 +142,30 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
             </p>
           </div>
           <div className="flex flex-row justify-evenly items-center">
-            <input
-              ref={rawCommandInputBox}
-              type="text"
-              placeholder="Raw command e.g. 410000"
-              className="input input-bordered basis-1/2  max-w-xs input-sm"
-            />
-            <div
-              className="tooltip"
-              data-tip="You will send a raw command to the servo motor."
-            >
-              <button
-                className="btn btn-primary max-w-xs btn-sm place-self-center"
-                onClick={() => {
-                  props.sendDataToSerialPort(rawCommandInputBox.current?.value)
-                }}
-              >
-                Execute command!
-              </button>
+            <div className="form-control">
+              <div className="input-group">
+                <input
+                  ref={rawCommandInputBox}
+                  type="text"
+                  placeholder="Raw command e.g. 410000"
+                  className="input input-bordered max-w-xs input-sm w-72"
+                />
+                <div
+                  className="tooltip"
+                  data-tip="You will send a raw command to the servo motor."
+                >
+                  <button
+                    className="btn btn-primary max-w-xs btn-sm place-self-center"
+                    onClick={() => {
+                      props.sendDataToSerialPort(
+                        rawCommandInputBox.current?.value,
+                      )
+                    }}
+                  >
+                    Execute command!
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
