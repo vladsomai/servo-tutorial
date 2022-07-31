@@ -21,7 +21,7 @@ const Chapters = (props: ChaptersProps) => {
 
   return (
     <>
-      <div className="grid card w-1/6 bg-base-300 rounded-box place-items-center h-screen-80 overflow-show-scroll">
+      <div className="grid card w-1/6 bg-base-300 rounded-box place-items-center h-screen-80 overflow-show-scroll mr-2">
         <div className="flex flex-col w-full border-opacity-50">
           <h2 className=" mt-5 text-center text-secondary font-bold tracking-wide">
             CHAPTERS
