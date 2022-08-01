@@ -1,18 +1,13 @@
-import {
-  useEffect,
-  useState,
-  useRef,
-  useCallback,
-  useContext,
-  ReactElement,
-} from 'react'
-import { GlobalContext, GlobalStateType } from '../pages/_app'
+import { useEffect, useState, useRef, useCallback, ReactElement } from 'react'
 import Log from './log-window'
 import Command from './command-window'
 import { Uint8ArrayToString, stringToUint8Array } from '../servo-engine/utils'
 import { MotorCommandsDictionary } from '../servo-engine/motor-commands'
 import { LogType } from '../components/log-window'
 import { MotorAxes, MotorAxisType } from '../servo-engine/motor-axes'
+import { Chapter1 } from './ImplementedCommands/1_2'
+import SelectAxis from './selectAxis'
+import React from 'react'
 
 export type MainWindowProps = {
   currentChapter: number
@@ -23,7 +18,10 @@ const Main = (props: MainWindowProps) => {
   const portSer = useRef<SerialPort | null>(null)
   const isSerialPortClosed = useRef<boolean>(false)
   const reader = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null)
+  const controlPanelToggle = useRef<HTMLInputElement | null>(null)
   const [logs, setLogs] = useState<LogType[]>([])
+
+  const [showControlPanel, setShowControlPanel] = useState<boolean>(true)
 
   const logsStaticArr = useRef<LogType[]>([])
   const lineNumber = useRef<number>(0)
@@ -43,7 +41,7 @@ const Main = (props: MainWindowProps) => {
       await portSer.current.open({ baudRate: BaudRate })
       readDataFromSerialPortUntilClosed()
       isSerialPortClosed.current = false
-      LogAction('Connected with baudrate '+BaudRate.toString()+"!")
+      LogAction('Connected with baudrate ' + BaudRate.toString() + '!')
     } catch (err) {
       if (err instanceof Error) {
         LogAction(err!.message)
@@ -54,8 +52,6 @@ const Main = (props: MainWindowProps) => {
       }
     }
   }
-
-  // const disconnectFromSerialPort = async () => {
 
   const disconnectFromSerialPort = useCallback(async () => {
     if (portSer && portSer.current) {
@@ -80,6 +76,7 @@ const Main = (props: MainWindowProps) => {
       if (!isSerialPortClosed.current) disconnectFromSerialPort()
     }
   }, [disconnectFromSerialPort])
+
   /*This function will take an input like string that represents hexadecimal bytes
     e.g. "410000" , it will send on the serial port the raw binary repr. of that string e.g. [0x41,0,0]
     when sending succeds, the function will output the send bytes on the log windows as a hexa decima string
@@ -96,7 +93,8 @@ const Main = (props: MainWindowProps) => {
 
       let data: Uint8Array = new Uint8Array([])
       try {
-        if (typeof dataToSend == 'string') data = stringToUint8Array(dataToSend.toUpperCase())
+        if (typeof dataToSend == 'string')
+          data = stringToUint8Array(dataToSend.toUpperCase())
         else data = dataToSend
       } catch (err) {
         if (err instanceof Error) {
@@ -106,12 +104,12 @@ const Main = (props: MainWindowProps) => {
         }
 
         writer.releaseLock()
-        try{
+        try {
           LogAction(err as string)
-        }
-        catch(err)
-        {
-          console.log("We could not log this error in the log window because it is not a string, please check the error object below: ")
+        } catch (err) {
+          console.log(
+            'We could not log this error in the log window because it is not a string, please check the error object below: ',
+          )
           console.log(err)
         }
         console.log(err)
@@ -218,37 +216,10 @@ const Main = (props: MainWindowProps) => {
     return finalRawBytes
   }
 
-  const axisSelection = useRef<HTMLSelectElement | null>(null)
-  const getAxisSelection = (): string => {
-    if (axisSelection && axisSelection.current) {
-      let selectedAxis =
-        axisSelection.current.options[axisSelection.current.selectedIndex].text
-
-      if (selectedAxis == 'Select axis') {
-        LogAction('You must select an axis!')
-        return ''
-      }
-      return selectedAxis
-    }
-    return ''
-  }
-
-  //#region DISABLE_MOSFETS | ENABLE_MOSFETS
-  const disable_enable_MOSFETS = () => {
-    const selectedAxis = getAxisSelection()
-    if (selectedAxis == '') return
-
-    const rawData = constructCommand(selectedAxis, '')
-
-    sendDataToSerialPort(rawData)
-  }
-  //#endregion
-
-  //#region PING_COMMAND
   const textPayloadInputBox = useRef<HTMLInputElement | null>(null)
   const ping_command = () => {
     if (textPayloadInputBox && textPayloadInputBox.current) {
-      const selectedAxis = getAxisSelection()
+      const selectedAxis = '' // = getAxisSelection()
       if (selectedAxis == '') return
 
       const textPayload: string = textPayloadInputBox.current.value
@@ -266,84 +237,303 @@ const Main = (props: MainWindowProps) => {
       sendDataToSerialPort(rawData)
     }
   }
-  //#endregion
+
+  const axisSelection = useRef<HTMLSelectElement | null>(null)
+  const getAxisSelection = (): string => {
+    if (axisSelection && axisSelection.current) {
+      let selectedAxis =
+        axisSelection.current.options[axisSelection.current.selectedIndex].text
+
+      if (selectedAxis == 'Select axis') {
+        LogAction('You must select an axis!')
+        return ''
+      }
+      return selectedAxis
+    }
+    return ''
+  }
 
   let currentCommandLayout: ReactElement = <></>
-  //#region DISABLE_MOSFETS | ENABLE_MOSFETS
-  if (props.currentChapter == 1 || props.currentChapter == 2)
+  if (
+    props.currentCommandDictionary.CommandEnum == 0 ||
+    props.currentCommandDictionary.CommandEnum == 1
+  )
     currentCommandLayout = (
       <>
-        <div className="w-full text-center mb-5">
-          {props.currentChapter == 1 ? (
-            <p className="mb-2">Let&apos;s disable the MOSFETS.</p>
-          ) : (
-            <p className="mb-2">Let&apos;s enable the MOSFETS.</p>
-          )}
-
-          <div className="flex justify-center">
-            <select
-              ref={axisSelection}
-              className="select select-bordered select-sm w-full max-w-xs mr-8"
-              defaultValue="Select axis"
-            >
-              <option disabled>Select axis</option>
-              {MotorAxes.map((axis: MotorAxisType) => (
-                <option key={axis.AxisCode}>{axis.AxisName}</option>
-              ))}
-            </select>
-            <div
-              className="tooltip"
-              data-tip={
-                props.currentChapter == 1
-                  ? 'This button will create a raw command that disables the MOSFETS on the specified axis'
-                  : 'This button will create a raw command that enables the MOSFETS on the specified axis'
-              }
-            >
-              <button
-                className="btn btn-primary btn-sm"
-                onClick={disable_enable_MOSFETS}
-              >
-                {props.currentChapter == 1
-                  ? 'DISABLE MOSFETS'
-                  : 'ENABLE MOSFETS'}
-              </button>
-            </div>
-          </div>
-        </div>
+        <Chapter1
+          {...props}
+          getAxisSelection={getAxisSelection}
+          sendDataToSerialPort={sendDataToSerialPort}
+          LogAction={LogAction}
+          constructCommand={constructCommand}
+        >
+          <SelectAxis LogAction={LogAction} ref={axisSelection} />
+        </Chapter1>
       </>
     )
-  //#endregion
-  else if (props.currentChapter == 3) currentCommandLayout = <></>
-  else if (props.currentChapter == 4) currentCommandLayout = <></>
-  else if (props.currentChapter == 5) currentCommandLayout = <></>
-  else if (props.currentChapter == 6) currentCommandLayout = <></>
-  else if (props.currentChapter == 7) currentCommandLayout = <></>
-  else if (props.currentChapter == 8) currentCommandLayout = <></>
-  else if (props.currentChapter == 9) currentCommandLayout = <></>
-  else if (props.currentChapter == 10) currentCommandLayout = <></>
-  else if (props.currentChapter == 11) currentCommandLayout = <></>
-  else if (props.currentChapter == 12) currentCommandLayout = <></>
-  else if (props.currentChapter == 13) currentCommandLayout = <></>
-  else if (props.currentChapter == 14) currentCommandLayout = <></>
-  else if (props.currentChapter == 15) currentCommandLayout = <></>
-  else if (props.currentChapter == 16) currentCommandLayout = <></>
-  else if (props.currentChapter == 17) currentCommandLayout = <></>
-  else if (props.currentChapter == 18) currentCommandLayout = <></>
-  else if (props.currentChapter == 19) currentCommandLayout = <></>
-  else if (props.currentChapter == 20) currentCommandLayout = <></>
-  else if (props.currentChapter == 21) currentCommandLayout = <></>
-  else if (props.currentChapter == 22) currentCommandLayout = <></>
-  else if (props.currentChapter == 23) currentCommandLayout = <></>
-  else if (props.currentChapter == 24) currentCommandLayout = <></>
-  else if (props.currentChapter == 25) currentCommandLayout = <></>
-  else if (props.currentChapter == 26) currentCommandLayout = <></>
-  else if (props.currentChapter == 27) currentCommandLayout = <></>
-  else if (props.currentChapter == 28) currentCommandLayout = <></>
-  else if (props.currentChapter == 29) currentCommandLayout = <></>
-  else if (props.currentChapter == 30) currentCommandLayout = <></>
-  else if (props.currentChapter == 31) currentCommandLayout = <></>
+  else if (props.currentCommandDictionary.CommandEnum == 2)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 3)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 4)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 5)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 6)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 7)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 8)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 9)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 10)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 11)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 12)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 13)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 14)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 15)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 16)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 17)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 18)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 19)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 20)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 21)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 22)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 23)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 24)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 25)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 26)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 27)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 28)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 29)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 30)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
   //#region PING_COMMAND
-  else if (props.currentChapter == 32)
+  else if (props.currentCommandDictionary.CommandEnum == 31)
     currentCommandLayout = (
       <>
         <div className="w-full text-center mb-5">
@@ -378,14 +568,59 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   //#endregion PING_COMMAND
-  else if (props.currentChapter == 33) currentCommandLayout = <></>
-  else if (props.currentChapter == 34) currentCommandLayout = <></>
-  else if (props.currentChapter == 35) currentCommandLayout = <></>
+  else if (props.currentCommandDictionary.CommandEnum == 32)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 33)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 254)
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
   return (
     <>
-      <div className="grid w-full card bg-base-300 rounded-box place-items-center h-screen-80 overflow-show-scroll px-5 pt-10">
-
-        <Command {...props} sendDataToSerialPort={sendDataToSerialPort} connectToSerialPort={connectToSerialPort} disconnectFromSerialPort={disconnectFromSerialPort}>
+      <div className="grid w-full card bg-base-300 rounded-box h-screen-80 overflow-show-scroll px-5 pt-10 relative">
+        <div className="form-control  absolute top-4 right-4">
+          <label className="label cursor-pointer flex flex-col-reverse">
+            <span className="label-text">Control panel</span>
+            <input
+              ref={controlPanelToggle}
+              type="checkbox"
+              className="toggle"
+              checked={showControlPanel}
+              onChange={() => {
+                if (controlPanelToggle && controlPanelToggle.current) {
+                  setShowControlPanel(!showControlPanel)
+                }
+              }}
+            />
+          </label>
+        </div>
+        <Command
+          {...props}
+          sendDataToSerialPort={sendDataToSerialPort}
+          connectToSerialPort={connectToSerialPort}
+          disconnectFromSerialPort={disconnectFromSerialPort}
+          showControlPanel={showControlPanel}
+        >
           {currentCommandLayout}
         </Command>
         <Log logs={logs} />

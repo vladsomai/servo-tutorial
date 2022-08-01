@@ -14,8 +14,15 @@ class MyDocument extends Document {
           <meta content="Tom's servo tutorial" name="Servo" />
           <meta charSet="utf-8" />
           <link rel="main icon" href="/favicon.ico" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Mukta&family=Open+Sans&display=swap"
+            rel="stylesheet"
+          ></link>
+
         </Head>
-        <Modal {...{Description:"",Title:""}}/>
+        <Modal {...{ Description: '', Title: '' }} />
         <body>
           <Main />
           <NextScript />

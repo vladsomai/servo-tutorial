@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { MotorCommands } from '../servo-engine/motor-commands'
-import Link from 'next/link'
 import 'animate.css'
 
 export type ChaptersProps = {

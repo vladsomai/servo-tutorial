@@ -1,24 +1,18 @@
-import { GlobalContext, GlobalStateType } from '../pages/_app'
-import {
-  useContext,
-  useRef,
-  useEffect,
-  useState,
-  ReactComponentElement,
-  ReactElement,
-} from 'react'
-import { MotorCommands } from '../servo-engine/motor-commands'
+import { useRef, useState, ReactElement, useEffect } from 'react'
 import { MainWindowProps } from './main-window'
+import 'animate.css'
+import CommandsProtocol from './CommandsProtocol'
 
 interface CommandWindowProps extends MainWindowProps {
   sendDataToSerialPort: Function
   connectToSerialPort: Function
   disconnectFromSerialPort: Function
   children: ReactElement
+  showControlPanel: boolean
 }
 const Command = (props: CommandWindowProps, children: ReactElement) => {
-  const GlobalState: GlobalStateType = useContext(GlobalContext)
   const rawCommandInputBox = useRef<HTMLInputElement | null>(null)
+  const controlPanelDiv = useRef<HTMLDivElement | null>(null)
   const AvailableBaudrates = useRef<number[]>([
     9600,
     14400,
@@ -48,6 +42,18 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
     ) as number
   }
 
+  //transition out for the control panel in case client wants
+  // useEffect(() => {
+  //   if (controlPanelDiv && controlPanelDiv.current)
+  //     controlPanelDiv.current.classList.remove('hidden')
+  //   setTimeout(() => {
+  //     if (controlPanelDiv && controlPanelDiv.current) {
+  //       if (!props.showControlPanel)
+  //         controlPanelDiv.current.classList.add('hidden')
+  //     }
+  //   }, 700)
+  // }, [props.showControlPanel])
+
   //***************************** TODO - THIS WILL SPLIT MULTIPLE INPUTS IN SEPARATE LINES ****************************
   // useEffect(()=>{
   //   let inputStr = props.currentCommandDictionary.Input
@@ -76,26 +82,36 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
   return (
     <>
       <div className="w-full">
-        <div className="mb-5">
-          <p className="text-center mb-5 text-2xl">
-            <strong>{props.currentCommandDictionary.CommandString}</strong>
-          </p>
-          <p className="mb-2">
-            <b>Description:&nbsp;</b>{' '}
-            {props.currentCommandDictionary.Description}
-          </p>
-          <p className="mb-2">
-            <b>Input:&nbsp;</b>
-            {props.currentCommandDictionary.Input}
-          </p>
-          <p className="mb-2">
-            <b>Output:&nbsp;</b>
-            {props.currentCommandDictionary.Output}
-          </p>
-        </div>
+        {props.currentCommandDictionary.CommandEnum !== 100 ? (
+          <div className="mb-5">
+            <p className="text-center mb-5 text-2xl">
+              <strong>{props.currentCommandDictionary.CommandString}</strong>
+            </p>
+            <p className="mb-2">
+              <b>Description:&nbsp;</b>{' '}
+              {props.currentCommandDictionary.Description}
+            </p>
+            <p className="mb-2">
+              <b>Input:&nbsp;</b>
+              {props.currentCommandDictionary.Input}
+            </p>
+            <p className="mb-2">
+              <b>Output:&nbsp;</b>
+              {props.currentCommandDictionary.Output}
+            </p>
+          </div>
+        ) : (
+          <CommandsProtocol currentCommandDictionary={props.currentCommandDictionary} currentChapter={props.currentChapter}/>
+        )}
+
         {props.children}
-        <hr className="my-10"></hr>
-        <div className="mockup-code border rounded-box p-5">
+
+        <div
+          ref={controlPanelDiv}
+          className={`mockup-code border rounded-box mt-5 p-5 animate__animated ${
+            props.showControlPanel ? 'animate__fadeIn' : 'hidden'
+          }`}
+        >
           <p className="text-center mb-5 text-2xl font-bold">Control Panel</p>
           <div className="flex justify-evenly w-full mb-5">
             <div className="form-control">
