@@ -4,7 +4,7 @@ import Command from './command-window'
 import { Uint8ArrayToString, stringToUint8Array } from '../servo-engine/utils'
 import { MotorCommandsDictionary } from '../servo-engine/motor-commands'
 import { LogType } from '../components/log-window'
-import { MotorAxes, MotorAxisType } from '../servo-engine/motor-axes'
+import { MotorAxes } from '../servo-engine/motor-axes'
 import { Command1 } from './ImplementedCommands/1_2'
 import { Command31 } from './ImplementedCommands/31'
 import SelectAxis from './selectAxis'
@@ -38,6 +38,11 @@ const Main = (props: MainWindowProps) => {
 
   const connectToSerialPort = async (BaudRate: number) => {
     try {
+      if(portSer.current)
+      {
+        LogAction("You are trying to open a new serial port, we will close the current one for you.")
+        disconnectFromSerialPort();
+      }
       portSer.current = await navigator.serial.requestPort()
       await portSer.current.open({ baudRate: BaudRate })
       readDataFromSerialPortUntilClosed()

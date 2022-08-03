@@ -13,9 +13,14 @@
 
 }
 
+.break-word{
+  word-break: break-word;
+  text-overflow: ellipsis;
+overflow-x: hidden;
+}
+
 .overflow-show-scroll{
   overflow: auto;
-  overflow-x: hidden;
 }
 
 .h-screen-10{

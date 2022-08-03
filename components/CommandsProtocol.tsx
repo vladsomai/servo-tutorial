@@ -18,8 +18,6 @@ const CommandsProtocol = (props:MainWindowProps) => {
           arguments. This rule will only apply to the tutorial commands and not
           to the raw commands that you can send from the Control Panel
         </h4>
-
-        <p>
           <ul>
             <li>First byte: Represents the targeted axis of the command.</li>
             <li>
@@ -45,7 +43,6 @@ const CommandsProtocol = (props:MainWindowProps) => {
               </b>
             </li>
           </ul>
-        </p>
       </article>
     </div>
   )
