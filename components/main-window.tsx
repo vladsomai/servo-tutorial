@@ -5,7 +5,8 @@ import { Uint8ArrayToString, stringToUint8Array } from '../servo-engine/utils'
 import { MotorCommandsDictionary } from '../servo-engine/motor-commands'
 import { LogType } from '../components/log-window'
 import { MotorAxes, MotorAxisType } from '../servo-engine/motor-axes'
-import { Chapter1 } from './ImplementedCommands/1_2'
+import { Command1 } from './ImplementedCommands/1_2'
+import { Command31 } from './ImplementedCommands/31'
 import SelectAxis from './selectAxis'
 import React from 'react'
 
@@ -216,28 +217,6 @@ const Main = (props: MainWindowProps) => {
     return finalRawBytes
   }
 
-  const textPayloadInputBox = useRef<HTMLInputElement | null>(null)
-  const ping_command = () => {
-    if (textPayloadInputBox && textPayloadInputBox.current) {
-      const selectedAxis = '' // = getAxisSelection()
-      if (selectedAxis == '') return
-
-      const textPayload: string = textPayloadInputBox.current.value
-      if (textPayload.length != 10) {
-        LogAction('Your payload must be exactly 10 characters!')
-        return
-      }
-
-      let payload = ''
-      for (let i = 0; i < textPayload.length; i++) {
-        payload += textPayload[i].charCodeAt(0).toString(16)
-      }
-
-      const rawData = constructCommand(selectedAxis, payload.toUpperCase())
-      sendDataToSerialPort(rawData)
-    }
-  }
-
   const axisSelection = useRef<HTMLSelectElement | null>(null)
   const getAxisSelection = (): string => {
     if (axisSelection && axisSelection.current) {
@@ -260,7 +239,7 @@ const Main = (props: MainWindowProps) => {
   )
     currentCommandLayout = (
       <>
-        <Chapter1
+        <Command1
           {...props}
           getAxisSelection={getAxisSelection}
           sendDataToSerialPort={sendDataToSerialPort}
@@ -268,7 +247,7 @@ const Main = (props: MainWindowProps) => {
           constructCommand={constructCommand}
         >
           <SelectAxis LogAction={LogAction} ref={axisSelection} />
-        </Chapter1>
+        </Command1>
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 2)
@@ -532,42 +511,18 @@ const Main = (props: MainWindowProps) => {
         </p>
       </>
     )
-  //#region PING_COMMAND
   else if (props.currentCommandDictionary.CommandEnum == 31)
     currentCommandLayout = (
-      <>
-        <div className="w-full text-center mb-5">
-          <div className="flex justify-center">
-            <select
-              ref={axisSelection}
-              className="select select-bordered select-sm w-full max-w-xs mr-8"
-              defaultValue="Select axis"
-            >
-              <option disabled>Select axis</option>
-              {MotorAxes.map((axis: MotorAxisType) => (
-                <option key={axis.AxisCode}>{axis.AxisName}</option>
-              ))}
-            </select>
-            <input
-              ref={textPayloadInputBox}
-              type="text"
-              placeholder="Enter text e.g. 0123456789"
-              className="input input-bordered basis-1/2  max-w-xs input-sm mr-8"
-              defaultValue={'0123456789'}
-            />
-            <div
-              className="tooltip"
-              data-tip="Test your connection to the motor using this button!"
-            >
-              <button className="btn btn-primary btn-sm" onClick={ping_command}>
-                PING
-              </button>
-            </div>
-          </div>
-        </div>
-      </>
+      <Command31
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
+        LogAction={LogAction}
+        constructCommand={constructCommand}
+      >
+        <SelectAxis LogAction={LogAction} ref={axisSelection} />
+      </Command31>
     )
-  //#endregion PING_COMMAND
   else if (props.currentCommandDictionary.CommandEnum == 32)
     currentCommandLayout = (
       <>

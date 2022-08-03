@@ -27,16 +27,16 @@ const CommandsProtocol = (props:MainWindowProps) => {
               should the axis do?).
             </li>
             <li>
-              Third byte: Represents the length of the payload Payload bytes:
-              arguments that will be applied to the command.&nbsp;
+              Third byte: Represents the length of the payload / arguments bytes. 
+              They represent paramters that are being passed to the command.&nbsp;
               <b>
-                Each command has different arguments,&nbsp;in case no arguments
+                Each command has different parameters,&nbsp;in case no parameters
                 are needed you must specify the Third byte as 0x00.
               </b>
             </li>
             <li>
               The rest of the bytes will represent the payload / arguments to
-              the command from byte no.&nbsp;2, &nbsp;usually each command has
+              the command described at byte no.&nbsp;2, &nbsp;usually each command has
               different parameters so the length byte will differ from chapter
               to chapter. &nbsp;
               <b>

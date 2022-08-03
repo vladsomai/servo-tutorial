@@ -1,7 +1,7 @@
 import { MainWindowProps } from '../main-window'
 import { ReactElement } from 'react'
 
-interface ChaptersPropsType extends MainWindowProps {
+export interface ChaptersPropsType extends MainWindowProps {
   sendDataToSerialPort: Function
   LogAction: Function
   constructCommand: Function
@@ -9,7 +9,7 @@ interface ChaptersPropsType extends MainWindowProps {
   children: ReactElement
 }
 
-export const Chapter1 = (props: ChaptersPropsType) => {
+export const Command1 = (props: ChaptersPropsType) => {
   const disable_enable_MOSFETS = () => {
     const selectedAxis = props.getAxisSelection()
     if (selectedAxis == '') return
