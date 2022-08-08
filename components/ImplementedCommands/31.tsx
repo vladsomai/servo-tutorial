@@ -42,7 +42,7 @@ export const Command31 = (props: ChaptersPropsType) => {
             defaultValue={'0123456789'}
           />
           <div
-            className="tooltip"
+            className="tooltip tooltip-secondary"
             data-tip="Test your connection to the motor using this button!"
           >
             <button className="btn btn-primary btn-sm" onClick={ping_command}>

@@ -30,7 +30,7 @@ export const Command1 = (props: ChaptersPropsType) => {
         <div className="flex justify-center">
           {props.children}
           <div
-            className="tooltip"
+            className="tooltip tooltip-secondary"
             data-tip={
               props.currentCommandDictionary.CommandEnum == 0
                 ? 'This button will create a raw command that disables the MOSFETS on the specified axis'

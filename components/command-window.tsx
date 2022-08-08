@@ -125,7 +125,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
                     <option key={baudrate}>{baudrate}</option>
                   ))}
                 </select>
-                <div className="tooltip" data-tip="Connect to the serial port!">
+                <div className="tooltip tooltip-secondary" data-tip="Connect to the serial port!">
                   <button
                     className="btn btn-success btn-sm hover:bg-green-500"
                     onClick={() => {
@@ -137,7 +137,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
                 </div>
               </div>
             </div>
-            <div className="tooltip" data-tip="Disonnect from the serial port!">
+            <div className="tooltip tooltip-secondary" data-tip="Disonnect from the serial port!">
               <button
                 className="btn btn-error btn-sm hover:bg-red-500"
                 onClick={() => {
@@ -149,7 +149,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
             </div>
           </div>
           <div
-            className="tooltip w-full"
+            className="tooltip w-full tooltip-secondary"
             data-tip="Only experts may use this feature dear scholar, are you hardcore enough?"
           >
             <p className="text-center mb-5 ">
@@ -167,7 +167,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
                   className="input input-bordered max-w-xs input-sm w-72"
                 />
                 <div
-                  className="tooltip"
+                  className="tooltip tooltip-secondary"
                   data-tip="You will send a raw command to the servo motor."
                 >
                   <button

@@ -16,7 +16,7 @@ const CommandsProtocol = (props:MainWindowProps) => {
           Parameters to each function are only the axis and the payload, the
           rest of the bytes will be automatically deduced from the given
           arguments. This rule will only apply to the tutorial commands and not
-          to the raw commands that you can send from the Control Panel
+          to the raw commands that you can send from the Control Panel.
         </h4>
           <ul>
             <li>First byte: Represents the targeted axis of the command.</li>

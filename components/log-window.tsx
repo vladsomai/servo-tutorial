@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
+import LogLineServoCommand from './log-line-servo-command'
+import { MainWindowProps } from './main-window'
 
 export type LogType = {
   lineNumber: number
   date: Date
   log: string
 }
-const Log = (props: { logs: LogType[] }) => {
+const Log = (props: { logs: LogType[]; mainWindow: MainWindowProps }) => {
   const logWindow = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -26,32 +28,11 @@ const Log = (props: { logs: LogType[] }) => {
         <div className="flex flex-col justify-center px-5 text-justify break-word font-mono">
           {props.logs.map((log: LogType) => {
             return (
-              <div className=" ml-5 flex" key={log.lineNumber}>
-                <p className="mr-4 text-gray-500">
+              <div className="flex" key={log.lineNumber}>
+                <p className="mr-2 text-gray-500 text-right w-16">
                   {log.lineNumber.toString()}&nbsp;
                 </p>
-                <p>
-                  {log.date.getDate() +
-                    '/' +
-                    (log.date.getMonth() + 1) +
-                    '/' +
-                    log.date.getFullYear() +
-                    '|' +
-                    log.date.getHours() +
-                    ':' +
-                    log.date.getMinutes() +
-                    ':' +
-                    log.date.getSeconds() +
-                    ': ' +
-                    log.log}
-                </p>
-              </div>
-              /* <pre
-                  className=" w-10"
-                  key={log.lineNumber}
-                  data-prefix={log.lineNumber.toString()}
-                >
-                  <code>
+                {/* <p className="">
                     {log.date.getDate() +
                       '/' +
                       (log.date.getMonth() + 1) +
@@ -63,10 +44,11 @@ const Log = (props: { logs: LogType[] }) => {
                       log.date.getMinutes() +
                       ':' +
                       log.date.getSeconds() +
-                      ' : ' +
+                      ': ' +
                       log.log}
-                  </code>
-                </pre> */
+                  </p> */}
+                <LogLineServoCommand {...props.mainWindow} {...log} />
+              </div>
             )
           })}
         </div>

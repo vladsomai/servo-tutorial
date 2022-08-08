@@ -196,7 +196,7 @@ export const Uint8ArrayToString = (data: Uint8Array | undefined): string => {
         let hexString = ''
         for (let i = 0; i < data.length; i++) {
             let prefix = ''
-            let postfix = ' '
+            let postfix = ''
             if (data[i] <= 0xF) prefix = '0'
             else prefix = ''
 

@@ -583,7 +583,7 @@ const Main = (props: MainWindowProps) => {
         >
           {currentCommandLayout}
         </Command>
-        <Log logs={logs} />
+        <Log logs={logs} mainWindow={props}  />
       </div>
     </>
   )
