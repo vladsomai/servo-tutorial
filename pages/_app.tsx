@@ -37,6 +37,7 @@ type AppPropsWithLayout = AppProps & {
 }
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+
   const [_theme, _setTheme] = useState('')
   const [_modalIsShown, _showModal] = useState(false)
 

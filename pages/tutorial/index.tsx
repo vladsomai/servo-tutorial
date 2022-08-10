@@ -25,10 +25,10 @@ const Tutorial: NextPageWithLayout = () => {
       <Head>
         <title>Tutorial</title>
       </Head>
-      <div className="flex animate__animated animate__fadeIn mt-5 tracking-wider">
+      <div className="flex animate__animated animate__fadeIn mt-5 ">
         <Chapters {...{ currentChapter, setCurrentChapter }} />
         <div className="divider divider-horizontal"></div>
-        <Main {...{ currentChapter, currentCommandDictionary }}/>
+        <Main {...{ currentChapter, currentCommandDictionary }} />
       </div>
     </>
   )

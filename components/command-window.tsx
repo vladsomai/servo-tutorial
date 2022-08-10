@@ -8,7 +8,6 @@ interface CommandWindowProps extends MainWindowProps {
   connectToSerialPort: Function
   disconnectFromSerialPort: Function
   children: ReactElement
-  showControlPanel: boolean
 }
 const Command = (props: CommandWindowProps, children: ReactElement) => {
   const rawCommandInputBox = useRef<HTMLInputElement | null>(null)
@@ -81,7 +80,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
 
   return (
     <>
-      <div className="w-full">
+      <div className="w-full h-3/6 overflow-show-scroll pt-10 px-5">
         {props.currentCommandDictionary.CommandEnum !== 100 ? (
           <div className="mb-5">
             <p className="text-center mb-5 text-2xl">
@@ -106,7 +105,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
 
         {props.children}
 
-        <div
+        {/* <div
           ref={controlPanelDiv}
           className={`mockup-code border rounded-box mt-5 p-5 animate__animated ${
             props.showControlPanel ? 'animate__fadeIn' : 'hidden'
@@ -184,7 +183,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   )

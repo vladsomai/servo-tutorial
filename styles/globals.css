@@ -10,13 +10,12 @@
 
 .h-screen-80{
     height: 80vh;
-
 }
 
 .break-word{
   word-break: break-word;
   text-overflow: ellipsis;
-overflow-x: hidden;
+  overflow-x: hidden;
 }
 
 .overflow-show-scroll{

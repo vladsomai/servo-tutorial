@@ -9,6 +9,8 @@ import { Command1 } from './ImplementedCommands/1_2'
 import { Command31 } from './ImplementedCommands/31'
 import SelectAxis from './selectAxis'
 import React from 'react'
+import { Command10 } from './ImplementedCommands/10'
+import { Command8 } from './ImplementedCommands/8'
 
 export type MainWindowProps = {
   currentChapter: number
@@ -17,13 +19,12 @@ export type MainWindowProps = {
 
 const Main = (props: MainWindowProps) => {
   const portSer = useRef<SerialPort | null>(null)
-  const isSerialPortClosed = useRef<boolean>(false)
   const reader = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null)
-  const controlPanelToggle = useRef<HTMLInputElement | null>(null)
   const [logs, setLogs] = useState<LogType[]>([])
-
-  const [showControlPanel, setShowControlPanel] = useState<boolean>(true)
-
+  const [isConnected, setIsConnected] = useState<boolean>(false)
+  
+  const [master_time_start, setMaster_time_start] = useState<number>(0)
+  const setMaster_time_startWrapper = (time:number)=>setMaster_time_start(time);
   const logsStaticArr = useRef<LogType[]>([])
   const lineNumber = useRef<number>(0)
   const LogAction = (log: string): void => {
@@ -36,17 +37,25 @@ const Main = (props: MainWindowProps) => {
     setLogs(logsStaticArr.current)
   }
 
-  const connectToSerialPort = async (BaudRate: number) => {
+  const clearLogWindow = () => {
+    console.log("log cleared")
+    logsStaticArr.current = []
+    lineNumber.current = 0
+    setLogs(logsStaticArr.current)
+  }
+
+  const connectToSerialPort = async (BaudRate: number = 230400) => {
     try {
-      if(portSer.current)
-      {
-        LogAction("You are trying to open a new serial port, we will close the current one for you.")
-        disconnectFromSerialPort();
+      if (portSer.current) {
+        LogAction(
+          'You are trying to open a new serial port, we will close the current one for you.',
+        )
+        disconnectFromSerialPort()
       }
       portSer.current = await navigator.serial.requestPort()
       await portSer.current.open({ baudRate: BaudRate })
       readDataFromSerialPortUntilClosed()
-      isSerialPortClosed.current = false
+      setIsConnected(true)
       LogAction('Connected with baudrate ' + BaudRate.toString() + '!')
     } catch (err) {
       if (err instanceof Error) {
@@ -73,15 +82,15 @@ const Main = (props: MainWindowProps) => {
         }
       }
     } else {
-      LogAction('Disconnecting not possible, you must connect first!')
+      // LogAction('Disconnecting not possible, you must connect first!')
     }
   }, [])
 
   useEffect(() => {
     return () => {
-      if (!isSerialPortClosed.current) disconnectFromSerialPort()
+      if (isConnected) disconnectFromSerialPort()
     }
-  }, [disconnectFromSerialPort])
+  }, [disconnectFromSerialPort, isConnected])
 
   /*This function will take an input like string that represents hexadecimal bytes
     e.g. "410000" , it will send on the serial port the raw binary repr. of that string e.g. [0x41,0,0]
@@ -165,7 +174,7 @@ const Main = (props: MainWindowProps) => {
             return
           } finally {
             await portSer.current.close()
-            isSerialPortClosed.current = true
+            setIsConnected(false)
             portSer.current = null
             LogAction('Disconnected!')
           }
@@ -310,13 +319,21 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 8)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
+  
+  currentCommandLayout = (
+    <>
+      <Command8
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
+        LogAction={LogAction}
+        constructCommand={constructCommand}
+        master_time_start={master_time_start}
+        setMaster_time_start={setMaster_time_startWrapper}
+      >
+        <SelectAxis LogAction={LogAction} ref={axisSelection} />
+      </Command8>
+    </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 9)
     currentCommandLayout = (
@@ -328,14 +345,21 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 10)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <>
+      <Command10
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
+        LogAction={LogAction}
+        constructCommand={constructCommand}
+        master_time_start={master_time_start}
+        setMaster_time_start={setMaster_time_startWrapper}
+      >
+        <SelectAxis LogAction={LogAction} ref={axisSelection} />
+      </Command10>
+    </>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 11)
     currentCommandLayout = (
       <>
@@ -557,33 +581,39 @@ const Main = (props: MainWindowProps) => {
     )
   return (
     <>
-      <div className="grid w-full card bg-base-300 rounded-box h-screen-80 overflow-show-scroll px-5 pt-10 relative">
-        <div className="form-control  absolute top-4 right-4">
-          <label className="label cursor-pointer flex flex-col-reverse">
-            <span className="label-text">Control panel</span>
-            <input
-              ref={controlPanelToggle}
-              type="checkbox"
-              className="toggle"
-              checked={showControlPanel}
-              onChange={() => {
-                if (controlPanelToggle && controlPanelToggle.current) {
-                  setShowControlPanel(!showControlPanel)
-                }
+      <div className="w-full bg-base-300 rounded-box h-screen-80 overflow-show-scroll relative">
+        <div className="absolute top-4 right-4">
+          {isConnected ? (
+            <button
+              className="btn btn-success btn-md text-lg hover:bg-green-500 flex flex-col normal-case"
+              onClick={() => {
+                disconnectFromSerialPort()
               }}
-            />
-          </label>
+            >
+              Connected
+              <span className="text-xs normal-case">Press to disconnect</span>
+            </button>
+          ) : (
+            <button
+              className="btn btn-error btn-md text-lg hover:bg-red-500 flex flex-col normal-case"
+              onClick={() => {
+                connectToSerialPort()
+              }}
+            >
+              Disconnected
+              <span className="text-xs normal-case">Press to connect</span>
+            </button>
+          )}
         </div>
         <Command
           {...props}
           sendDataToSerialPort={sendDataToSerialPort}
           connectToSerialPort={connectToSerialPort}
           disconnectFromSerialPort={disconnectFromSerialPort}
-          showControlPanel={showControlPanel}
         >
           {currentCommandLayout}
         </Command>
-        <Log logs={logs} mainWindow={props}  />
+        <Log logs={logs} mainWindow={props} clearLogWindow={clearLogWindow} />
       </div>
     </>
   )

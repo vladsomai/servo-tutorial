@@ -1,8 +1,7 @@
 import Head from 'next/head'
 import Layout from '../components/layout'
-import { ReactElement, useEffect, useRef, useState } from 'react'
+import {  useEffect, useRef, ReactElement } from 'react'
 import type { NextPageWithLayout } from './_app'
-import 'animate.css'
 import { stringToUint8Array, Uint8ArrayToString } from '../servo-engine/utils'
 import TestComponent from '../components/testComponent'
 
@@ -10,6 +9,15 @@ const Test: NextPageWithLayout = () => {
   const portSer = useRef<SerialPort | null>(null)
   const closeSerialPort = useRef<boolean>(false)
   const reader = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null)
+
+
+  useEffect(()=>{
+    console.log("Mounted test page");
+    
+    return ()=>{
+      console.log("Unmounted test page");
+    }
+  })
 
   const connectToSerialPort = async (BaudRate: number) => {
     try {

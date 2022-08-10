@@ -1,4 +1,3 @@
-import { toASCII } from 'punycode'
 import { useEffect, useRef, useState } from 'react'
 import { LogType } from './log-window'
 import { MainWindowProps } from './main-window'
@@ -62,7 +61,7 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
             Description: byteDescription.current[3],
             Color: byteColor.current[3],
           })
-          break;
+          break
         }
       }
     }
@@ -88,14 +87,14 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
 
         {componentIsACommand ? (
           <div className="flex">
-            <p>{stringTo0x.current+'0x'}</p>
+            <p>{stringTo0x.current + '0x'}</p>
             {commandBytes.current.map((byte) => (
               <div
                 key={commandBytes.current.indexOf(byte)}
                 className={'tooltip ml-2 tooltip-secondary' + byte.Color}
                 data-tip={byte.Description}
               >
-                {byte.Value}
+                <p className="">{byte.Value}</p>
               </div>
             ))}
           </div>
