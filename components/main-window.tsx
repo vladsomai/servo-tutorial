@@ -5,12 +5,15 @@ import { Uint8ArrayToString, stringToUint8Array } from '../servo-engine/utils'
 import { MotorCommandsDictionary } from '../servo-engine/motor-commands'
 import { LogType } from '../components/log-window'
 import { MotorAxes } from '../servo-engine/motor-axes'
-import { Command1 } from './ImplementedCommands/1_2'
+import { Command1 } from './ImplementedCommands/0_1'
 import { Command31 } from './ImplementedCommands/31'
 import SelectAxis from './selectAxis'
 import React from 'react'
 import { Command10 } from './ImplementedCommands/10'
 import { Command8 } from './ImplementedCommands/8'
+import { Command4 } from './ImplementedCommands/4'
+import { Command2 } from './ImplementedCommands/2'
+import { Command7 } from './ImplementedCommands/7'
 
 export type MainWindowProps = {
   currentChapter: number
@@ -22,9 +25,10 @@ const Main = (props: MainWindowProps) => {
   const reader = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null)
   const [logs, setLogs] = useState<LogType[]>([])
   const [isConnected, setIsConnected] = useState<boolean>(false)
-  
+
   const [master_time_start, setMaster_time_start] = useState<number>(0)
-  const setMaster_time_startWrapper = (time:number)=>setMaster_time_start(time);
+  const setMaster_time_startWrapper = (time: number) =>
+    setMaster_time_start(time)
   const logsStaticArr = useRef<LogType[]>([])
   const lineNumber = useRef<number>(0)
   const LogAction = (log: string): void => {
@@ -38,7 +42,7 @@ const Main = (props: MainWindowProps) => {
   }
 
   const clearLogWindow = () => {
-    console.log("log cleared")
+    console.log('log cleared')
     logsStaticArr.current = []
     lineNumber.current = 0
     setLogs(logsStaticArr.current)
@@ -267,10 +271,15 @@ const Main = (props: MainWindowProps) => {
   else if (props.currentCommandDictionary.CommandEnum == 2)
     currentCommandLayout = (
       <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
+        <Command2
+          {...props}
+          getAxisSelection={getAxisSelection}
+          sendDataToSerialPort={sendDataToSerialPort}
+          LogAction={LogAction}
+          constructCommand={constructCommand}
+        >
+          <SelectAxis LogAction={LogAction} ref={axisSelection} />
+        </Command2>
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 3)
@@ -283,14 +292,14 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 4)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <>
+      <p className="text-6xl text-center">
+        Command {props.currentCommandDictionary.CommandEnum} is not
+        implemented
+      </p>
+    </>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 5)
     currentCommandLayout = (
       <>
@@ -310,30 +319,32 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 7)
+  currentCommandLayout = (
+    <Command7
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis LogAction={LogAction} ref={axisSelection} />
+    </Command7>
+  )
+  else if (props.currentCommandDictionary.CommandEnum == 8)
     currentCommandLayout = (
       <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
+        <Command8
+          {...props}
+          getAxisSelection={getAxisSelection}
+          sendDataToSerialPort={sendDataToSerialPort}
+          LogAction={LogAction}
+          constructCommand={constructCommand}
+          master_time_start={master_time_start}
+          setMaster_time_start={setMaster_time_startWrapper}
+        >
+          <SelectAxis LogAction={LogAction} ref={axisSelection} />
+        </Command8>
       </>
-    )
-  else if (props.currentCommandDictionary.CommandEnum == 8)
-  
-  currentCommandLayout = (
-    <>
-      <Command8
-        {...props}
-        getAxisSelection={getAxisSelection}
-        sendDataToSerialPort={sendDataToSerialPort}
-        LogAction={LogAction}
-        constructCommand={constructCommand}
-        master_time_start={master_time_start}
-        setMaster_time_start={setMaster_time_startWrapper}
-      >
-        <SelectAxis LogAction={LogAction} ref={axisSelection} />
-      </Command8>
-    </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 9)
     currentCommandLayout = (
@@ -345,21 +356,21 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 10)
-  currentCommandLayout = (
-    <>
-      <Command10
-        {...props}
-        getAxisSelection={getAxisSelection}
-        sendDataToSerialPort={sendDataToSerialPort}
-        LogAction={LogAction}
-        constructCommand={constructCommand}
-        master_time_start={master_time_start}
-        setMaster_time_start={setMaster_time_startWrapper}
-      >
-        <SelectAxis LogAction={LogAction} ref={axisSelection} />
-      </Command10>
-    </>
-  )
+    currentCommandLayout = (
+      <>
+        <Command10
+          {...props}
+          getAxisSelection={getAxisSelection}
+          sendDataToSerialPort={sendDataToSerialPort}
+          LogAction={LogAction}
+          constructCommand={constructCommand}
+          master_time_start={master_time_start}
+          setMaster_time_start={setMaster_time_startWrapper}
+        >
+          <SelectAxis LogAction={LogAction} ref={axisSelection} />
+        </Command10>
+      </>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 11)
     currentCommandLayout = (
       <>
@@ -613,7 +624,10 @@ const Main = (props: MainWindowProps) => {
         >
           {currentCommandLayout}
         </Command>
-        <Log logs={logs} mainWindow={props} clearLogWindow={clearLogWindow} />
+
+        {props.currentCommandDictionary.CommandEnum === 100 ? null : (
+          <Log logs={logs} mainWindow={props} clearLogWindow={clearLogWindow} />
+        )}
       </div>
     </>
   )

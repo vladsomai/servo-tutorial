@@ -1,7 +1,4 @@
-import { MainWindowProps } from '../main-window'
-import { ReactElement, useRef } from 'react'
-import { MotorAxes, MotorAxisType } from '../../servo-engine/motor-axes'
-import { ChaptersPropsType } from './1_2'
+import { ChaptersPropsType } from './0_1'
 
 export interface ResetCommandType extends ChaptersPropsType {
   master_time_start: number
@@ -14,7 +11,7 @@ export const Command8 = (props: ResetCommandType) => {
     if (selectedAxis == '') return
 
     props.setMaster_time_start(Date.now())
-    const rawData = props.constructCommand(selectedAxis, '00000000')
+    const rawData = props.constructCommand(selectedAxis, '')
     props.sendDataToSerialPort(rawData)
   }
 

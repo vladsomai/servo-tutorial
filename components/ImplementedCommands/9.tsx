@@ -1,9 +1,8 @@
-import { MainWindowProps } from '../main-window'
 import { ReactElement, useRef } from 'react'
 import { MotorAxes, MotorAxisType } from '../../servo-engine/motor-axes'
-import { ChaptersPropsType } from './1_2'
+import { ChaptersPropsType } from './0_1'
 
-export const Command31 = (props: ChaptersPropsType) => {
+export const Command9 = (props: ChaptersPropsType) => {
   const textPayloadInputBox = useRef<HTMLInputElement | null>(null)
 
   const ping_command = () => {

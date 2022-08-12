@@ -23,7 +23,7 @@ const Log = (props: {
 
   return (
     <>
-      <div className="absolute bottom-0 w-full h-3/6 rounded-box ">
+      <div className="absolute bottom-0 w-full h-3/6 rounded-box">
         <div className="mockup-code w-full h-1/6 rounded-t-box rounded-b-none py-5 bg-gray-900">
           <button
             className="btn btn-xs absolute bottom-0 right-1 z-10 rounded-b-none"

@@ -2987,6 +2987,10 @@ body[dir="rtl"] .checkbox:checked,
   margin-right: 2rem;
 }
 
+.mb-10 {
+  margin-bottom: 2.5rem;
+}
+
 .flex {
   display: flex;
 }
@@ -3009,6 +3013,10 @@ body[dir="rtl"] .checkbox:checked,
 
 .h-5\/6 {
   height: 83.333333%;
+}
+
+.h-full {
+  height: 100%;
 }
 
 .w-1\/6 {
@@ -3279,6 +3287,17 @@ div::-webkit-scrollbar-thumb {
   border-radius: 15px;
   background-color: #1d283a;
   outline: 1px solid #555;
+}
+
+input[type="number"] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
 }
 
 .hover\:bg-green-500:hover {

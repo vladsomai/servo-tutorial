@@ -206,3 +206,33 @@ export const Uint8ArrayToString = (data: Uint8Array | undefined): string => {
     } else
         return ""
 }
+
+// //Input: Int8Array e.g. [0xFF,0xA0,0]
+// //Output: hexString e.g. "FFA000"
+// export const Int8ArrayToString = (data: Int8Array | undefined): string => {
+//     if (data != undefined) {
+//         let hexString = ''
+//         for (let i = 0; i < data.length; i++) {
+//             let prefix = ''
+//             let postfix = ''
+//             if (data[i] <= 0xF) prefix = '0'
+//             else prefix = ''
+
+//             hexString += prefix + data[i].toString(16) + postfix
+//         }
+//         return hexString.toUpperCase();
+//     } else
+//         return ""
+// }
+
+//Input: time in microseconds
+//Output: number timesteps
+export const MilisToTimesteps = (timeInMilis: number): number => {
+    return timeInMilis * 1000 / 32;
+}
+
+//Input: rotations
+//Output: number microsteps
+export const RotationsToMicrosteps = (rotations: number): number => {
+    return rotations * 645120;
+}
