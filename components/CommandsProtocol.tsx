@@ -79,7 +79,7 @@ const CommandsProtocol = (props: MainWindowProps) => {
             negative.
           </li>
           <li>
-            The standard unit is the <strong>radian</strong>.<br></br>
+            The SI unit for an angle is the <strong>radian</strong>.<br></br>
             Another well known unit is the <strong>rotation</strong>.
           </li>
           <li>
