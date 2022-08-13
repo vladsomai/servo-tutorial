@@ -80,7 +80,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
 
   return (
     <>
-      <div className={`w-full overflow-show-scroll pt-10 px-5 ${props.currentCommandDictionary.CommandEnum===100?" h-full ":" h3/6 "}`}>
+      <div className={`w-full overflow-show-scroll pt-10 px-5 ${props.currentCommandDictionary.CommandEnum===100?" h-full ":" h-3/6 "}`}>
         {props.currentCommandDictionary.CommandEnum !== 100 ? (
           <div className="mb-5">
             <p className="text-center mb-5 text-2xl">

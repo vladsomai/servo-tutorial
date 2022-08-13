@@ -4,6 +4,7 @@ import { MotorAxes, MotorAxisType } from '../servo-engine/motor-axes'
 export type SelectAxisPropsType = {
   LogAction: Function
   ref: any
+  selectionValue: string
 }
 
 const SelectAxis = forwardRef<HTMLSelectElement | null, SelectAxisPropsType>(
@@ -12,9 +13,8 @@ const SelectAxis = forwardRef<HTMLSelectElement | null, SelectAxisPropsType>(
       <select
         ref={ref}
         className="select select-bordered select-sm w-full max-w-xs mr-8"
-        defaultValue="Select axis"
+        defaultValue={props.selectionValue}
       >
-        <option disabled>Select axis</option>
         {MotorAxes.map((axis: MotorAxisType) => (
           <option key={axis.AxisCode}>{axis.AxisName}</option>
         ))}

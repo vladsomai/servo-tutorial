@@ -24,7 +24,7 @@ const Log = (props: {
   return (
     <>
       <div className="absolute bottom-0 w-full h-3/6 rounded-box">
-        <div className="mockup-code w-full h-1/6 rounded-t-box rounded-b-none py-5 bg-gray-900">
+        <div className="mockup-code w-full h-1/6 rounded-t-box rounded-b-none py-5 bg-grey-800">
           <button
             className="btn btn-xs absolute bottom-0 right-1 z-10 rounded-b-none"
             onClick={() => props.clearLogWindow()}
@@ -37,7 +37,7 @@ const Log = (props: {
         </div>
         <div
           ref={logWindow}
-          className="bg-gray-800  overflow-show-scroll h-5/6 rounded-b-box"
+          className="bg-base-300 overflow-show-scroll h-5/6 rounded-b-box"
         >
           <div className="flex flex-col justify-center p-5 text-justify break-word font-mono ">
             {props.logs.map((log: LogType) => {

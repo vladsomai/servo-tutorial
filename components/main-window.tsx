@@ -25,6 +25,7 @@ const Main = (props: MainWindowProps) => {
   const reader = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null)
   const [logs, setLogs] = useState<LogType[]>([])
   const [isConnected, setIsConnected] = useState<boolean>(false)
+  const [axisSelectionValue, setAxisSelectionValue] = useState<string>("All axes")
 
   const [master_time_start, setMaster_time_start] = useState<number>(0)
   const setMaster_time_startWrapper = (time: number) =>
@@ -241,10 +242,12 @@ const Main = (props: MainWindowProps) => {
       let selectedAxis =
         axisSelection.current.options[axisSelection.current.selectedIndex].text
 
-      if (selectedAxis == 'Select axis') {
+      if (selectedAxis == '') {
         LogAction('You must select an axis!')
         return ''
       }
+
+      setAxisSelectionValue(selectedAxis)//will be used as default props for mounting a new SlectAxis component
       return selectedAxis
     }
     return ''
@@ -264,7 +267,7 @@ const Main = (props: MainWindowProps) => {
           LogAction={LogAction}
           constructCommand={constructCommand}
         >
-          <SelectAxis LogAction={LogAction} ref={axisSelection} />
+          <SelectAxis LogAction={LogAction} ref={axisSelection} selectionValue={axisSelectionValue}/>
         </Command1>
       </>
     )
@@ -278,7 +281,7 @@ const Main = (props: MainWindowProps) => {
           LogAction={LogAction}
           constructCommand={constructCommand}
         >
-          <SelectAxis LogAction={LogAction} ref={axisSelection} />
+          <SelectAxis LogAction={LogAction} ref={axisSelection} selectionValue={axisSelectionValue}/>
         </Command2>
       </>
     )
@@ -327,7 +330,7 @@ const Main = (props: MainWindowProps) => {
       LogAction={LogAction}
       constructCommand={constructCommand}
     >
-      <SelectAxis LogAction={LogAction} ref={axisSelection} />
+      <SelectAxis LogAction={LogAction} ref={axisSelection} selectionValue={axisSelectionValue}/>
     </Command7>
   )
   else if (props.currentCommandDictionary.CommandEnum == 8)
@@ -342,7 +345,7 @@ const Main = (props: MainWindowProps) => {
           master_time_start={master_time_start}
           setMaster_time_start={setMaster_time_startWrapper}
         >
-          <SelectAxis LogAction={LogAction} ref={axisSelection} />
+          <SelectAxis LogAction={LogAction} ref={axisSelection} selectionValue={axisSelectionValue}/>
         </Command8>
       </>
     )
@@ -367,7 +370,7 @@ const Main = (props: MainWindowProps) => {
           master_time_start={master_time_start}
           setMaster_time_start={setMaster_time_startWrapper}
         >
-          <SelectAxis LogAction={LogAction} ref={axisSelection} />
+          <SelectAxis LogAction={LogAction} ref={axisSelection} selectionValue={axisSelectionValue}/>
         </Command10>
       </>
     )
@@ -560,7 +563,7 @@ const Main = (props: MainWindowProps) => {
         LogAction={LogAction}
         constructCommand={constructCommand}
       >
-        <SelectAxis LogAction={LogAction} ref={axisSelection} />
+        <SelectAxis LogAction={LogAction} ref={axisSelection} selectionValue={axisSelectionValue}/>
       </Command31>
     )
   else if (props.currentCommandDictionary.CommandEnum == 32)

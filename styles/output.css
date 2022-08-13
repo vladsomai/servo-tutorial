@@ -1666,10 +1666,6 @@ html {
   mask-position: center;
 }
 
-.menu > :where(li.disabled > *:not(ul):focus) {
-  cursor: auto;
-}
-
 .mockup-code {
   position: relative;
   overflow: hidden;
@@ -1980,18 +1976,6 @@ html {
   background-color: hsl(var(--sf, var(--s)) / var(--tw-bg-opacity));
   --tw-text-opacity: 1;
   color: hsl(var(--sc) / var(--tw-text-opacity));
-}
-
-.btm-nav>*.disabled, 
-    .btm-nav>*.disabled:hover, 
-    .btm-nav>*[disabled], 
-    .btm-nav>*[disabled]:hover {
-  pointer-events: none;
-  --tw-border-opacity: 0;
-  background-color: hsl(var(--n) / var(--tw-bg-opacity));
-  --tw-bg-opacity: 0.1;
-  color: hsl(var(--bc) / var(--tw-text-opacity));
-  --tw-text-opacity: 0.2;
 }
 
 .btm-nav>* .label {
@@ -2519,18 +2503,6 @@ body[dir="rtl"] .checkbox:checked,
   mask-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KCiAgPHBhdGggZD0iTSAxMDAgMCBDIDIwIDAgMCAyMCAwIDEwMCBDIDAgMTgwIDIwIDIwMCAxMDAgMjAwIEMgMTgwIDIwMCAyMDAgMTgwIDIwMCAxMDAgQyAyMDAgMjAgMTgwIDAgMTAwIDAgWiIvPgoKPC9zdmc+);
 }
 
-.menu li.disabled > * {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-       user-select: none;
-  color: hsl(var(--bc) / var(--tw-text-opacity));
-  --tw-text-opacity: 0.2;
-}
-
-.menu li.disabled > *:hover {
-  background-color: transparent;
-}
-
 .mockup-code:before {
   content: "";
   margin-bottom: 1rem;
@@ -2979,16 +2951,16 @@ body[dir="rtl"] .checkbox:checked,
   margin-bottom: 0.5rem;
 }
 
+.mb-10 {
+  margin-bottom: 2.5rem;
+}
+
 .ml-2 {
   margin-left: 0.5rem;
 }
 
 .mr-8 {
   margin-right: 2rem;
-}
-
-.mb-10 {
-  margin-bottom: 2.5rem;
 }
 
 .flex {
@@ -3003,6 +2975,10 @@ body[dir="rtl"] .checkbox:checked,
   display: none;
 }
 
+.h-full {
+  height: 100%;
+}
+
 .h-3\/6 {
   height: 50%;
 }
@@ -3013,10 +2989,6 @@ body[dir="rtl"] .checkbox:checked,
 
 .h-5\/6 {
   height: 83.333333%;
-}
-
-.h-full {
-  height: 100%;
 }
 
 .w-1\/6 {
@@ -3105,16 +3077,6 @@ body[dir="rtl"] .checkbox:checked,
   background-color: hsl(var(--b3, var(--b2)) / var(--tw-bg-opacity));
 }
 
-.bg-gray-900 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(17 24 39 / var(--tw-bg-opacity));
-}
-
-.bg-gray-800 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(31 41 55 / var(--tw-bg-opacity));
-}
-
 .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
@@ -3184,11 +3146,6 @@ body[dir="rtl"] .checkbox:checked,
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
-}
-
-.text-3xl {
-  font-size: 1.875rem;
-  line-height: 2.25rem;
 }
 
 .text-lg {
