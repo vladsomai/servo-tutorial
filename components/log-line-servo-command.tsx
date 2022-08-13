@@ -69,8 +69,8 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
 
   return (
     <>
-      <div className="flex w-11/12">
-        <p className="mr-2">
+      <div className="w-11/12">
+        <p className="inline">
           {props.date.getDate() +
             '/' +
             (props.date.getMonth() + 1) +
@@ -86,20 +86,22 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
         </p>
 
         {componentIsACommand ? (
-          <div className="flex">
-            <p>{stringTo0x.current + '0x'}</p>
+          <div className="inline">
+            <p className='inline'>{stringTo0x.current + '0x'}</p>
             {commandBytes.current.map((byte) => (
               <div
                 key={commandBytes.current.indexOf(byte)}
-                className={'tooltip ml-2 tooltip-secondary' + byte.Color}
+                className={
+                  'tooltip ml-2 tooltip-secondary inline' + byte.Color
+                }
                 data-tip={byte.Description}
               >
-                <p className="">{byte.Value}</p>
+                <p className="inline">{byte.Value}</p>
               </div>
             ))}
           </div>
         ) : (
-          <p>{props.log}</p>
+          <p className='inline'>{props.log}</p>
         )}
       </div>
     </>

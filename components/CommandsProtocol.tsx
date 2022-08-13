@@ -92,6 +92,51 @@ const CommandsProtocol = (props: MainWindowProps) => {
             Example: 0.5 rotations = 322560 microsteps
           </li>
         </ul>
+
+        <h3>Velocity</h3>
+        <ul>
+          <li>
+            Velocity is better described as the
+            <strong> angular velocity</strong>
+          </li>
+          <li>
+            The internal unit for velocity can be understood as the number of
+            <strong> microsteps per one timestep </strong>
+            while keeping 32 fractional bits. Velocity can be positive or
+            negative.
+          </li>
+
+          <li>
+            The SI unit is <strong>radians per second</strong>.<br></br> Other
+            well known units for velocity are{' '}
+            <strong>rotations per second</strong> and{' '}
+            <strong>rotations per minute (RPM)</strong>.
+          </li>
+          <li>
+            When sending the velocity using the command protocol, we need to send
+            the velocity in communication units and the motor will self convert
+            it to internal units.
+          </li>
+
+          <li>
+            The conversion is as follows:
+            <br></br>
+            velocity_internal = velocity_radians_per_second / 2 / PI * 645120 /
+            31250 * 2^32
+            <br></br>
+            velocity_internal = velocity_rotations_per_second * 645120 / 31250 *
+            2^32
+            <br></br>
+            velocity_internal = velocity_rotations_per_minute / 60 * 645120 /
+            31250 * 2^32 
+            
+            <br></br>
+            velocity_communication = velocity_internal / 2^12
+            <br></br>
+            Example: 2000 RPM = 33.3333 rotations per second = 2955487255461.88
+            internal units = 721554506 to be sent (communications units)
+          </li>
+        </ul>
       </article>
     </div>
   )

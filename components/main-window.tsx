@@ -25,7 +25,9 @@ const Main = (props: MainWindowProps) => {
   const reader = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null)
   const [logs, setLogs] = useState<LogType[]>([])
   const [isConnected, setIsConnected] = useState<boolean>(false)
-  const [axisSelectionValue, setAxisSelectionValue] = useState<string>("All axes")
+  const [axisSelectionValue, setAxisSelectionValue] = useState<string>(
+    'All axes',
+  )
 
   const [master_time_start, setMaster_time_start] = useState<number>(0)
   const setMaster_time_startWrapper = (time: number) =>
@@ -93,7 +95,9 @@ const Main = (props: MainWindowProps) => {
 
   useEffect(() => {
     return () => {
-      if (isConnected) disconnectFromSerialPort()
+      if (isConnected) {
+        disconnectFromSerialPort()
+      }
     }
   }, [disconnectFromSerialPort, isConnected])
 
@@ -108,8 +112,8 @@ const Main = (props: MainWindowProps) => {
       )
       return
     }
-    if (portSer && portSer.current) {
-      const writer = portSer.current.writable!.getWriter()
+    if (portSer && portSer.current && portSer.current.writable) {
+      const writer = portSer.current.writable.getWriter()
 
       let data: Uint8Array = new Uint8Array([])
       try {
@@ -149,7 +153,7 @@ const Main = (props: MainWindowProps) => {
   const readDataFromSerialPortUntilClosed = async () => {
     if (portSer && portSer.current) {
       if (portSer.current.readable) {
-        reader.current = await portSer.current.readable!.getReader()
+        reader.current = await portSer.current.readable.getReader()
 
         if (reader && reader.current) {
           try {
@@ -158,7 +162,7 @@ const Main = (props: MainWindowProps) => {
                 const { value, done } = await reader.current!.read()
                 if (done) {
                   LogAction('Reader is now closed!')
-                  reader.current!.releaseLock()
+                  reader.current.releaseLock()
                   break
                 } else {
                   LogAction('Received: 0x' + Uint8ArrayToString(value))
@@ -247,7 +251,7 @@ const Main = (props: MainWindowProps) => {
         return ''
       }
 
-      setAxisSelectionValue(selectedAxis)//will be used as default props for mounting a new SlectAxis component
+      setAxisSelectionValue(selectedAxis) //will be used as default props for mounting a new SlectAxis component
       return selectedAxis
     }
     return ''
@@ -267,7 +271,11 @@ const Main = (props: MainWindowProps) => {
           LogAction={LogAction}
           constructCommand={constructCommand}
         >
-          <SelectAxis LogAction={LogAction} ref={axisSelection} selectionValue={axisSelectionValue}/>
+          <SelectAxis
+            LogAction={LogAction}
+            ref={axisSelection}
+            selectionValue={axisSelectionValue}
+          />
         </Command1>
       </>
     )
@@ -281,7 +289,11 @@ const Main = (props: MainWindowProps) => {
           LogAction={LogAction}
           constructCommand={constructCommand}
         >
-          <SelectAxis LogAction={LogAction} ref={axisSelection} selectionValue={axisSelectionValue}/>
+          <SelectAxis
+            LogAction={LogAction}
+            ref={axisSelection}
+            selectionValue={axisSelectionValue}
+          />
         </Command2>
       </>
     )
@@ -295,14 +307,14 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 4)
-  currentCommandLayout = (
-    <>
-      <p className="text-6xl text-center">
-        Command {props.currentCommandDictionary.CommandEnum} is not
-        implemented
-      </p>
-    </>
-  )
+    currentCommandLayout = (
+      <>
+        <p className="text-6xl text-center">
+          Command {props.currentCommandDictionary.CommandEnum} is not
+          implemented
+        </p>
+      </>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 5)
     currentCommandLayout = (
       <>
@@ -322,17 +334,21 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 7)
-  currentCommandLayout = (
-    <Command7
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis LogAction={LogAction} ref={axisSelection} selectionValue={axisSelectionValue}/>
-    </Command7>
-  )
+    currentCommandLayout = (
+      <Command7
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
+        LogAction={LogAction}
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          ref={axisSelection}
+          selectionValue={axisSelectionValue}
+        />
+      </Command7>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 8)
     currentCommandLayout = (
       <>
@@ -345,7 +361,11 @@ const Main = (props: MainWindowProps) => {
           master_time_start={master_time_start}
           setMaster_time_start={setMaster_time_startWrapper}
         >
-          <SelectAxis LogAction={LogAction} ref={axisSelection} selectionValue={axisSelectionValue}/>
+          <SelectAxis
+            LogAction={LogAction}
+            ref={axisSelection}
+            selectionValue={axisSelectionValue}
+          />
         </Command8>
       </>
     )
@@ -370,7 +390,11 @@ const Main = (props: MainWindowProps) => {
           master_time_start={master_time_start}
           setMaster_time_start={setMaster_time_startWrapper}
         >
-          <SelectAxis LogAction={LogAction} ref={axisSelection} selectionValue={axisSelectionValue}/>
+          <SelectAxis
+            LogAction={LogAction}
+            ref={axisSelection}
+            selectionValue={axisSelectionValue}
+          />
         </Command10>
       </>
     )
@@ -563,7 +587,11 @@ const Main = (props: MainWindowProps) => {
         LogAction={LogAction}
         constructCommand={constructCommand}
       >
-        <SelectAxis LogAction={LogAction} ref={axisSelection} selectionValue={axisSelectionValue}/>
+        <SelectAxis
+          LogAction={LogAction}
+          ref={axisSelection}
+          selectionValue={axisSelectionValue}
+        />
       </Command31>
     )
   else if (props.currentCommandDictionary.CommandEnum == 32)

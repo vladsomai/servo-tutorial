@@ -24,7 +24,7 @@ const Log = (props: {
   return (
     <>
       <div className="absolute bottom-0 w-full h-3/6 rounded-box">
-        <div className="mockup-code w-full h-1/6 rounded-t-box rounded-b-none py-5 bg-grey-800">
+        <div className="mockup-code w-full h-1/6 rounded-t-box rounded-b-none py-5 bg-slate-700">
           <button
             className="btn btn-xs absolute bottom-0 right-1 z-10 rounded-b-none"
             onClick={() => props.clearLogWindow()}
@@ -37,7 +37,7 @@ const Log = (props: {
         </div>
         <div
           ref={logWindow}
-          className="bg-base-300 overflow-show-scroll h-5/6 rounded-b-box"
+          className=" bg-slate-800 overflow-show-scroll h-5/6 rounded-b-box"
         >
           <div className="flex flex-col justify-center p-5 text-justify break-word font-mono ">
             {props.logs.map((log: LogType) => {
@@ -46,21 +46,6 @@ const Log = (props: {
                   <p className="mr-2 text-gray-500 text-right w-16">
                     {log.lineNumber.toString()}&nbsp;
                   </p>
-                  {/* <p className="">
-                    {log.date.getDate() +
-                      '/' +
-                      (log.date.getMonth() + 1) +
-                      '/' +
-                      log.date.getFullYear() +
-                      '|' +
-                      log.date.getHours() +
-                      ':' +
-                      log.date.getMinutes() +
-                      ':' +
-                      log.date.getSeconds() +
-                      ': ' +
-                      log.log}
-                  </p> */}
                   <LogLineServoCommand {...props.mainWindow} {...log} />
                 </div>
               )

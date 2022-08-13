@@ -227,8 +227,8 @@ export const Uint8ArrayToString = (data: Uint8Array | undefined): string => {
 
 //Input: time in microseconds
 //Output: number timesteps
-export const MilisToTimesteps = (timeInMilis: number): number => {
-    return timeInMilis * 1000 / 32;
+export const SecondToTimesteps = (timeInSeconds: number): number => {
+    return timeInSeconds * 1000000 / 32;
 }
 
 //Input: rotations

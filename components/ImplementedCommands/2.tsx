@@ -1,8 +1,8 @@
 import { ReactElement, useRef } from 'react'
 import { MotorAxes, MotorAxisType } from '../../servo-engine/motor-axes'
 import {
-  MilisToTimesteps,
   RotationsToMicrosteps,
+  SecondToTimesteps,
   Uint8ArrayToString,
 } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
@@ -10,6 +10,10 @@ import { ChaptersPropsType } from './0_1'
 export const Command2 = (props: ChaptersPropsType) => {
   const positionInputBox = useRef<HTMLInputElement | null>(null)
   const timeInputBox = useRef<HTMLInputElement | null>(null)
+
+  const minimumNegativePositionValue = -0.0000032
+  const minimumPositivePositionValue = 0.0000016
+  const minimumPositiveTimeValue = 0.000032
 
   const trapezoid_move = () => {
     if (
@@ -28,17 +32,37 @@ export const Command2 = (props: ChaptersPropsType) => {
         props.LogAction('Please enter both inputs.')
         return
       }
-      const positionValue = parseInt(positionInputBox.current.value)
-      const timeValue = parseInt(timeInputBox.current.value)
+      const positionValue = parseFloat(positionInputBox.current.value)
+      const timeValue = parseFloat(timeInputBox.current.value)
+
       if (timeValue < 0) {
         props.LogAction('Time cannot be negative!')
         return
       }
 
+      if (timeValue < minimumPositiveTimeValue) {
+        props.LogAction(
+          `WARNING: Time value is considered 0 when it is below ${minimumPositiveTimeValue}, consider using a larger value.`,
+        )
+      }
+
+      if (positionValue < 0) {
+        //check if position is negative
+        if (positionValue > minimumNegativePositionValue) {
+          props.LogAction(
+            `WARNING: Minimum value for negative position is ${minimumNegativePositionValue} (one microstep), consider using a smaller value`,
+          )
+        }
+      } else if (positionValue < minimumPositivePositionValue) {
+        props.LogAction(
+          `WARNING: Minimum value for positive position is ${minimumPositivePositionValue} (one microstep), consider using a larger value`,
+        )
+      }
+
       //#region TIME CONVERTION
       let rawPayload_ArrayBufferForTime = new ArrayBuffer(4)
       const viewTime = new DataView(rawPayload_ArrayBufferForTime)
-      viewTime.setUint32(0, MilisToTimesteps(timeValue), true)
+      viewTime.setUint32(0, SecondToTimesteps(timeValue), true)
 
       let rawTimePayload = new Uint8Array(4)
       rawTimePayload.set([viewTime.getUint8(0)], 0)
@@ -82,7 +106,7 @@ export const Command2 = (props: ChaptersPropsType) => {
           <input
             ref={timeInputBox}
             type="number"
-            placeholder="Time limit (ms)"
+            placeholder="Time limit (s)"
             className="input input-bordered basis-1/2  max-w-xs input-sm mr-8"
           />
           <div
