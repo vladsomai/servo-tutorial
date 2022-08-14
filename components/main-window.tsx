@@ -242,19 +242,7 @@ const Main = (props: MainWindowProps) => {
 
   const axisSelection = useRef<HTMLSelectElement | null>(null)
   const getAxisSelection = (): string => {
-    if (axisSelection && axisSelection.current) {
-      let selectedAxis =
-        axisSelection.current.options[axisSelection.current.selectedIndex].text
-
-      if (selectedAxis == '') {
-        LogAction('You must select an axis!')
-        return ''
-      }
-
-      setAxisSelectionValue(selectedAxis) //will be used as default props for mounting a new SlectAxis component
-      return selectedAxis
-    }
-    return ''
+      return axisSelectionValue
   }
 
   let currentCommandLayout: ReactElement = <></>
@@ -273,8 +261,8 @@ const Main = (props: MainWindowProps) => {
         >
           <SelectAxis
             LogAction={LogAction}
-            ref={axisSelection}
-            selectionValue={axisSelectionValue}
+            axisSelectionValue={axisSelectionValue}
+            setAxisSelectionValue={setAxisSelectionValue}
           />
         </Command1>
       </>
@@ -291,8 +279,8 @@ const Main = (props: MainWindowProps) => {
         >
           <SelectAxis
             LogAction={LogAction}
-            ref={axisSelection}
-            selectionValue={axisSelectionValue}
+            axisSelectionValue={axisSelectionValue}
+            setAxisSelectionValue={setAxisSelectionValue}
           />
         </Command2>
       </>
@@ -344,8 +332,8 @@ const Main = (props: MainWindowProps) => {
       >
         <SelectAxis
           LogAction={LogAction}
-          ref={axisSelection}
-          selectionValue={axisSelectionValue}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
         />
       </Command7>
     )
@@ -363,8 +351,8 @@ const Main = (props: MainWindowProps) => {
         >
           <SelectAxis
             LogAction={LogAction}
-            ref={axisSelection}
-            selectionValue={axisSelectionValue}
+            axisSelectionValue={axisSelectionValue}
+            setAxisSelectionValue={setAxisSelectionValue}
           />
         </Command8>
       </>
@@ -392,8 +380,8 @@ const Main = (props: MainWindowProps) => {
         >
           <SelectAxis
             LogAction={LogAction}
-            ref={axisSelection}
-            selectionValue={axisSelectionValue}
+            axisSelectionValue={axisSelectionValue}
+            setAxisSelectionValue={setAxisSelectionValue}
           />
         </Command10>
       </>
@@ -589,8 +577,8 @@ const Main = (props: MainWindowProps) => {
       >
         <SelectAxis
           LogAction={LogAction}
-          ref={axisSelection}
-          selectionValue={axisSelectionValue}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
         />
       </Command31>
     )

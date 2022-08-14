@@ -29,7 +29,7 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
   const commandBytes = useRef<CommandBytesType[]>([])
 
   useEffect(() => {
-    if (props.log.includes('0x')) {
+    if (props.log.includes('Sent')) {
       setComponentIsACommand(true)
       const indexOf0x = props.log.indexOf('0x')
       stringTo0x.current = props.log.slice(0, indexOf0x)
