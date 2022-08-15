@@ -192,9 +192,6 @@ export const Command2 = (props: ChaptersPropsType) => {
         </div>
       </div>
       <article className="mb-10 prose prose-slate max-w-full">
-        <h3 className='text-center'>
-          Real-time conversion
-        </h3>
         <ol className="flex">
           <div className="px-5">
             <h4>Position conversion</h4>
