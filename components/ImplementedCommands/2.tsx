@@ -1,5 +1,4 @@
-import { ReactElement, useRef } from 'react'
-import { MotorAxes, MotorAxisType } from '../../servo-engine/motor-axes'
+import { ReactElement, useEffect, useRef, useState } from 'react'
 import {
   RotationsToMicrosteps,
   SecondToTimesteps,
@@ -14,6 +13,94 @@ export const Command2 = (props: ChaptersPropsType) => {
   const minimumNegativePositionValue = -0.0000032
   const minimumPositivePositionValue = 0.0000016
   const minimumPositiveTimeValue = 0.000032
+
+  //#region TIME_CONVERSION
+  const [timeValue, setTimeValue] = useState<number>(0)
+  const [timesteps, setTimestepsValue] = useState<number>(0)
+  const [timestepsHexa, setTimestepsHexaValue] = useState<string>('00000000')
+
+  const onTimeInputBoxChange = () => {
+    if (timeInputBox && timeInputBox.current) {
+      const inputBoxValue = parseFloat(timeInputBox.current.value)
+      if (isNaN(inputBoxValue)) {
+        setTimeValue(0)
+      } else {
+        setTimeValue(inputBoxValue)
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (isNaN(timeValue)) {
+      setTimestepsValue(0)
+    } else {
+      setTimestepsValue(SecondToTimesteps(timeValue))
+    }
+  }, [timeValue])
+
+  useEffect(() => {
+    if (timesteps == 0) {
+      setTimestepsHexaValue('00000000')
+    } else {
+      let rawPayload_ArrayBufferForTime = new ArrayBuffer(4)
+      const viewTime = new DataView(rawPayload_ArrayBufferForTime)
+
+      viewTime.setUint32(0, timesteps, true)
+
+      let rawTimePayload = new Uint8Array(4)
+      rawTimePayload.set([viewTime.getUint8(0)], 0)
+      rawTimePayload.set([viewTime.getUint8(1)], 1)
+      rawTimePayload.set([viewTime.getUint8(2)], 2)
+      rawTimePayload.set([viewTime.getUint8(3)], 3)
+
+      setTimestepsHexaValue(Uint8ArrayToString(rawTimePayload))
+    }
+  }, [timesteps])
+  //#endregion TIME_CONVERSION
+
+  //#region POSITION_CONVERSION
+
+  const [positionValue, setPositionValue] = useState<number>(0)
+  const [microsteps, setMicrostepsValue] = useState<number>(0)
+  const [microstepsHexa, setMicrostepsHexaValue] = useState<string>('00000000')
+
+  const onPositionInputBoxChange = () => {
+    if (positionInputBox && positionInputBox.current) {
+      const inputBoxValue = parseFloat(positionInputBox.current.value)
+      if (isNaN(inputBoxValue)) {
+        setPositionValue(0)
+      } else {
+        setPositionValue(inputBoxValue)
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (isNaN(positionValue)) {
+      setMicrostepsValue(0)
+    } else {
+      setMicrostepsValue(RotationsToMicrosteps(positionValue))
+    }
+  }, [positionValue])
+
+  useEffect(() => {
+    if (microsteps == 0) {
+      setMicrostepsHexaValue('00000000')
+    } else {
+      let rawPayload_ArrayBufferForPosition = new ArrayBuffer(4)
+      const viewPosition = new DataView(rawPayload_ArrayBufferForPosition)
+      viewPosition.setUint32(0, microsteps, true)
+
+      let rawPositionPayload = new Uint8Array(4)
+      rawPositionPayload.set([viewPosition.getUint8(0)], 0)
+      rawPositionPayload.set([viewPosition.getUint8(1)], 1)
+      rawPositionPayload.set([viewPosition.getUint8(2)], 2)
+      rawPositionPayload.set([viewPosition.getUint8(3)], 3)
+
+      setMicrostepsHexaValue(Uint8ArrayToString(rawPositionPayload))
+    }
+  }, [microsteps])
+  //#endregion POSITION_CONVERSION
 
   const trapezoid_move = () => {
     if (
@@ -58,62 +145,10 @@ export const Command2 = (props: ChaptersPropsType) => {
           `WARNING: Minimum value for positive position is ${minimumPositivePositionValue} (one microstep), consider using a larger value`,
         )
       }
-
-      //#region TIME CONVERTION
-      let rawPayload_ArrayBufferForTime = new ArrayBuffer(4)
-      const viewTime = new DataView(rawPayload_ArrayBufferForTime)
-
-      props.LogAction('Step 1: Transforming time to Timesteps, the formula used is: timeInSeconds * 1000000 / 32')
-      props.LogAction('Input: ' + timeValue.toString() + 's')
-      const timesteps = SecondToTimesteps(timeValue)
-      props.LogAction('Output: ' + timesteps.toString() + ' Timesteps')
-
-      viewTime.setUint32(0, timesteps, true)
-
-      props.LogAction(
-        'Step 2: Taking the output from step 1 and transforming it to 32-bit unsigned integer with little-endian fromat...',
-      )
-      props.LogAction('Input: ' + timesteps.toString() + ' Timesteps')
-      let rawTimePayload = new Uint8Array(4)
-      rawTimePayload.set([viewTime.getUint8(0)], 0)
-      rawTimePayload.set([viewTime.getUint8(1)], 1)
-      rawTimePayload.set([viewTime.getUint8(2)], 2)
-      rawTimePayload.set([viewTime.getUint8(3)], 3)
-
-      let textPayloadForTime = Uint8ArrayToString(rawTimePayload)
-      props.LogAction('Output: 0x' + textPayloadForTime)
-      //#endregion
-
-      //#region POSITION CONVERTION
-      let rawPayload_ArrayBufferForPosition = new ArrayBuffer(4)
-      const viewPosition = new DataView(rawPayload_ArrayBufferForPosition)
-
-      props.LogAction('Step 3: Transforming position to Microsteps, the formula used is: rotations * 645120;')
-      props.LogAction('Input: ' + positionValue.toString() + 's')
-      const microsteps = RotationsToMicrosteps(positionValue)
-      props.LogAction('Output: ' + microsteps.toString() + ' Microsteps')
-
-      viewPosition.setUint32(0, microsteps, true)
-
-      props.LogAction(
-        'Step 4: Taking the output from step 3 and transforming it to 32-bit signed integer with little-endian fromat...',
-      )
-      props.LogAction('Input: ' + microsteps.toString() + ' Microsteps')
-
-      let rawPositionPayload = new Uint8Array(4)
-      rawPositionPayload.set([viewPosition.getUint8(0)], 0)
-      rawPositionPayload.set([viewPosition.getUint8(1)], 1)
-      rawPositionPayload.set([viewPosition.getUint8(2)], 2)
-      rawPositionPayload.set([viewPosition.getUint8(3)], 3)
-      let textPayloadForPosition = Uint8ArrayToString(rawPositionPayload)
-      props.LogAction('Output: 0x' + textPayloadForPosition)
-      //#endregion
-
       const rawData = props.constructCommand(
         selectedAxis,
-        textPayloadForPosition + textPayloadForTime,
+        microstepsHexa + timestepsHexa,
       )
-      props.LogAction("Constructing the command using the output from step 2 and 4 as the payload of the command...")
       props.sendDataToSerialPort(rawData)
     }
   }
@@ -122,18 +157,30 @@ export const Command2 = (props: ChaptersPropsType) => {
       <div className="w-full text-center mb-5">
         <div className="flex justify-center">
           {props.children}
-          <input
-            ref={positionInputBox}
-            type="number"
-            placeholder="Position (rotations)"
-            className="input input-bordered basis-1/2  max-w-xs input-sm mr-8"
-          />
-          <input
-            ref={timeInputBox}
-            type="number"
-            placeholder="Time limit (s)"
-            className="input input-bordered basis-1/2  max-w-xs input-sm mr-8"
-          />
+          <div
+            className="tooltip tooltip-secondary"
+            data-tip="Check out below the conversion in real-time!"
+          >
+            <input
+              ref={positionInputBox}
+              onChange={onPositionInputBoxChange}
+              type="number"
+              placeholder="Position (rotations)"
+              className="input input-bordered basis-1/2  max-w-xs input-sm mr-8"
+            />
+          </div>
+          <div
+            className="tooltip tooltip-secondary"
+            data-tip="Check out below the conversion in real-time!"
+          >
+            <input
+              ref={timeInputBox}
+              onChange={onTimeInputBoxChange}
+              type="number"
+              placeholder="Time limit (s)"
+              className="input input-bordered basis-1/2  max-w-xs input-sm mr-8"
+            />
+          </div>
           <div className="tooltip tooltip-secondary" data-tip="Let's move!">
             <button
               className="btn btn-primary btn-sm flex-col"
@@ -144,6 +191,51 @@ export const Command2 = (props: ChaptersPropsType) => {
           </div>
         </div>
       </div>
+      <article className="mb-10 prose prose-slate max-w-full">
+        <h3 className='text-center'>
+          Real-time conversion
+        </h3>
+        <ol className="flex">
+          <div className="px-5">
+            <h4>Position conversion</h4>
+            <li>
+              Transforming position to Microsteps, the formula used is:
+              Microsteps = rotations * 645120
+              <br></br>
+              {`Input: ${positionValue.toString()} rotations`}
+              <br></br>
+              {`Output: ${microsteps.toString()} Microsteps`}
+            </li>
+            <li>
+              Taking the output from step 3 and transforming it to 32-bit signed
+              integer with little-endian fromat
+              <br></br>
+              {`Input: ${microsteps.toString()} Microsteps`}
+              <br></br>
+              {`Output: 0x${microstepsHexa}`}
+            </li>{' '}
+          </div>
+          <div className="px-5">
+            <h4>Time conversion</h4>
+            <li>
+              Transforming time to Timesteps, the formula used is: Timesteps =
+              timeInSeconds * 1000000 / 32
+              <br></br>
+              {`Input: ${timeValue.toString()}s`}
+              <br></br>
+              {`Output: ${timesteps.toString()} Timesteps`}
+            </li>
+            <li>
+              Taking the output from step 1 and transforming it to 32-bit
+              unsigned integer with little-endian fromat
+              <br></br>
+              {`Input: ${timesteps.toString()} Timesteps`}
+              <br></br>
+              {`Output: 0x${timestepsHexa}`}
+            </li>
+          </div>
+        </ol>
+      </article>
     </>
   )
 }
