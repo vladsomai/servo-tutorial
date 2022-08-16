@@ -273,7 +273,7 @@ export const Command30 = (props: ChaptersPropsType) => {
               {`Output: ${upperMicrosteps.toString()} Microsteps`}
             </li>
             <li>
-              Taking the output from step 1 and transforming it to 32-bit signed
+              Taking the output from step 3 and transforming it to 32-bit signed
               integer with little-endian fromat
               <br></br>
               {`Input: ${upperMicrosteps.toString()} Microsteps`}
