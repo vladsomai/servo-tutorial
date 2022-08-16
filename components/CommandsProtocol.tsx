@@ -113,9 +113,9 @@ const CommandsProtocol = (props: MainWindowProps) => {
             <strong>rotations per minute (RPM)</strong>.
           </li>
           <li>
-            When sending the velocity using the command protocol, we need to send
-            the velocity in communication units and the motor will self convert
-            it to internal units.
+            When sending the velocity using the command protocol, we need to
+            send the velocity in <strong> communication units</strong> and the motor will self
+            convert it to internal units.
           </li>
 
           <li>
@@ -128,13 +128,57 @@ const CommandsProtocol = (props: MainWindowProps) => {
             2^32
             <br></br>
             velocity_internal = velocity_rotations_per_minute / 60 * 645120 /
-            31250 * 2^32 
-            
+            31250 * 2^32
             <br></br>
             velocity_communication = velocity_internal / 2^12
             <br></br>
             Example: 2000 RPM = 33.3333 rotations per second = 2955487255461.88
             internal units = 721554506 to be sent (communications units)
+          </li>
+        </ul>
+
+        <h3>Acceleration</h3>
+        <ul>
+          <li>
+            Acceleration is better described as
+            <strong> angular acceleration.</strong>
+          </li>
+
+          <li>
+            The internal unit for acceleration can be understood as the
+            <strong> velocity change per one timestep</strong> where the
+            velocity is the internal velocity.
+            <br></br>
+            The acceleration is stored in a 64-bit signed integer.
+          </li>
+
+          <li>
+            The SI unit is <strong> radians per second squared</strong>.
+            <br></br>
+            Other well known units are{' '}
+            <strong>rotations per second squared</strong>
+           {' '} and <strong> rotations per minute squared</strong>.
+          </li>
+
+          <li>
+            When sending an acceleration using the command protocol, we need to
+            send the acceleration in <strong> communication units</strong> and
+            the motor will self convert it to internal units.
+          </li>
+
+          <li>
+            The conversions are as follows:
+            <br></br>
+            acceleration_internal = acceleration_radians_per_second_squared / 2
+            / PI * 645120 / 31250^2 * 2^32
+            <br></br>
+            acceleration_internal = acceleration_rotations_per_second_squared *
+            645120 / 31250^2 * 2^32
+            <br></br>
+            acceleration_internal = acceleration_rotations_per_minute_squared /
+            60^2 * 645120 / 31250^2 * 2^32
+            <br></br>
+            acceleration_communication = acceleration_internal / 2^8
           </li>
         </ul>
       </article>

@@ -3,11 +3,12 @@ import {
   RotationsToMicrosteps,
   SecondToTimesteps,
   Uint8ArrayToString,
-  maximumNegativePositionValue,
-  maximumPositivePositionValue,
-  minimumNegativePositionValue,
-  minimumPositivePositionValue,
-  minimumPositiveTimeValue,
+  maximumNegativePosition,
+  maximumPositivePosition,
+  minimumNegativePosition,
+  minimumPositivePosition,
+  minimumPositiveTime,
+  maximumPositiveTime,
 } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 
@@ -23,8 +24,16 @@ export const Command2 = (props: ChaptersPropsType) => {
   const onTimeInputBoxChange = () => {
     if (timeInputBox && timeInputBox.current) {
       const inputBoxValue = parseFloat(timeInputBox.current.value)
-      if (isNaN(inputBoxValue)) {
+
+      if (isNaN(inputBoxValue) || inputBoxValue < 0) {
         setTimeValue(0)
+      } else if (inputBoxValue > maximumPositiveTime) {
+        //max reached
+        props.LogAction(
+          `WARNING: Maximum value for time is ${maximumPositiveTime}, consider using a smaller value!`,
+        )
+        setTimeValue(maximumPositiveTime)
+        timeInputBox.current.value = maximumPositiveTime.toString()
       } else {
         setTimeValue(inputBoxValue)
       }
@@ -32,11 +41,7 @@ export const Command2 = (props: ChaptersPropsType) => {
   }
 
   useEffect(() => {
-    if (isNaN(timeValue)) {
-      setTimestepsValue(0)
-    } else {
-      setTimestepsValue(SecondToTimesteps(timeValue))
-    }
+    setTimestepsValue(SecondToTimesteps(timeValue))
   }, [timeValue])
 
   useEffect(() => {
@@ -68,20 +73,44 @@ export const Command2 = (props: ChaptersPropsType) => {
   const onPositionInputBoxChange = () => {
     if (positionInputBox && positionInputBox.current) {
       const inputBoxValue = parseFloat(positionInputBox.current.value)
+
       if (isNaN(inputBoxValue)) {
         setPositionValue(0)
       } else {
-        setPositionValue(inputBoxValue)
+        if (inputBoxValue < 0) {
+          //negative position
+          if (inputBoxValue > minimumNegativePosition) {
+            setPositionValue(inputBoxValue)
+          } else if (inputBoxValue < maximumNegativePosition) {
+            //max negative reached
+            props.LogAction(
+              `WARNING: Maximum rotation value for negative position is ${maximumNegativePosition}, consider using a larger value!`,
+            )
+            setPositionValue(maximumNegativePosition)
+            positionInputBox.current.value = maximumNegativePosition.toString()
+          } else {
+            setPositionValue(inputBoxValue)
+          }
+        }
+        //positive position
+        else if (inputBoxValue < minimumPositivePosition) {
+          setPositionValue(inputBoxValue)
+        } else if (inputBoxValue > maximumPositivePosition) {
+          //max positive reached
+          props.LogAction(
+            `WARNING: Maximum rotation value for positive position is ${maximumPositivePosition}, consider using a smaller value!`,
+          )
+          setPositionValue(maximumPositivePosition)
+          positionInputBox.current.value = maximumPositivePosition.toString()
+        } else {
+          setPositionValue(inputBoxValue)
+        }
       }
     }
   }
 
   useEffect(() => {
-    if (isNaN(positionValue)) {
-      setMicrostepsValue(0)
-    } else {
-      setMicrostepsValue(RotationsToMicrosteps(positionValue))
-    }
+    setMicrostepsValue(RotationsToMicrosteps(positionValue))
   }, [positionValue])
 
   useEffect(() => {
@@ -121,29 +150,29 @@ export const Command2 = (props: ChaptersPropsType) => {
         return
       }
 
-      if (timeValue < 0) {
+      if (parseFloat(timeInputBox.current.value) < 0) {
         props.LogAction('Time cannot be negative!')
         return
       }
 
-      if (timeValue < minimumPositiveTimeValue) {
+      if (timeValue < minimumPositiveTime) {
         props.LogAction(
-          `WARNING: Time value is considered 0 when it is below ${minimumPositiveTimeValue}, consider using a larger value.`,
+          `WARNING: Time value is considered 0 when it is below ${minimumPositiveTime}, consider using a larger value.`,
         )
       }
 
       if (positionValue < 0) {
-        //check if position is negative
-        if (positionValue > minimumNegativePositionValue) {
+        if (positionValue > minimumNegativePosition) {
           props.LogAction(
-            `WARNING: Minimum value for negative position is ${minimumNegativePositionValue} (one microstep), consider using a smaller value`,
+            `WARNING: Minimum value for negative position is ${minimumNegativePosition} (one microstep), consider using a smaller value.`,
           )
         }
-      } else if (positionValue < minimumPositivePositionValue) {
+      } else if (positionValue < minimumPositivePosition) {
         props.LogAction(
-          `WARNING: Minimum value for positive position is ${minimumPositivePositionValue} (one microstep), consider using a larger value`,
+          `WARNING: Minimum value for positive position is ${minimumPositivePosition} (one microstep), consider using a larger value.`,
         )
       }
+
       const rawData = props.constructCommand(
         selectedAxis,
         microstepsHexa + timestepsHexa,
@@ -196,7 +225,8 @@ export const Command2 = (props: ChaptersPropsType) => {
             <h4>Position conversion</h4>
             <li>
               Transforming position to Microsteps, the formula used is:
-              Microsteps = rotations * 645120
+              <br></br>
+              <i>Microsteps = rotations * 645120</i>
               <br></br>
               {`Input: ${positionValue.toString()} rotations`}
               <br></br>
@@ -204,7 +234,7 @@ export const Command2 = (props: ChaptersPropsType) => {
             </li>
             <li>
               Taking the output from step 1 and transforming it to 32-bit signed
-              integer with little-endian fromat
+              integer with little-endian format
               <br></br>
               {`Input: ${microsteps.toString()} Microsteps`}
               <br></br>
@@ -214,8 +244,9 @@ export const Command2 = (props: ChaptersPropsType) => {
           <div className="px-5">
             <h4>Time conversion</h4>
             <li>
-              Transforming time to Timesteps, the formula used is: Timesteps =
-              timeInSeconds * 1000000 / 32
+              Transforming time to Timesteps, the formula used is:
+              <br></br>
+              <i>Timesteps = timeInSeconds * 1000000 / 32</i>
               <br></br>
               {`Input: ${timeValue.toString()}s`}
               <br></br>

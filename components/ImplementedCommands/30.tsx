@@ -3,10 +3,10 @@ import {
   RotationsToMicrosteps,
   SecondToTimesteps,
   Uint8ArrayToString,
-  maximumNegativePositionValue,
-  maximumPositivePositionValue,
-  minimumNegativePositionValue,
-  minimumPositivePositionValue,
+  maximumNegativePosition,
+  maximumPositivePosition,
+  minimumNegativePosition,
+  minimumPositivePosition,
 } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 
@@ -30,29 +30,29 @@ export const Command30 = (props: ChaptersPropsType) => {
       } else {
         if (inputBoxValue < 0) {
           //negative position
-          if (inputBoxValue > minimumNegativePositionValue) {
+          if (inputBoxValue > minimumNegativePosition) {
             setUpperValue(inputBoxValue)
-          } else if (inputBoxValue < maximumNegativePositionValue) {
+          } else if (inputBoxValue < maximumNegativePosition) {
             //max negative reached
             props.LogAction(
-              `WARNING: Maximum rotation value for negative position is ${maximumNegativePositionValue}, consider using a larger value!`,
+              `WARNING: Maximum rotation value for negative position is ${maximumNegativePosition}, consider using a larger value!`,
             )
-            setUpperValue(maximumNegativePositionValue)
-            upperLimitInputBox.current.value = maximumNegativePositionValue.toString()
+            setUpperValue(maximumNegativePosition)
+            upperLimitInputBox.current.value = maximumNegativePosition.toString()
           } else {
             setUpperValue(inputBoxValue)
           }
         }
         //positive position
-        else if (inputBoxValue < minimumPositivePositionValue) {
+        else if (inputBoxValue < minimumPositivePosition) {
           setUpperValue(inputBoxValue)
-        } else if (inputBoxValue > maximumPositivePositionValue) {
+        } else if (inputBoxValue > maximumPositivePosition) {
           //max positive reached
           props.LogAction(
-            `WARNING: Maximum rotation value for positive position is ${maximumPositivePositionValue}, consider using a smaller value!`,
+            `WARNING: Maximum rotation value for positive position is ${maximumPositivePosition}, consider using a smaller value!`,
           )
-          setUpperValue(maximumPositivePositionValue)
-          upperLimitInputBox.current.value = maximumPositivePositionValue.toString()
+          setUpperValue(maximumPositivePosition)
+          upperLimitInputBox.current.value = maximumPositivePosition.toString()
         } else {
           setUpperValue(inputBoxValue)
         }
@@ -100,29 +100,29 @@ export const Command30 = (props: ChaptersPropsType) => {
       } else {
         if (inputBoxValue < 0) {
           //negative position
-          if (inputBoxValue > minimumNegativePositionValue) {
+          if (inputBoxValue > minimumNegativePosition) {
             setLowerValue(inputBoxValue)
-          } else if (inputBoxValue < maximumNegativePositionValue) {
+          } else if (inputBoxValue < maximumNegativePosition) {
             //max negative reached
             props.LogAction(
-              `WARNING: Maximum rotation value for negative position is ${maximumNegativePositionValue}, consider using a larger value!`,
+              `WARNING: Maximum rotation value for negative position is ${maximumNegativePosition}, consider using a larger value!`,
             )
-            setLowerValue(maximumNegativePositionValue)
-            lowerLimitInputBox.current.value = maximumNegativePositionValue.toString()
+            setLowerValue(maximumNegativePosition)
+            lowerLimitInputBox.current.value = maximumNegativePosition.toString()
           } else {
             setLowerValue(inputBoxValue)
           }
         }
         //positive position
-        else if (inputBoxValue < minimumPositivePositionValue) {
+        else if (inputBoxValue < minimumPositivePosition) {
           setLowerValue(inputBoxValue)
-        } else if (inputBoxValue > maximumPositivePositionValue) {
+        } else if (inputBoxValue > maximumPositivePosition) {
           //max positive reached
           props.LogAction(
-            `WARNING: Maximum rotation value for positive position is ${maximumPositivePositionValue}, consider using a smaller value!`,
+            `WARNING: Maximum rotation value for positive position is ${maximumPositivePosition}, consider using a smaller value!`,
           )
-          setLowerValue(maximumPositivePositionValue)
-          lowerLimitInputBox.current.value = maximumPositivePositionValue.toString()
+          setLowerValue(maximumPositivePosition)
+          lowerLimitInputBox.current.value = maximumPositivePosition.toString()
         } else {
           setLowerValue(inputBoxValue)
         }
@@ -172,26 +172,26 @@ export const Command30 = (props: ChaptersPropsType) => {
       }
 
       if (lowerValue < 0) {
-        if (lowerValue > minimumNegativePositionValue) {
+        if (lowerValue > minimumNegativePosition) {
           props.LogAction(
-            `WARNING: Minimum value for negative position is ${minimumNegativePositionValue} (one microstep), consider using a smaller value.`,
+            `WARNING: Minimum value for negative position is ${minimumNegativePosition} (one microstep), consider using a smaller value.`,
           )
         }
-      } else if (lowerValue < minimumPositivePositionValue) {
+      } else if (lowerValue < minimumPositivePosition) {
         props.LogAction(
-          `WARNING: Minimum value for positive position is ${minimumPositivePositionValue} (one microstep), consider using a larger value.`,
+          `WARNING: Minimum value for positive position is ${minimumPositivePosition} (one microstep), consider using a larger value.`,
         )
       }
 
       if (upperValue < 0) {
-        if (upperValue > minimumNegativePositionValue) {
+        if (upperValue > minimumNegativePosition) {
           props.LogAction(
-            `WARNING: Minimum value for negative position is ${minimumNegativePositionValue} (one microstep), consider using a smaller value.`,
+            `WARNING: Minimum value for negative position is ${minimumNegativePosition} (one microstep), consider using a smaller value.`,
           )
         }
-      } else if (upperValue < minimumPositivePositionValue) {
+      } else if (upperValue < minimumPositivePosition) {
         props.LogAction(
-          `WARNING: Minimum value for positive position is ${minimumPositivePositionValue} (one microstep), consider using a larger value.`,
+          `WARNING: Minimum value for positive position is ${minimumPositivePosition} (one microstep), consider using a larger value.`,
         )
       }
 
@@ -247,7 +247,8 @@ export const Command30 = (props: ChaptersPropsType) => {
             <h4>Lower position conversion</h4>
             <li>
               Transforming position to Microsteps, the formula used is:
-              Microsteps = rotations * 645120
+              <br></br>
+              <i>Microsteps = rotations * 645120</i>
               <br></br>
               {`Input: ${lowerValue.toString()} rotations`}
               <br></br>
@@ -266,7 +267,8 @@ export const Command30 = (props: ChaptersPropsType) => {
             <h4>Upper position conversion</h4>
             <li>
               Transforming position to Microsteps, the formula used is:
-              Microsteps = rotations * 645120
+              <br></br>
+              <i>Microsteps = rotations * 645120</i>
               <br></br>
               {`Input: ${upperValue.toString()} rotations`}
               <br></br>
@@ -274,7 +276,7 @@ export const Command30 = (props: ChaptersPropsType) => {
             </li>
             <li>
               Taking the output from step 3 and transforming it to 32-bit signed
-              integer with little-endian fromat
+              integer with little-endian format
               <br></br>
               {`Input: ${upperMicrosteps.toString()} Microsteps`}
               <br></br>

@@ -207,40 +207,40 @@ export const Uint8ArrayToString = (data: Uint8Array | undefined): string => {
         return ""
 }
 
-// //Input: Int8Array e.g. [0xFF,0xA0,0]
-// //Output: hexString e.g. "FFA000"
-// export const Int8ArrayToString = (data: Int8Array | undefined): string => {
-//     if (data != undefined) {
-//         let hexString = ''
-//         for (let i = 0; i < data.length; i++) {
-//             let prefix = ''
-//             let postfix = ''
-//             if (data[i] <= 0xF) prefix = '0'
-//             else prefix = ''
-
-//             hexString += prefix + data[i].toString(16) + postfix
-//         }
-//         return hexString.toUpperCase();
-//     } else
-//         return ""
-// }
-
-//Input: time in microseconds
-//Output: number timesteps
 export const SecondToTimesteps = (timeInSeconds: number): number => {
     return timeInSeconds * 1000000 / 32;
 }
 
-//Input: rotations
-//Output: number microsteps
 export const RotationsToMicrosteps = (rotations: number): number => {
     return rotations * 645120;
 }
 
-export const minimumNegativePositionValue = -0.0000032
-export const maximumNegativePositionValue = -3328.8126985
-export const minimumPositivePositionValue = 0.0000016
-export const maximumPositivePositionValue = 3328.8126968626
+export const RPM_ToInternalVelocity = (rpm: number): number => {
+    return (rpm / 60) * (645120 / 31250) * (2 ** 32);
+}
 
-export const minimumPositiveTimeValue = 0.000032
-export const maximumPositiveTimeValue = 137438.95344
+export const InternalVelocityToCommVelocity = (internalVelocity: number): number => {
+    return internalVelocity / (2 ** 12)
+}
+
+export const minimumNegativePosition = -0.0000032
+export const maximumNegativePosition = -3328.8126985
+
+export const minimumPositivePosition = 0.0000016
+export const maximumPositivePosition = 3328.8126968626
+
+export const minimumPositiveTime = 0.000032
+export const maximumPositiveTime = 137438.95344
+
+
+export const minimumNegativeVelocity = -0.0000055
+export const maximumNegativeVelocity = -5952.380953
+
+export const minimumPositiveVelocity = 0.0000027
+export const maximumPositiveVelocity = 99.20634916015264*60
+
+// max internal velocity = 8796093018112
+// RPS = internal_velocity / (645120 / 31250) * (2^32)
+// RPS = 8796093018112 / 20.64384 * 4294967296
+// RPS = 99.2063491601526500686766609313
+// MAX_RPM = RPS*60

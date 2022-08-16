@@ -34,6 +34,7 @@ import { Command254 } from './ImplementedCommands/254'
 import { Command32 } from './ImplementedCommands/32'
 import { Command30 } from './ImplementedCommands/30'
 import { Command28 } from './ImplementedCommands/28'
+import { Command3 } from './ImplementedCommands/3'
 
 export type MainWindowProps = {
   currentChapter: number
@@ -306,14 +307,23 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 3)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <>
+      <Command3
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
+        LogAction={LogAction}
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command3>
+    </>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 4)
     currentCommandLayout = (
       <>
