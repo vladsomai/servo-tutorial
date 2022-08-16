@@ -1,7 +1,7 @@
 import { ChaptersPropsType } from './0_1'
 
-export const Command9 = (props: ChaptersPropsType) => {
-  const get_current_time = () => {
+export const Command24 = (props: ChaptersPropsType) => {
+  const execute_command = () => {
     const selectedAxis = props.getAxisSelection()
     if (selectedAxis == '') return
 
@@ -13,17 +13,9 @@ export const Command9 = (props: ChaptersPropsType) => {
       <div className="w-full text-center mb-5">
         <div className="flex justify-center">
           {props.children}
-          <div
-            className="tooltip tooltip-secondary"
-            data-tip="Get current time!"
-          >
-            <button
-              className="btn btn-primary btn-sm"
-              onClick={get_current_time}
-            >
-              execute
-            </button>
-          </div>
+          <button className="btn btn-primary btn-sm" onClick={execute_command}>
+            execute
+          </button>
         </div>
       </div>
     </>

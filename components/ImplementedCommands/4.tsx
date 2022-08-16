@@ -39,7 +39,7 @@ export const Command4 = (props: ChaptersPropsType) => {
           />
           <div
             className="tooltip tooltip-secondary"
-            data-tip="Test your connection to the motor using this button!"
+            data-tip="Let's move!"
           >
             <button
               className="btn btn-primary btn-sm"

@@ -236,3 +236,11 @@ export const SecondToTimesteps = (timeInSeconds: number): number => {
 export const RotationsToMicrosteps = (rotations: number): number => {
     return rotations * 645120;
 }
+
+export const minimumNegativePositionValue = -0.0000032
+export const maximumNegativePositionValue = -3328.8126985
+export const minimumPositivePositionValue = 0.0000016
+export const maximumPositivePositionValue = 3328.8126968626
+
+export const minimumPositiveTimeValue = 0.000032
+export const maximumPositiveTimeValue = 137438.95344

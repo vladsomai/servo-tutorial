@@ -14,6 +14,26 @@ import { Command8 } from './ImplementedCommands/8'
 import { Command4 } from './ImplementedCommands/4'
 import { Command2 } from './ImplementedCommands/2'
 import { Command7 } from './ImplementedCommands/7'
+import { Command6 } from './ImplementedCommands/6'
+import { Command9 } from './ImplementedCommands/9'
+import { Command11 } from './ImplementedCommands/11'
+import { Command12 } from './ImplementedCommands/12'
+import { Command13 } from './ImplementedCommands/13'
+import { Command15 } from './ImplementedCommands/15'
+import { Command16 } from './ImplementedCommands/16'
+import { Command17 } from './ImplementedCommands/17'
+import { Command18 } from './ImplementedCommands/18'
+import { Command20 } from './ImplementedCommands/20'
+import { Command22 } from './ImplementedCommands/22'
+import { Command23 } from './ImplementedCommands/23'
+import { Command24 } from './ImplementedCommands/24'
+import { Command25 } from './ImplementedCommands/25'
+import { Command27 } from './ImplementedCommands/27'
+import { Command33 } from './ImplementedCommands/33'
+import { Command254 } from './ImplementedCommands/254'
+import { Command32 } from './ImplementedCommands/32'
+import { Command30 } from './ImplementedCommands/30'
+import { Command28 } from './ImplementedCommands/28'
 
 export type MainWindowProps = {
   currentChapter: number
@@ -313,14 +333,21 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 6)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command6
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command6>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 7)
     currentCommandLayout = (
       <Command7
@@ -358,14 +385,21 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 9)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command9
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command9>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 10)
     currentCommandLayout = (
       <>
@@ -387,32 +421,53 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 11)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command11
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command11>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 12)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command12
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command12>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 13)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command13
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command13>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 14)
     currentCommandLayout = (
       <>
@@ -423,41 +478,69 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 15)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command15
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command15>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 16)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command16
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command16>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 17)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command17
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command17>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 18)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command18
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command18>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 19)
     currentCommandLayout = (
       <>
@@ -468,14 +551,21 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 20)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command20
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command20>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 21)
     currentCommandLayout = (
       <>
@@ -486,41 +576,69 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 22)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command22
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command22>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 23)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command23
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command23>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 24)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command24
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command24>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 25)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command25
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command25>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 26)
     currentCommandLayout = (
       <>
@@ -531,23 +649,37 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 27)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command27
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command27>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 28)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command28
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command28>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 29)
     currentCommandLayout = (
       <>
@@ -558,14 +690,21 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 30)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command30
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command30>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 31)
     currentCommandLayout = (
       <Command31
@@ -583,32 +722,53 @@ const Main = (props: MainWindowProps) => {
       </Command31>
     )
   else if (props.currentCommandDictionary.CommandEnum == 32)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command32
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command32>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 33)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command33
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command33>
+  )
   else if (props.currentCommandDictionary.CommandEnum == 254)
-    currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
-    )
+  currentCommandLayout = (
+    <Command254
+      {...props}
+      getAxisSelection={getAxisSelection}
+      sendDataToSerialPort={sendDataToSerialPort}
+      LogAction={LogAction}
+      constructCommand={constructCommand}
+    >
+      <SelectAxis
+        LogAction={LogAction}
+        axisSelectionValue={axisSelectionValue}
+        setAxisSelectionValue={setAxisSelectionValue}
+      />
+    </Command254>
+  )
   return (
     <>
       <div className="w-full bg-base-300 rounded-box h-screen-80 overflow-show-scroll relative">

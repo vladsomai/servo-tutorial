@@ -1,7 +1,7 @@
 import { ChaptersPropsType } from './0_1'
 
-export const Command9 = (props: ChaptersPropsType) => {
-  const get_current_time = () => {
+export const Command6 = (props: ChaptersPropsType) => {
+  const start_calibration = () => {
     const selectedAxis = props.getAxisSelection()
     if (selectedAxis == '') return
 
@@ -15,11 +15,11 @@ export const Command9 = (props: ChaptersPropsType) => {
           {props.children}
           <div
             className="tooltip tooltip-secondary"
-            data-tip="Get current time!"
+            data-tip="Start calibration!"
           >
             <button
               className="btn btn-primary btn-sm"
-              onClick={get_current_time}
+              onClick={start_calibration}
             >
               execute
             </button>

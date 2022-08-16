@@ -3,16 +3,17 @@ import {
   RotationsToMicrosteps,
   SecondToTimesteps,
   Uint8ArrayToString,
+  maximumNegativePositionValue,
+  maximumPositivePositionValue,
+  minimumNegativePositionValue,
+  minimumPositivePositionValue,
+  minimumPositiveTimeValue,
 } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 
 export const Command2 = (props: ChaptersPropsType) => {
   const positionInputBox = useRef<HTMLInputElement | null>(null)
   const timeInputBox = useRef<HTMLInputElement | null>(null)
-
-  const minimumNegativePositionValue = -0.0000032
-  const minimumPositivePositionValue = 0.0000016
-  const minimumPositiveTimeValue = 0.000032
 
   //#region TIME_CONVERSION
   const [timeValue, setTimeValue] = useState<number>(0)
@@ -119,8 +120,6 @@ export const Command2 = (props: ChaptersPropsType) => {
         props.LogAction('Please enter both inputs.')
         return
       }
-      const positionValue = parseFloat(positionInputBox.current.value)
-      const timeValue = parseFloat(timeInputBox.current.value)
 
       if (timeValue < 0) {
         props.LogAction('Time cannot be negative!')
@@ -186,7 +185,7 @@ export const Command2 = (props: ChaptersPropsType) => {
               className="btn btn-primary btn-sm flex-col"
               onClick={trapezoid_move}
             >
-              calculate &<span>execute</span>
+              execute
             </button>
           </div>
         </div>
@@ -204,7 +203,7 @@ export const Command2 = (props: ChaptersPropsType) => {
               {`Output: ${microsteps.toString()} Microsteps`}
             </li>
             <li>
-              Taking the output from step 3 and transforming it to 32-bit signed
+              Taking the output from step 1 and transforming it to 32-bit signed
               integer with little-endian fromat
               <br></br>
               {`Input: ${microsteps.toString()} Microsteps`}
@@ -223,7 +222,7 @@ export const Command2 = (props: ChaptersPropsType) => {
               {`Output: ${timesteps.toString()} Timesteps`}
             </li>
             <li>
-              Taking the output from step 1 and transforming it to 32-bit
+              Taking the output from step 3 and transforming it to 32-bit
               unsigned integer with little-endian fromat
               <br></br>
               {`Input: ${timesteps.toString()} Timesteps`}
