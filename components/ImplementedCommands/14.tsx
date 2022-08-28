@@ -12,7 +12,7 @@ import {
 } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 
-export const Command4 = (props: ChaptersPropsType) => {
+export const Command14 = (props: ChaptersPropsType) => {
   const positionInputBox = useRef<HTMLInputElement | null>(null)
   const timeInputBox = useRef<HTMLInputElement | null>(null)
 
@@ -132,7 +132,7 @@ export const Command4 = (props: ChaptersPropsType) => {
   }, [microsteps])
   //#endregion POSITION_CONVERSION
 
-  const trapezoid_move = () => {
+  const execute_command = () => {
     if (
       positionInputBox &&
       positionInputBox.current &&
@@ -209,14 +209,12 @@ export const Command4 = (props: ChaptersPropsType) => {
               className="input input-bordered basis-1/2  max-w-xs input-sm mr-8"
             />
           </div>
-          <div className="tooltip tooltip-secondary" data-tip="Let's move!">
-            <button
-              className="btn btn-primary btn-sm flex-col"
-              onClick={trapezoid_move}
-            >
-              execute
-            </button>
-          </div>
+          <button
+            className="btn btn-primary btn-sm flex-col"
+            onClick={execute_command}
+          >
+            execute
+          </button>
         </div>
       </div>
       <article className="mb-10 prose prose-slate max-w-full">

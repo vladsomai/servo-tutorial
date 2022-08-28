@@ -2935,6 +2935,10 @@ body[dir="rtl"] .checkbox:checked,
   margin: 1.5rem;
 }
 
+.m-0 {
+  margin: 0px;
+}
+
 .mr-2 {
   margin-right: 0.5rem;
 }
@@ -3136,6 +3140,14 @@ body[dir="rtl"] .checkbox:checked,
   padding-top: 2.5rem;
 }
 
+.pr-0\.5 {
+  padding-right: 0.125rem;
+}
+
+.pr-0 {
+  padding-right: 0px;
+}
+
 .text-center {
   text-align: center;
 }
@@ -3238,6 +3250,7 @@ body[dir="rtl"] .checkbox:checked,
 
 .overflow-show-scroll{
   overflow: auto;
+  overflow-x: hidden;
 }
 
 .h-screen-10{
@@ -3245,8 +3258,8 @@ body[dir="rtl"] .checkbox:checked,
 }
 
 div::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 7px;
+  height: 7px;
 }
 
 div::-webkit-scrollbar-track {
@@ -3256,8 +3269,7 @@ div::-webkit-scrollbar-track {
 
 div::-webkit-scrollbar-thumb {
   border-radius: 15px;
-  background-color: #1d283a;
-  outline: 1px solid #555;
+  background-color: rgb(51 65 85 / var(--tw-bg-opacity));
 }
 
 input[type="number"] {
@@ -3279,6 +3291,16 @@ input[type=number]::-webkit-outer-spin-button {
 .hover\:bg-red-500:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(239 68 68 / var(--tw-bg-opacity));
+}
+
+.prose-li\:placeholder-cyan-500 :is(:where(li):not(:where([class~="not-prose"] *)))::-moz-placeholder {
+  --tw-placeholder-opacity: 1;
+  color: rgb(6 182 212 / var(--tw-placeholder-opacity));
+}
+
+.prose-li\:placeholder-cyan-500 :is(:where(li):not(:where([class~="not-prose"] *)))::placeholder {
+  --tw-placeholder-opacity: 1;
+  color: rgb(6 182 212 / var(--tw-placeholder-opacity));
 }
 
 @media (min-width: 768px) {

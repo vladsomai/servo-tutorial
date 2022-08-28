@@ -149,7 +149,7 @@ const CommandsProtocol = (props: MainWindowProps) => {
             <strong> velocity change per one timestep</strong> where the
             velocity is the internal velocity.
             <br></br>
-            The acceleration is stored in a 64-bit signed integer.
+            The acceleration is stored in a 32-bit signed integer.
           </li>
 
           <li>

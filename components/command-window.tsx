@@ -77,10 +77,15 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
   //   }while(!breakFound)
 
   // },[props.currentCommandDictionary.CommandString])
-
   return (
     <>
-      <div className={`w-full overflow-show-scroll pt-10 px-5 ${props.currentCommandDictionary.CommandEnum===100?" h-full ":" h-3/6 "}`}>
+      <div
+        className={`w-full overflow-show-scroll pt-10 px-5 ${
+          props.currentCommandDictionary.CommandEnum === 100
+            ? ' h-full '
+            : ' h-3/6 '
+        }`}
+      >
         {props.currentCommandDictionary.CommandEnum !== 100 ? (
           <div className="mb-5">
             <p className="text-center mb-5 text-2xl">
@@ -90,17 +95,39 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
               <b>Description:&nbsp;</b>{' '}
               {props.currentCommandDictionary.Description}
             </p>
-            <p className="mb-2">
-              <b>Input:&nbsp;</b>
-              {props.currentCommandDictionary.Input}
-            </p>
+            <article className="prose w-full max-w-full">
+                <h4>Inputs:&nbsp;</h4>
+                <ol className="m-0">
+                  {typeof props.currentCommandDictionary.Input == 'string' ? (
+                    <li>
+                      <p>{props.currentCommandDictionary.Input}</p>
+                    </li>
+                  ) : (
+                    props.currentCommandDictionary.Input.map((item) => {
+                      return (
+                        <li
+                          key={props.currentCommandDictionary.Input.indexOf(
+                            item,
+                          )}
+                        >
+                          <p>{item}</p>
+                        </li>
+                      )
+                    })
+                  )}
+                </ol>
+            </article>
+
             <p className="mb-2">
               <b>Output:&nbsp;</b>
               {props.currentCommandDictionary.Output}
             </p>
           </div>
         ) : (
-          <CommandsProtocol currentCommandDictionary={props.currentCommandDictionary} currentChapter={props.currentChapter}/>
+          <CommandsProtocol
+            currentCommandDictionary={props.currentCommandDictionary}
+            currentChapter={props.currentChapter}
+          />
         )}
 
         {props.children}

@@ -64,7 +64,6 @@ export const Command3 = (props: ChaptersPropsType) => {
 
   useEffect(() => {
     setCommVelocity(InternalVelocityToCommVelocity(internalVelocity))
-    // setCommVelocity(InternalVelocityToCommVelocity(8796093018112))
   }, [internalVelocity])
 
   useEffect(() => {
@@ -149,7 +148,7 @@ export const Command3 = (props: ChaptersPropsType) => {
               Taking the output from step 1 and transforming it to communication
               velocity:
               <br></br>
-              <i>Communication_velocity = Internal_velocity / (2 ** 12)</i>
+              <i>Communication_velocity = Internal_velocity / (2^12)</i>
               <br></br>
               {`Input: ${internalVelocity.toString()} Internal velocity`}
               <br></br>

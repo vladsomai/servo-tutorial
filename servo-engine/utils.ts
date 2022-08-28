@@ -207,14 +207,28 @@ export const Uint8ArrayToString = (data: Uint8Array | undefined): string => {
         return ""
 }
 
-export const SecondToTimesteps = (timeInSeconds: number): number => {
-    return timeInSeconds * 1000000 / 32;
-}
-
+//#region Position
 export const RotationsToMicrosteps = (rotations: number): number => {
     return rotations * 645120;
 }
 
+export const minimumNegativePosition = -0.0000032
+export const maximumNegativePosition = -3328.8126985
+
+export const minimumPositivePosition = 0.0000016
+export const maximumPositivePosition = 3328.8126968626
+//#endregion Postion
+
+//#region Time
+export const SecondToTimesteps = (timeInSeconds: number): number => {
+    return timeInSeconds * 1000000 / 32;
+}
+
+export const minimumPositiveTime = 0.000032
+export const maximumPositiveTime = 137438.95344
+//#endregion Time
+
+//#region Velocity
 export const RPM_ToInternalVelocity = (rpm: number): number => {
     return (rpm / 60) * (645120 / 31250) * (2 ** 32);
 }
@@ -223,24 +237,41 @@ export const InternalVelocityToCommVelocity = (internalVelocity: number): number
     return internalVelocity / (2 ** 12)
 }
 
-export const minimumNegativePosition = -0.0000032
-export const maximumNegativePosition = -3328.8126985
-
-export const minimumPositivePosition = 0.0000016
-export const maximumPositivePosition = 3328.8126968626
-
-export const minimumPositiveTime = 0.000032
-export const maximumPositiveTime = 137438.95344
-
-
 export const minimumNegativeVelocity = -0.0000055
 export const maximumNegativeVelocity = -5952.380953
 
 export const minimumPositiveVelocity = 0.0000027
-export const maximumPositiveVelocity = 99.20634916015264*60
+export const maximumPositiveVelocity = 99.20634916015264 * 60
 
 // max internal velocity = 8796093018112
-// RPS = internal_velocity / (645120 / 31250) * (2^32)
-// RPS = 8796093018112 / 20.64384 * 4294967296
-// RPS = 99.2063491601526500686766609313
-// MAX_RPM = RPS*60
+// MAX_RPS = internal_velocity / (645120 / 31250) * (2^32)
+// MAX_RPS = 8796093018112 / 20.64384 * 4294967296
+// MAX_RPS = 99.2063491601526500686766609313
+// MAX_RPM = MAX_RPS * 60
+//#endregion Velocity
+
+//#region Acceleration
+export const RPMSquared_ToInternalAcceleration = (rpmsq: number): number => {
+    return (rpmsq/60**2) * (645120 / 31250**2) * (2 ** 32);
+}
+
+export const InternalAccelerationToCommAcceleration = (internalAcceleration: number): number => {
+    return internalAcceleration / (2 ** 8)
+}
+
+export const minimumNegativeAcceleration = -0.0000055
+export const maximumNegativeAcceleration = -697544642.86
+
+export const minimumPositiveAcceleration = 0.4
+export const maximumPositiveAcceleration = 697544642.54
+//export const maximumPositiveAcceleration = 193762.40071 * 60**2
+
+//the following computation is done to find the maximum positive acceleration for rotations/second sqared
+//it will then be used to transform it to RPM^2
+// max internal acc = 549755813632 = x * (645120 / 31250**2) * (2 ** 32);
+// MAX_ACC_RPS^2 = (internal_acc) / (645120 / 31250^2) * (2^32))
+// MAX_ACC_RPS^2 = (internal_acc) / (645120 / 976562500) * (4294967296))
+// MAX_ACC_RPS^2 = (internal_acc) / (0.00066060288) * (4294967296))
+// MAX_ACC_RPS^2 = (internal_acc) / 2,837,267.76524341248
+
+//#endregion Acceleration

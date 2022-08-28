@@ -20,6 +20,7 @@
 
 .overflow-show-scroll{
   overflow: auto;
+  overflow-x: hidden;
 }
 
 .h-screen-10{
@@ -27,8 +28,8 @@
 }
 
 div::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 7px;
+  height: 7px;
 }
 
 div::-webkit-scrollbar-track {
@@ -39,8 +40,7 @@ div::-webkit-scrollbar-track {
 
 div::-webkit-scrollbar-thumb {
   border-radius: 15px;
-  background-color: #1d283a;
-  outline: 1px solid #555;
+  background-color: rgb(51 65 85 / var(--tw-bg-opacity));
 }
 
 input[type="number"] {

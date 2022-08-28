@@ -1,19 +1,21 @@
 import { ReactElement, useEffect, useRef, useState } from 'react'
+import { MotorAxes, MotorAxisType } from '../../servo-engine/motor-axes'
 import {
-  RotationsToMicrosteps,
+  InternalVelocityToCommVelocity,
   SecondToTimesteps,
+  maximumNegativeVelocity,
+  maximumPositiveVelocity,
+  minimumNegativeVelocity,
+  minimumPositiveVelocity,
+  RPM_ToInternalVelocity,
   Uint8ArrayToString,
-  maximumNegativePosition,
-  maximumPositivePosition,
-  minimumNegativePosition,
-  minimumPositivePosition,
-  minimumPositiveTime,
   maximumPositiveTime,
+  minimumPositiveTime,
 } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 
-export const Command4 = (props: ChaptersPropsType) => {
-  const positionInputBox = useRef<HTMLInputElement | null>(null)
+export const Command26 = (props: ChaptersPropsType) => {
+  const velocityInputBox = useRef<HTMLInputElement | null>(null)
   const timeInputBox = useRef<HTMLInputElement | null>(null)
 
   //#region TIME_CONVERSION
@@ -64,78 +66,81 @@ export const Command4 = (props: ChaptersPropsType) => {
   }, [timesteps])
   //#endregion TIME_CONVERSION
 
-  //#region POSITION_CONVERSION
+  //#region VELOCITY_CONVERSION
+  const [velocityRPM, setVelocityRPM] = useState<number>(0)
+  const [internalVelocity, setInternalVelocity] = useState<number>(0)
+  const [commVelocity, setCommVelocity] = useState<number>(0)
+  const [commVelocityHexa, setCommVelocityHexa] = useState<string>('00000000')
 
-  const [positionValue, setPositionValue] = useState<number>(0)
-  const [microsteps, setMicrostepsValue] = useState<number>(0)
-  const [microstepsHexa, setMicrostepsHexaValue] = useState<string>('00000000')
-
-  const onPositionInputBoxChange = () => {
-    if (positionInputBox && positionInputBox.current) {
-      const inputBoxValue = parseFloat(positionInputBox.current.value)
-
+  const onVelocityInputBoxChange = () => {
+    if (velocityInputBox && velocityInputBox.current) {
+      const inputBoxValue = parseFloat(velocityInputBox.current.value)
       if (isNaN(inputBoxValue)) {
-        setPositionValue(0)
+        setVelocityRPM(0)
       } else {
         if (inputBoxValue < 0) {
-          //negative position
-          if (inputBoxValue > minimumNegativePosition) {
-            setPositionValue(inputBoxValue)
-          } else if (inputBoxValue < maximumNegativePosition) {
+          //negative Velocity
+          if (inputBoxValue > minimumNegativeVelocity) {
+            setVelocityRPM(inputBoxValue)
+          } else if (inputBoxValue < maximumNegativeVelocity) {
             //max negative reached
             props.LogAction(
-              `WARNING: Maximum rotation value for negative position is ${maximumNegativePosition}, consider using a larger value!`,
+              `WARNING: Maximum value for negative velocity is ${maximumNegativeVelocity}, consider using a larger value!`,
             )
-            setPositionValue(maximumNegativePosition)
-            positionInputBox.current.value = maximumNegativePosition.toString()
+            setVelocityRPM(maximumNegativeVelocity)
+            velocityInputBox.current.value = maximumNegativeVelocity.toString()
           } else {
-            setPositionValue(inputBoxValue)
+            setVelocityRPM(inputBoxValue)
           }
         }
-        //positive position
-        else if (inputBoxValue < minimumPositivePosition) {
-          setPositionValue(inputBoxValue)
-        } else if (inputBoxValue > maximumPositivePosition) {
+        //positive Velocity
+        else if (inputBoxValue < minimumPositiveVelocity) {
+          setVelocityRPM(inputBoxValue)
+        } else if (inputBoxValue >= maximumPositiveVelocity) {
           //max positive reached
           props.LogAction(
-            `WARNING: Maximum rotation value for positive position is ${maximumPositivePosition}, consider using a smaller value!`,
+            `WARNING: Maximum value for positive velocity is ${maximumPositiveVelocity}, consider using a smaller value!`,
           )
-          setPositionValue(maximumPositivePosition)
-          positionInputBox.current.value = maximumPositivePosition.toString()
+          setVelocityRPM(maximumPositiveVelocity)
+          velocityInputBox.current.value = maximumPositiveVelocity.toString()
         } else {
-          setPositionValue(inputBoxValue)
+          setVelocityRPM(inputBoxValue)
         }
       }
     }
   }
 
   useEffect(() => {
-    setMicrostepsValue(RotationsToMicrosteps(positionValue))
-  }, [positionValue])
+    setInternalVelocity(RPM_ToInternalVelocity(velocityRPM))
+  }, [velocityRPM])
 
   useEffect(() => {
-    if (microsteps == 0) {
-      setMicrostepsHexaValue('00000000')
+    setCommVelocity(InternalVelocityToCommVelocity(internalVelocity))
+  }, [internalVelocity])
+
+  useEffect(() => {
+    if (commVelocity == 0) {
+      setCommVelocityHexa('00000000')
     } else {
-      let rawPayload_ArrayBufferForPosition = new ArrayBuffer(4)
-      const viewPosition = new DataView(rawPayload_ArrayBufferForPosition)
-      viewPosition.setUint32(0, microsteps, true)
+      let rawPayload_ArrayBufferForVelocity = new ArrayBuffer(4)
+      const viewVelocity = new DataView(rawPayload_ArrayBufferForVelocity)
+      viewVelocity.setUint32(0, commVelocity, true)
 
-      let rawPositionPayload = new Uint8Array(4)
-      rawPositionPayload.set([viewPosition.getUint8(0)], 0)
-      rawPositionPayload.set([viewPosition.getUint8(1)], 1)
-      rawPositionPayload.set([viewPosition.getUint8(2)], 2)
-      rawPositionPayload.set([viewPosition.getUint8(3)], 3)
+      let rawVelocityPayload = new Uint8Array(4)
+      rawVelocityPayload.set([viewVelocity.getUint8(0)], 0)
+      rawVelocityPayload.set([viewVelocity.getUint8(1)], 1)
+      rawVelocityPayload.set([viewVelocity.getUint8(2)], 2)
+      rawVelocityPayload.set([viewVelocity.getUint8(3)], 3)
 
-      setMicrostepsHexaValue(Uint8ArrayToString(rawPositionPayload))
+      setCommVelocityHexa(Uint8ArrayToString(rawVelocityPayload))
     }
-  }, [microsteps])
-  //#endregion POSITION_CONVERSION
+  }, [commVelocity])
+  //#endregion VELOCITY_CONVERSION
 
-  const trapezoid_move = () => {
+  const execute_command = () => {
     if (
-      positionInputBox &&
-      positionInputBox.current &&
+      velocityInputBox &&
+      velocityInputBox.current &&
       timeInputBox &&
       timeInputBox.current
     ) {
@@ -143,7 +148,7 @@ export const Command4 = (props: ChaptersPropsType) => {
       if (selectedAxis == '') return
 
       if (
-        positionInputBox.current.value == '' ||
+        velocityInputBox.current.value == '' ||
         timeInputBox.current.value == ''
       ) {
         props.LogAction('Please enter both inputs.')
@@ -161,21 +166,21 @@ export const Command4 = (props: ChaptersPropsType) => {
         )
       }
 
-      if (positionValue < 0) {
-        if (positionValue > minimumNegativePosition) {
+      if (velocityRPM < 0) {
+        if (velocityRPM > minimumNegativeVelocity) {
           props.LogAction(
-            `WARNING: Minimum value for negative position is ${minimumNegativePosition} (one microstep), consider using a smaller value.`,
+            `WARNING: Minimum value for negative velocity is ${minimumNegativeVelocity}, consider using a smaller value.`,
           )
         }
-      } else if (positionValue < minimumPositivePosition) {
+      } else if (velocityRPM < minimumPositiveVelocity) {
         props.LogAction(
-          `WARNING: Minimum value for positive position is ${minimumPositivePosition} (one microstep), consider using a larger value.`,
+          `WARNING: Minimum value for positive velocity is ${minimumPositiveVelocity}, consider using a larger value.`,
         )
       }
 
       const rawData = props.constructCommand(
         selectedAxis,
-        microstepsHexa + timestepsHexa,
+        commVelocityHexa + timestepsHexa,
       )
       props.sendDataToSerialPort(rawData)
     }
@@ -190,10 +195,10 @@ export const Command4 = (props: ChaptersPropsType) => {
             data-tip="Check out below the conversion in real-time!"
           >
             <input
-              ref={positionInputBox}
-              onChange={onPositionInputBoxChange}
+              ref={velocityInputBox}
+              onChange={onVelocityInputBoxChange}
               type="number"
-              placeholder="Position (rotations)"
+              placeholder="Velocity (RPM)"
               className="input input-bordered basis-1/2  max-w-xs input-sm mr-8"
             />
           </div>
@@ -209,37 +214,45 @@ export const Command4 = (props: ChaptersPropsType) => {
               className="input input-bordered basis-1/2  max-w-xs input-sm mr-8"
             />
           </div>
-          <div className="tooltip tooltip-secondary" data-tip="Let's move!">
-            <button
-              className="btn btn-primary btn-sm flex-col"
-              onClick={trapezoid_move}
-            >
-              execute
-            </button>
-          </div>
+          <button className="btn btn-primary btn-sm" onClick={execute_command}>
+            execute command
+          </button>
         </div>
       </div>
+
       <article className="mb-10 prose prose-slate max-w-full">
         <ol className="flex">
           <div className="px-5">
-            <h4>Position conversion</h4>
+            <h4>Velocity conversion</h4>
             <li>
-              Transforming position to Microsteps, the formula used is:
+              Transforming velocity to internal velocity, the formula used is:
               <br></br>
-              <i>Microsteps = rotations * 645120</i>
+              <i>
+                Internal_velocity = (RPM / 60) * (645120 / 31250) * (2 ^ 32)
+              </i>
               <br></br>
-              {`Input: ${positionValue.toString()} rotations`}
+              {`Input: ${velocityRPM.toString()} RPM`}
               <br></br>
-              {`Output: ${microsteps.toString()} Microsteps`}
+              {`Output: ${internalVelocity.toString()} Internal velocity`}
             </li>
             <li>
-              Taking the output from step 1 and transforming it to 32-bit signed
+              Taking the output from step 1 and transforming it to communication
+              velocity:
+              <br></br>
+              <i>Communication_velocity = Internal_velocity / (2^12)</i>
+              <br></br>
+              {`Input: ${internalVelocity.toString()} Internal velocity`}
+              <br></br>
+              {`Output: ${commVelocity.toString()} Communication velocity`}
+            </li>{' '}
+            <li>
+              Taking the output from step 2 and transforming it to 32-bit signed
               integer with little-endian format
               <br></br>
-              {`Input: ${microsteps.toString()} Microsteps`}
+              {`Input: ${commVelocity.toString()} Communication velocity`}
               <br></br>
-              {`Output: 0x${microstepsHexa}`}
-            </li>{' '}
+              {`Output: 0x${commVelocityHexa.toString()}`}
+            </li>
           </div>
           <div className="px-5">
             <h4>Time conversion</h4>
@@ -253,7 +266,7 @@ export const Command4 = (props: ChaptersPropsType) => {
               {`Output: ${timesteps.toString()} Timesteps`}
             </li>
             <li>
-              Taking the output from step 3 and transforming it to 32-bit
+              Taking the output from step 4 and transforming it to 32-bit
               unsigned integer with little-endian fromat
               <br></br>
               {`Input: ${timesteps.toString()} Timesteps`}
