@@ -23,30 +23,37 @@ const Log = (props: {
 
   return (
     <>
-      <div className="absolute bottom-0 w-full h-3/6 rounded-box pr-0.5">
-        <div className="mockup-code w-full h-1/6 rounded-t-box rounded-b-none py-5 bg-slate-700">
-          <button
-            className="btn btn-xs absolute bottom-0 right-1 z-10 rounded-b-none"
-            onClick={() => props.clearLogWindow()}
+      <div className="rounded-box mx-2 h-[84vh] mt-2 w-6/12 overflow-auto ">
+        <div className=" mockup-code h-16 w-full rounded-t-box rounded-b-none py-5 bg-slate-700 ">
+          <div
+            className={
+              'tooltip tooltip-ghost absolute bottom-0 right-10 z-10'
+            }
+            data-tip={'Clear log window'}
           >
-            Clear
-          </button>
+            <button
+              className="btn btn-xs rounded-b-none border-0"
+              onClick={() => props.clearLogWindow()}
+            >
+              {'C l e a r'}
+            </button>
+          </div>
           <p className="flex justify-center absolute inset-0 top-6">
             <b>Log Window</b>
           </p>
         </div>
         <div
           ref={logWindow}
-          className=" bg-slate-800 overflow-show-scroll h-5/6 rounded-b-box"
+          className=" bg-slate-800 rounded-b-box h-[91%] overflow-auto px-6 py-3 "
         >
-          <div className="flex flex-col justify-center p-5 text-justify break-word font-mono ">
+          <div className="flex flex-col justify-center text-justify font-mono w-full">
             {props.logs.map((log: LogType) => {
               return (
-                <div className="flex relative" key={log.lineNumber}>
-                  <p className="mr-2 text-gray-500 text-right w-16">
+                <div className="flex " key={log.lineNumber}>
+                  <p className="mr-2 text-gray-500 text-right">
                     {log.lineNumber.toString()}&nbsp;
                   </p>
-                  <LogLineServoCommand {...props.mainWindow} {...log} />
+                  <LogLineServoCommand {...props.mainWindow} {...log}/>
                 </div>
               )
             })}

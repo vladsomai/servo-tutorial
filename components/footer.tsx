@@ -3,7 +3,7 @@ const Footer = () => {
 
   return (
     <footer className="">
-      <p className="text-center pt-10">
+      <p className="h-[5vh] flex justify-center items-center">
         &copy;&nbsp;Tom&apos;s company&nbsp;- {currentDate.getFullYear()}
       </p>
     </footer>

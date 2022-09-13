@@ -40,11 +40,11 @@ export const Command32 = (props: ChaptersPropsType) => {
   return (
     <>
       <div className="w-full text-center mb-5">
-        <div className="flex justify-center">
-          {props.children}
+      <div className="flex flex-col xl:flex-row justify-center items-center">
+          <div className="m-2">{props.children}</div>
           <select
             ref={selectPayloadInputBox}
-            className="select select-bordered select-sm w-full max-w-xs mr-8"
+            className="select select-bordered select-sm max-w-xs m-2"
             defaultValue="Options"
           >
             <option disabled>Options</option>
@@ -52,14 +52,14 @@ export const Command32 = (props: ChaptersPropsType) => {
               <option key={option}>{option}</option>
             ))}
           </select>
+        </div>
 
           <button
-            className="btn btn-primary btn-sm"
+            className="btn btn-primary btn-sm mt-2"
             onClick={capture_hall_sensor}
           >
             execute
           </button>
-        </div>
       </div>
     </>
   )

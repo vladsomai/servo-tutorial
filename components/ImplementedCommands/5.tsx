@@ -18,7 +18,9 @@ export const Command5 = (props: ChaptersPropsType) => {
   const [AccelerationRPM, setAccelerationRPM] = useState<number>(0)
   const [internalAcceleration, setInternalAcceleration] = useState<number>(0)
   const [commAcceleration, setCommAcceleration] = useState<number>(0)
-  const [commAccelerationHexa, setCommAccelerationHexa] = useState<string>('00000000')
+  const [commAccelerationHexa, setCommAccelerationHexa] = useState<string>(
+    '00000000',
+  )
 
   const onAccelerationInputBoxChange = () => {
     if (AccelerationInputBox && AccelerationInputBox.current) {
@@ -63,7 +65,9 @@ export const Command5 = (props: ChaptersPropsType) => {
   }, [AccelerationRPM])
 
   useEffect(() => {
-    setCommAcceleration(InternalAccelerationToCommAcceleration(internalAcceleration))
+    setCommAcceleration(
+      InternalAccelerationToCommAcceleration(internalAcceleration),
+    )
   }, [internalAcceleration])
 
   useEffect(() => {
@@ -71,7 +75,9 @@ export const Command5 = (props: ChaptersPropsType) => {
       setCommAccelerationHexa('00000000')
     } else {
       let rawPayload_ArrayBufferForAcceleration = new ArrayBuffer(4)
-      const viewAcceleration = new DataView(rawPayload_ArrayBufferForAcceleration)
+      const viewAcceleration = new DataView(
+        rawPayload_ArrayBufferForAcceleration,
+      )
       viewAcceleration.setUint32(0, commAcceleration, true)
 
       let rawAccelerationPayload = new Uint8Array(4)
@@ -115,18 +121,27 @@ export const Command5 = (props: ChaptersPropsType) => {
     <>
       <div className="w-full text-center mb-5">
         <div className="flex justify-center">
-          {props.children}
-          <input
-            ref={AccelerationInputBox}
-            onChange={onAccelerationInputBoxChange}
-            type="number"
-            placeholder="Acceleration (RPM^2)"
-            className="input input-bordered basis-1/2  max-w-xs input-sm mr-8"
-          />
-          <button className="btn btn-primary btn-sm" onClick={execute_command}>
-            set max Acceleration
-          </button>
+          <div className="mx-2">{props.children}</div>
+
+          <div
+            className="tooltip tooltip-ghost"
+            data-tip="Check out below the conversion in real-time!"
+          >
+            <input
+              ref={AccelerationInputBox}
+              onChange={onAccelerationInputBoxChange}
+              type="number"
+              placeholder="Acceleration (RPM^2)"
+              className="input input-bordered max-w-xs input-sm mx-2"
+            />
+          </div>
         </div>
+        <button
+          className="btn btn-primary btn-sm mt-4"
+          onClick={execute_command}
+        >
+          set max Acceleration
+        </button>
       </div>
 
       <article className="mb-10 prose prose-slate max-w-full">
@@ -134,10 +149,12 @@ export const Command5 = (props: ChaptersPropsType) => {
           <div className="px-5">
             <h4>Acceleration conversion</h4>
             <li>
-              Transforming acceleration to internal Acceleration, the formula used is:
+              Transforming acceleration to internal Acceleration, the formula
+              used is:
               <br></br>
               <i>
-                Internal_Acceleration = (RPM^2 / 60^2) * (645120 / 31250^2) * (2^32)
+                Internal_Acceleration = (RPM^2 / 60^2) * (645120 / 31250^2) *
+                (2^32)
               </i>
               <br></br>
               {`Input: ${AccelerationRPM.toString()} RPM^2`}

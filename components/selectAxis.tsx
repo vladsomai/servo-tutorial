@@ -22,7 +22,7 @@ const SelectAxis = (props: SelectAxisPropsType) => {
   return (
     <select
       ref={selectionRef}
-      className="select select-bordered select-sm w-full max-w-xs mr-8"
+      className="select select-bordered select-sm max-w-xs"
       defaultValue={props.axisSelectionValue}
       onChange={onSelectionChange}
     >

@@ -115,18 +115,26 @@ export const Command3 = (props: ChaptersPropsType) => {
     <>
       <div className="w-full text-center mb-5">
         <div className="flex justify-center">
-          {props.children}
-          <input
-            ref={velocityInputBox}
-            onChange={onVelocityInputBoxChange}
-            type="number"
-            placeholder="Velocity (RPM)"
-            className="input input-bordered basis-1/2  max-w-xs input-sm mr-8"
-          />
-          <button className="btn btn-primary btn-sm" onClick={execute_command}>
-            set max velocity
-          </button>
+          <div className="mx-2">{props.children}</div>
+          <div
+            className="tooltip tooltip-ghost"
+            data-tip="Check out below the conversion in real-time!"
+          >
+            <input
+              ref={velocityInputBox}
+              onChange={onVelocityInputBoxChange}
+              type="number"
+              placeholder="Velocity (RPM)"
+              className="input input-bordered max-w-xs input-sm mx-2"
+            />
+          </div>
         </div>
+        <button
+          className="btn btn-primary btn-sm mt-4"
+          onClick={execute_command}
+        >
+          set max velocity
+        </button>
       </div>
 
       <article className="mb-10 prose prose-slate max-w-full">

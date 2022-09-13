@@ -1,15 +1,17 @@
 import { useRef, useState, ReactElement, useEffect } from 'react'
 import { MainWindowProps } from './main-window'
 import 'animate.css'
-import CommandsProtocol from './CommandsProtocol'
+import CommandsProtocol from './ImplementedCommands/commands-protocol'
 
 interface CommandWindowProps extends MainWindowProps {
   sendDataToSerialPort: Function
   connectToSerialPort: Function
   disconnectFromSerialPort: Function
   children: ReactElement
+  isConnected: boolean
 }
 const Command = (props: CommandWindowProps, children: ReactElement) => {
+
   const rawCommandInputBox = useRef<HTMLInputElement | null>(null)
   const controlPanelDiv = useRef<HTMLDivElement | null>(null)
   const AvailableBaudrates = useRef<number[]>([
@@ -23,6 +25,9 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
     230400,
   ])
   const [input, setInput] = useState<string>('')
+
+  useEffect(() => {
+  }, [])
 
   const BaudrateSelection = useRef<HTMLSelectElement | null>(null)
   const getBaudrateSelection = (): number => {
@@ -41,83 +46,76 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
     ) as number
   }
 
-  //transition out for the control panel in case client wants
-  // useEffect(() => {
-  //   if (controlPanelDiv && controlPanelDiv.current)
-  //     controlPanelDiv.current.classList.remove('hidden')
-  //   setTimeout(() => {
-  //     if (controlPanelDiv && controlPanelDiv.current) {
-  //       if (!props.showControlPanel)
-  //         controlPanelDiv.current.classList.add('hidden')
-  //     }
-  //   }, 700)
-  // }, [props.showControlPanel])
-
-  //***************************** TODO - THIS WILL SPLIT MULTIPLE INPUTS IN SEPARATE LINES ****************************
-  // useEffect(()=>{
-  //   let inputStr = props.currentCommandDictionary.Input
-  //   const multipleInputs: string[] = [];
-
-  //   let breakFound =false;
-  //   let i=0;
-  //   do
-  //   {
-  //     const indexOfBreak = inputStr.indexOf('\n')
-  //     if(indexOfBreak)
-  //     {
-  //       multipleInputs[i] = inputStr.slice(0,indexOfBreak)
-  //       i++;
-  //       console.log("input contains a break line at: ", indexOfBreak)
-  //       breakFound=true;
-  //     }
-  //     else
-  //     {
-  //       breakFound=false;
-  //     }
-  //   }while(!breakFound)
-
-  // },[props.currentCommandDictionary.CommandString])
   return (
     <>
       <div
-        className={`w-full overflow-show-scroll pt-10 px-5 ${
-          props.currentCommandDictionary.CommandEnum === 100
-            ? ' h-full '
-            : ' h-3/6 '
+        className={`overflow-auto relative px-5 mx-2 ${
+          props.currentCommandDictionary.CommandEnum !== 100
+            ? 'w-6/12'
+            : 'w-full'
         }`}
       >
         {props.currentCommandDictionary.CommandEnum !== 100 ? (
-          <div className="mb-5">
+          <div className="absolute top-4 right-2">
+            {props.isConnected ? (
+              <button
+                className="btn btn-success btn-sm h-[2.3rem] text-md btn-primary hover:opacity-90 border-0 flex flex-col normal-case"
+                onClick={() => {
+                  props.disconnectFromSerialPort()
+                }}
+              >
+                Connected
+                <span className="text-[10px] normal-case">
+                  Press to disconnect
+                </span>
+              </button>
+            ) : (
+              <button
+                className="btn btn-error btn-sm h-[2.3rem] text-md hover:opacity-90 flex flex-col normal-case"
+                onClick={() => {
+                  props.connectToSerialPort()
+                }}
+              >
+                Disconnected
+                <span className="text-[10px] normal-case">
+                  Press to connect
+                </span>
+              </button>
+            )}
+          </div>
+        ) : null}
+        {props.currentCommandDictionary.CommandEnum !== 100 ? (
+          <div className="mb-5 mt-16">
             <p className="text-center mb-5 text-2xl">
               <strong>{props.currentCommandDictionary.CommandString}</strong>
+            </p>{' '}
+            <p className="text-center mb-5 text-2xl">
+              <strong>{props.currentCommandDictionary.CommandEnum}</strong>
             </p>
             <p className="mb-2">
               <b>Description:&nbsp;</b>{' '}
               {props.currentCommandDictionary.Description}
             </p>
             <article className="prose w-full max-w-full">
-                <h4>Inputs:&nbsp;</h4>
-                <ol className="m-0">
-                  {typeof props.currentCommandDictionary.Input == 'string' ? (
-                    <li>
-                      <p>{props.currentCommandDictionary.Input}</p>
-                    </li>
-                  ) : (
-                    props.currentCommandDictionary.Input.map((item) => {
-                      return (
-                        <li
-                          key={props.currentCommandDictionary.Input.indexOf(
-                            item,
-                          )}
-                        >
-                          <p>{item}</p>
-                        </li>
-                      )
-                    })
-                  )}
-                </ol>
+              <h4>Inputs:&nbsp;</h4>
+              <ol className="m-0">
+                {typeof props.currentCommandDictionary.Input == 'string' ? (
+                  <li>
+                    <p>{props.currentCommandDictionary.Input}</p>
+                  </li>
+                ) : (
+                  props.currentCommandDictionary.Input.map((item) => {
+                    return (
+                      <li
+                        key={props.currentCommandDictionary.Input.indexOf(item)}
+                      >
+                        <p>{item}</p>
+                      </li>
+                    )
+                  })
+                )}
+              </ol>
             </article>
-
             <p className="mb-2">
               <b>Output:&nbsp;</b>
               {props.currentCommandDictionary.Output}

@@ -50,34 +50,29 @@ export const Command28 = (props: ChaptersPropsType) => {
   return (
     <>
       <div className="w-full text-center mb-5">
-        <div className="flex justify-center">
-          {props.children}
+      <div className="flex flex-col xl:flex-row justify-center items-center">
+          <div className="m-2">{props.children}</div>
           <input
             ref={maxCurrentInputBox}
             type="text"
             placeholder="Motor current"
-            defaultValue={50}
-            className="input input-bordered basis-1/2  max-w-xs input-sm mr-8"
+            defaultValue={150}
+            className="input input-bordered  max-w-xs input-sm m-2"
           />{' '}
           <input
             ref={regenerationInputBox}
             type="text"
             placeholder="Regeneration current"
-            defaultValue={0}
-            className="input input-bordered basis-1/2  max-w-xs input-sm mr-8"
+            defaultValue={150}
+            className="input input-bordered max-w-xs input-sm m-2"
           />
-          <div
-            className="tooltip tooltip-secondary"
-            data-tip="Test your connection to the motor using this button!"
-          >
-            <button
-              className="btn btn-primary btn-sm"
-              onClick={execute_command}
-            >
-              Execute
-            </button>
-          </div>
         </div>
+        <button
+          className="btn btn-primary btn-sm mt-2"
+          onClick={execute_command}
+        >
+          Execute
+        </button>
       </div>
     </>
   )

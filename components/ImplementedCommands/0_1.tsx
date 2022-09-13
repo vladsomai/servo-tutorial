@@ -21,31 +21,16 @@ export const Command1 = (props: ChaptersPropsType) => {
   return (
     <>
       <div className="w-full text-center mb-5">
-        {props.currentCommandDictionary.CommandEnum == 0 ? (
-          <p className="mb-2">Let&apos;s disable the MOSFETS.</p>
-        ) : (
-          <p className="mb-2">Let&apos;s enable the MOSFETS.</p>
-        )}
-
         <div className="flex justify-center">
-          {props.children}
-          <div
-            className="tooltip tooltip-secondary"
-            data-tip={
-              props.currentCommandDictionary.CommandEnum == 0
-                ? 'This button will create a raw command that disables the MOSFETS on the specified axis'
-                : 'This button will create a raw command that enables the MOSFETS on the specified axis'
-            }
+          <div className="mr-4">{props.children}</div>
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={disable_enable_MOSFETS}
           >
-            <button
-              className="btn btn-primary btn-sm"
-              onClick={disable_enable_MOSFETS}
-            >
-              {props.currentCommandDictionary.CommandEnum == 0
-                ? 'DISABLE MOSFETS'
-                : 'ENABLE MOSFETS'}
-            </button>
-          </div>
+            {props.currentCommandDictionary.CommandEnum == 0
+              ? 'DISABLE MOSFETS'
+              : 'ENABLE MOSFETS'}
+          </button>
         </div>
       </div>
     </>

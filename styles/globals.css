@@ -4,27 +4,14 @@
 
 @layer base {
   html {
-    font-family: 'Mukta', sans-serif;
+    font-family: "Mukta", sans-serif;
   }
 }
 
-.h-screen-80{
-    height: 80vh;
-}
-
-.break-word{
-  word-break: break-word;
-  text-overflow: ellipsis;
-  overflow-x: hidden;
-}
-
-.overflow-show-scroll{
-  overflow: auto;
-  overflow-x: hidden;
-}
-
-.h-screen-10{
-    height: 10vh;
+html {
+  margin-top: 1vh;
+  margin-left: 1vw;
+  margin-right: 1vw;
 }
 
 div::-webkit-scrollbar {
@@ -45,10 +32,10 @@ div::-webkit-scrollbar-thumb {
 
 input[type="number"] {
   -webkit-appearance: textfield;
-     -moz-appearance: textfield;
-          appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
 }

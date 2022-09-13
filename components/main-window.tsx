@@ -39,6 +39,7 @@ import { Command5 } from './ImplementedCommands/5'
 import { Command14 } from './ImplementedCommands/14'
 import { Command19 } from './ImplementedCommands/19'
 import { Command26 } from './ImplementedCommands/26'
+import { Command29, MoveCommand } from './ImplementedCommands/29'
 
 export type MainWindowProps = {
   currentChapter: number
@@ -49,31 +50,33 @@ const Main = (props: MainWindowProps) => {
   const portSer = useRef<SerialPort | null>(null)
   const reader = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null)
   const [logs, setLogs] = useState<LogType[]>([])
+  const currentCommandRecvLength = useRef<number>(0)
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [axisSelectionValue, setAxisSelectionValue] = useState<string>(
     'All axes',
   )
+  const timerHandle = useRef<NodeJS.Timeout>()
+  const receivedPartial = useRef<boolean>(false)
+  const partialData = useRef<string>('')
+
+  //State is lifted up from command 29 to save the state between chapter change
+  const [MoveCommands, setMoveCommands] = useState<MoveCommand[]>([])
 
   const [master_time_start, setMaster_time_start] = useState<number>(0)
   const setMaster_time_startWrapper = (time: number) =>
     setMaster_time_start(time)
-  const logsStaticArr = useRef<LogType[]>([])
   const lineNumber = useRef<number>(0)
   const LogAction = (log: string): void => {
     lineNumber.current++
-    logsStaticArr.current = [
-      ...logsStaticArr.current,
+    setLogs((prev) => [
+      ...prev,
       { lineNumber: lineNumber.current, date: new Date(), log: log },
-    ]
-
-    setLogs(logsStaticArr.current)
+    ])
   }
 
   const clearLogWindow = () => {
-    console.log('log cleared')
-    logsStaticArr.current = []
     lineNumber.current = 0
-    setLogs(logsStaticArr.current)
+    setLogs([])
   }
 
   const connectToSerialPort = async (BaudRate: number = 230400) => {
@@ -113,10 +116,13 @@ const Main = (props: MainWindowProps) => {
           return
         }
       }
-    } else {
-      // LogAction('Disconnecting not possible, you must connect first!')
     }
   }, [])
+
+  useEffect(() => {
+    currentCommandRecvLength.current =
+      props.currentCommandDictionary.ReceiveLength
+  }, [props.currentCommandDictionary])
 
   useEffect(() => {
     return () => {
@@ -166,12 +172,17 @@ const Main = (props: MainWindowProps) => {
       }
 
       let hexString = Uint8ArrayToString(data)
-
       await writer.write(data)
+
       LogAction('Sent: 0x' + hexString.toUpperCase())
+
+      timerHandle.current = setTimeout(() => {
+        LogAction('The command timed out.')
+      }, 1000)
+
       writer.releaseLock()
     } else {
-      LogAction('Sending data not possible, you must connect first!')
+      LogAction('Sending data is not possible, you must connect first!')
     }
   }
 
@@ -190,23 +201,38 @@ const Main = (props: MainWindowProps) => {
                   reader.current.releaseLock()
                   break
                 } else {
-                  LogAction('Received: 0x' + Uint8ArrayToString(value))
+                  clearTimeout(timerHandle.current)
+                  const receivedBytes = Uint8ArrayToString(value)
+                  if (
+                    receivedBytes.length <
+                    currentCommandRecvLength.current * 2
+                  ) {
+                    if (receivedPartial.current) {
+                      LogAction(
+                        'Received: 0x' + partialData.current + receivedBytes,
+                      )
+                      receivedPartial.current = false
+                    } else {
+                      partialData.current = receivedBytes
+                      receivedPartial.current = true
+                    }
+                  } else {
+                    LogAction('Received: 0x' + receivedBytes)
+                  }
                 }
               }
             }
           } catch (err) {
             if (err instanceof Error) {
               LogAction(err!.message)
-              LogAction('Reader is closed')
               reader.current.releaseLock()
               return
             }
-
-            LogAction('Reader is closed')
             reader.current.releaseLock()
             console.log(err)
             return
           } finally {
+            LogAction('Waiting for the serial port to disconnect..')
             await portSer.current.close()
             setIsConnected(false)
             portSer.current = null
@@ -265,9 +291,8 @@ const Main = (props: MainWindowProps) => {
     return finalRawBytes
   }
 
-  const axisSelection = useRef<HTMLSelectElement | null>(null)
   const getAxisSelection = (): string => {
-      return axisSelectionValue
+    return axisSelectionValue
   }
 
   let currentCommandLayout: ReactElement = <></>
@@ -311,45 +336,62 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 3)
-  currentCommandLayout = (
-    <>
-      <Command3
-        {...props}
-        getAxisSelection={getAxisSelection}
-        sendDataToSerialPort={sendDataToSerialPort}
-        LogAction={LogAction}
-        constructCommand={constructCommand}
-      >
-        <SelectAxis
+    currentCommandLayout = (
+      <>
+        <Command3
+          {...props}
+          getAxisSelection={getAxisSelection}
+          sendDataToSerialPort={sendDataToSerialPort}
           LogAction={LogAction}
-          axisSelectionValue={axisSelectionValue}
-          setAxisSelectionValue={setAxisSelectionValue}
-        />
-      </Command3>
-    </>
-  )
+          constructCommand={constructCommand}
+        >
+          <SelectAxis
+            LogAction={LogAction}
+            axisSelectionValue={axisSelectionValue}
+            setAxisSelectionValue={setAxisSelectionValue}
+          />
+        </Command3>
+      </>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 4)
-  currentCommandLayout = (
-    <>
-      <Command4
-        {...props}
-        getAxisSelection={getAxisSelection}
-        sendDataToSerialPort={sendDataToSerialPort}
-        LogAction={LogAction}
-        constructCommand={constructCommand}
-      >
-        <SelectAxis
+    currentCommandLayout = (
+      <>
+        <Command4
+          {...props}
+          getAxisSelection={getAxisSelection}
+          sendDataToSerialPort={sendDataToSerialPort}
           LogAction={LogAction}
-          axisSelectionValue={axisSelectionValue}
-          setAxisSelectionValue={setAxisSelectionValue}
-        />
-      </Command4>
-    </>
-  )
+          constructCommand={constructCommand}
+        >
+          <SelectAxis
+            LogAction={LogAction}
+            axisSelectionValue={axisSelectionValue}
+            setAxisSelectionValue={setAxisSelectionValue}
+          />
+        </Command4>
+      </>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 5)
-  currentCommandLayout = (
-    <>
-      <Command5
+    currentCommandLayout = (
+      <>
+        <Command5
+          {...props}
+          getAxisSelection={getAxisSelection}
+          sendDataToSerialPort={sendDataToSerialPort}
+          LogAction={LogAction}
+          constructCommand={constructCommand}
+        >
+          <SelectAxis
+            LogAction={LogAction}
+            axisSelectionValue={axisSelectionValue}
+            setAxisSelectionValue={setAxisSelectionValue}
+          />
+        </Command5>
+      </>
+    )
+  else if (props.currentCommandDictionary.CommandEnum == 6)
+    currentCommandLayout = (
+      <Command6
         {...props}
         getAxisSelection={getAxisSelection}
         sendDataToSerialPort={sendDataToSerialPort}
@@ -361,25 +403,8 @@ const Main = (props: MainWindowProps) => {
           axisSelectionValue={axisSelectionValue}
           setAxisSelectionValue={setAxisSelectionValue}
         />
-      </Command5>
-    </>
-  )
-  else if (props.currentCommandDictionary.CommandEnum == 6)
-  currentCommandLayout = (
-    <Command6
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
-        LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command6>
-  )
+      </Command6>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 7)
     currentCommandLayout = (
       <Command7
@@ -417,21 +442,21 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 9)
-  currentCommandLayout = (
-    <Command9
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command9
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command9>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command9>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 10)
     currentCommandLayout = (
       <>
@@ -453,165 +478,165 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 11)
-  currentCommandLayout = (
-    <Command11
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command11
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command11>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command11>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 12)
-  currentCommandLayout = (
-    <Command12
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command12
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command12>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command12>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 13)
-  currentCommandLayout = (
-    <Command13
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command13
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command13>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command13>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 14)
-  currentCommandLayout = (
-    <Command14
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command14
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command14>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command14>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 15)
-  currentCommandLayout = (
-    <Command15
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command15
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command15>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command15>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 16)
-  currentCommandLayout = (
-    <Command16
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command16
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command16>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command16>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 17)
-  currentCommandLayout = (
-    <Command17
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command17
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command17>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command17>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 18)
-  currentCommandLayout = (
-    <Command18
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command18
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command18>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command18>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 19)
-  currentCommandLayout = (
-    <Command19
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command19
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command19>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command19>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 20)
-  currentCommandLayout = (
-    <Command20
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command20
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command20>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command20>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 21)
     currentCommandLayout = (
       <>
@@ -622,142 +647,151 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 22)
-  currentCommandLayout = (
-    <Command22
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command22
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command22>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command22>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 23)
-  currentCommandLayout = (
-    <Command23
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command23
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command23>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command23>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 24)
-  currentCommandLayout = (
-    <Command24
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command24
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command24>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command24>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 25)
-  currentCommandLayout = (
-    <Command25
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command25
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command25>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command25>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 26)
-  currentCommandLayout = (
-    <Command26
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command26
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command26>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command26>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 27)
-  currentCommandLayout = (
-    <Command27
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command27
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command27>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command27>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 28)
-  currentCommandLayout = (
-    <Command28
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command28
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command28>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command28>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 29)
     currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
+      <Command29
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
+        LogAction={LogAction}
+        constructCommand={constructCommand}
+        MoveCommands={MoveCommands}
+        setMoveCommands={setMoveCommands}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command29>
     )
   else if (props.currentCommandDictionary.CommandEnum == 30)
-  currentCommandLayout = (
-    <Command30
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command30
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command30>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command30>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 31)
     currentCommandLayout = (
       <Command31
@@ -775,84 +809,62 @@ const Main = (props: MainWindowProps) => {
       </Command31>
     )
   else if (props.currentCommandDictionary.CommandEnum == 32)
-  currentCommandLayout = (
-    <Command32
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command32
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command32>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command32>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 33)
-  currentCommandLayout = (
-    <Command33
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command33
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command33>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command33>
+    )
   else if (props.currentCommandDictionary.CommandEnum == 254)
-  currentCommandLayout = (
-    <Command254
-      {...props}
-      getAxisSelection={getAxisSelection}
-      sendDataToSerialPort={sendDataToSerialPort}
-      LogAction={LogAction}
-      constructCommand={constructCommand}
-    >
-      <SelectAxis
+    currentCommandLayout = (
+      <Command254
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
-        axisSelectionValue={axisSelectionValue}
-        setAxisSelectionValue={setAxisSelectionValue}
-      />
-    </Command254>
-  )
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command254>
+    )
   return (
     <>
-      <div className="w-full bg-base-300 rounded-box h-screen-80 overflow-show-scroll relative pr-0.5">
-        <div className="absolute top-4 right-4">
-          {isConnected ? (
-            <button
-              className="btn btn-success btn-md text-lg hover:bg-green-500 flex flex-col normal-case"
-              onClick={() => {
-                disconnectFromSerialPort()
-              }}
-            >
-              Connected
-              <span className="text-xs normal-case">Press to disconnect</span>
-            </button>
-          ) : (
-            <button
-              className="btn btn-error btn-md text-lg hover:bg-red-500 flex flex-col normal-case"
-              onClick={() => {
-                connectToSerialPort()
-              }}
-            >
-              Disconnected
-              <span className="text-xs normal-case">Press to connect</span>
-            </button>
-          )}
-        </div>
+      <div className="flex w-full bg-base-300 h-[85vh] rounded-box overflow-auto">
         <Command
           {...props}
           sendDataToSerialPort={sendDataToSerialPort}
           connectToSerialPort={connectToSerialPort}
           disconnectFromSerialPort={disconnectFromSerialPort}
+          isConnected={isConnected}
         >
           {currentCommandLayout}
         </Command>

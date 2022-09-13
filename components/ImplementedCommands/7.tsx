@@ -41,10 +41,10 @@ export const Command7 = (props: ChaptersPropsType) => {
     <>
       <div className="w-full text-center mb-5">
         <div className="flex justify-center">
-          {props.children}
+          <div className="m-2">{props.children}</div>
           <select
             ref={selectPayloadInputBox}
-            className="select select-bordered select-sm w-full max-w-xs mr-8"
+            className="select select-bordered select-sm  max-w-xs m-2"
             defaultValue="Select data to capture"
           >
             <option disabled>Select data to capture</option>
@@ -52,18 +52,13 @@ export const Command7 = (props: ChaptersPropsType) => {
               <option key={option}>{option}</option>
             ))}
           </select>
-          <div
-            className="tooltip tooltip-secondary"
-            data-tip="Capture data!"
-          >
-            <button
-              className="btn btn-primary btn-sm"
-              onClick={capture_hall_sensor}
-            >
-              execute
-            </button>
-          </div>
         </div>
+        <button
+          className="btn btn-primary btn-sm mt-4"
+          onClick={capture_hall_sensor}
+        >
+          execute
+        </button>
       </div>
     </>
   )

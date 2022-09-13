@@ -183,10 +183,10 @@ export const Command4 = (props: ChaptersPropsType) => {
   return (
     <>
       <div className="w-full text-center mb-5">
-        <div className="flex justify-center">
-          {props.children}
+        <div className="flex flex-col xl:flex-row justify-center items-center">
+          <div className="m-2">{props.children}</div>
           <div
-            className="tooltip tooltip-secondary"
+            className="tooltip tooltip-ghost"
             data-tip="Check out below the conversion in real-time!"
           >
             <input
@@ -194,11 +194,11 @@ export const Command4 = (props: ChaptersPropsType) => {
               onChange={onPositionInputBoxChange}
               type="number"
               placeholder="Position (rotations)"
-              className="input input-bordered basis-1/2  max-w-xs input-sm mr-8"
+              className="input input-bordered basis-1/2  max-w-xs input-sm m-2"
             />
           </div>
           <div
-            className="tooltip tooltip-secondary"
+            className="tooltip tooltip-ghost"
             data-tip="Check out below the conversion in real-time!"
           >
             <input
@@ -206,18 +206,13 @@ export const Command4 = (props: ChaptersPropsType) => {
               onChange={onTimeInputBoxChange}
               type="number"
               placeholder="Time limit (s)"
-              className="input input-bordered basis-1/2  max-w-xs input-sm mr-8"
+              className="input input-bordered basis-1/2  max-w-xs input-sm m-2"
             />
           </div>
-          <div className="tooltip tooltip-secondary" data-tip="Let's move!">
-            <button
-              className="btn btn-primary btn-sm flex-col"
-              onClick={trapezoid_move}
-            >
-              execute
-            </button>
-          </div>
         </div>
+        <button className="btn btn-primary btn-sm mt-2" onClick={trapezoid_move}>
+          execute
+        </button>
       </div>
       <article className="mb-10 prose prose-slate max-w-full">
         <ol className="flex">

@@ -1,14 +1,29 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./pages/*.tsx","./components/*.tsx"],
-  theme: {
-    container: {
-      center: true,
+    content: [
+        "./pages/*.tsx", "./pages/tutorial/*.tsx", "./components/*.tsx", "./components/ImplementedCommands/*.tsx"
+    ],
+    theme: {
+        container: {
+            center: true
+        },
+        extend: {}
     },
-    extend: {},
-  },
-  plugins: [require("@tailwindcss/typography"),require("daisyui")],
-  daisyui: {
-    themes: ["night","winter",],
-  },
+    plugins: [
+        require("@tailwindcss/typography"), require("daisyui")
+    ],
+    daisyui: {
+        themes: [
+            {
+                night: {
+                    ...require("daisyui/src/colors/themes")["[data-theme=night]"]
+                }
+
+            }, {
+                light: {
+                    ...require("daisyui/src/colors/themes")["[data-theme=light]"]
+                }
+            },
+        ]
+    }
 }

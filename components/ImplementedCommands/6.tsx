@@ -12,18 +12,13 @@ export const Command6 = (props: ChaptersPropsType) => {
     <>
       <div className="w-full text-center mb-5">
         <div className="flex justify-center">
-          {props.children}
-          <div
-            className="tooltip tooltip-secondary"
-            data-tip="Start calibration!"
+          <div className="mr-4">{props.children}</div>
+          <button
+            className="btn btn-primary btn-sm "
+            onClick={start_calibration}
           >
-            <button
-              className="btn btn-primary btn-sm"
-              onClick={start_calibration}
-            >
-              execute
-            </button>
-          </div>
+            execute
+          </button>
         </div>
       </div>
     </>

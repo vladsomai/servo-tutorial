@@ -12,7 +12,7 @@ export const Command22 = (props: ChaptersPropsType) => {
     <>
       <div className="w-full text-center mb-5">
         <div className="flex justify-center">
-          {props.children}
+          <div className="mr-4">{props.children}</div>
           <button className="btn btn-primary btn-sm" onClick={execute_command}>
             execute
           </button>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { MotorCommands } from '../servo-engine/motor-commands'
 import 'animate.css'
+import Link from 'next/link'
 
 export type ChaptersProps = {
   currentChapter: number
@@ -20,30 +21,26 @@ const Chapters = (props: ChaptersProps) => {
 
   return (
     <>
-      <div className="grid card w-1/6 bg-base-300 rounded-box place-items-center h-screen-80 overflow-show-scroll mr-2">
-        <div className="flex flex-col w-full border-opacity-50">
-          <h2 className=" mt-5 text-center text-secondary font-bold tracking-wide">
-            CHAPTERS
-          </h2>
-          <div className="divider"></div>
+      <div className="grid w-[10%] card bg-base-300 rounded-box place-items-center h-[85vh] overflow-auto mr-2">
+        <div className="flex flex-col w-full border-opacity-50 my-5">
           <div className="flex flex-col items-center">
             {chapters.map((i) => {
               return (
-                // <Link  href={`/tutorial/${i}`}>
-                <a
-                  key={i}
-                  className={`btn animate__animated animate__fadeIn ${
-                    props.currentChapter === i
-                      ? ' btn-active btn-info '
-                      : ' btn-link '
-                  } `}
-                  onClick={() => {
-                    props.setCurrentChapter(i)
-                  }}
-                >
-                  CHAPTER {i}
-                </a>
-                // </Link>
+                <Link key={i} href={`/tutorial/${i}`}>
+                  <a
+                    
+                    className={`btn btn-xs sm:btn-sm md:btn-sm lg:btn-md mb-1 animate__animated animate__fadeIn ${
+                      props.currentChapter === i
+                        ? ' btn-primary '
+                        : ' btn-ghost '
+                    } `}
+                    onClick={() => {
+                      props.setCurrentChapter(i)
+                    }}
+                  >
+                    CHAPTER {i}
+                  </a>
+                </Link>
               )
             })}
           </div>

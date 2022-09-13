@@ -2,7 +2,7 @@ import { ChaptersPropsType } from './0_1'
 
 export interface ResetCommandType extends ChaptersPropsType {
   master_time_start: number
-  setMaster_time_start:Function
+  setMaster_time_start: Function
 }
 
 export const Command8 = (props: ResetCommandType) => {
@@ -19,7 +19,7 @@ export const Command8 = (props: ResetCommandType) => {
     <>
       <div className="w-full text-center mb-5">
         <div className="flex justify-center">
-          {props.children}
+          <div className="mr-4">{props.children}</div>
           <button className="btn btn-primary btn-sm" onClick={reset_time}>
             Reset
           </button>
