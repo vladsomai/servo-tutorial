@@ -27,6 +27,7 @@ import {
 } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 import Image from 'next/image'
+import { animated, config, Transition, useTransition } from 'react-spring'
 
 export interface MultiMoveChapterProps extends ChaptersPropsType {
   MoveCommands: MoveCommand[]
@@ -53,6 +54,13 @@ export const Command29 = (props: MultiMoveChapterProps) => {
   const acceleretionOrVelocityInputBox = useRef<HTMLInputElement[] | null[]>([])
   const timeInputBox = useRef<HTMLInputElement[] | null[]>([])
 
+  //#region TRANSITION
+  const transition = useTransition(props.MoveCommands, {
+    from: { x: 0, y: -100, opacity: 0 },
+    enter: { x: 0, y: 0, opacity: 1 },
+    leave: { x: 0, y: 100, opacity: 0 },
+  })
+  //#endregion TRANSITION
   const resetAllCommands = () => {
     props.setMoveCommands([])
   }
@@ -62,6 +70,7 @@ export const Command29 = (props: MultiMoveChapterProps) => {
     let arr3 = props.MoveCommands.slice(command + 1, props.MoveCommands.length)
 
     let arr = [...arr1, ...arr3]
+    
     props.setMoveCommands(arr)
   }
 
@@ -72,6 +81,7 @@ export const Command29 = (props: MultiMoveChapterProps) => {
     }
 
     let emptyMoveCmd = {
+      index: props.MoveCommands.length,
       MovementType: { Name: movementType },
       MoveValue: '',
       TimeValue: '',
@@ -258,7 +268,6 @@ export const Command29 = (props: MultiMoveChapterProps) => {
           movementComm.push(Uint8ArrayToString(rawAccelerationPayload))
         }
       } else if (props.MoveCommands.at(i)?.MovementType.Name == 'Velocity') {
-
         //set ith bit when using velocity movement
         const mask = 1 << i
         u32BitMovementTypes |= mask
@@ -362,15 +371,15 @@ export const Command29 = (props: MultiMoveChapterProps) => {
             </div>
           </div>
           <div className="flex flex-col justify-center">
-            {props.MoveCommands.map((MoveCommand) => (
-              <div
+            {transition((style,MoveCommand)=>
+              <animated.div
+                style={style}
                 ref={(el) =>
                   (commandsDivElement.current[
                     props.MoveCommands.indexOf(MoveCommand)
                   ] = el)
                 }
-                className="flex flex-col xl:flex-row justify-center items-center animate__animated animate__fadeIn"
-                key={props.MoveCommands.indexOf(MoveCommand)}
+                className="flex flex-col xl:flex-row justify-center items-center"
               >
                 <p className="m-2 self-center xl:self-end ">
                   {props.MoveCommands.indexOf(MoveCommand) + 1}.
@@ -441,9 +450,9 @@ export const Command29 = (props: MultiMoveChapterProps) => {
                 >
                   <button
                     className="btn btn-error btn-sm btn-circle m-2"
-                    onClick={() =>
+                    onClick={() => {
                       deleteMoveCommand(props.MoveCommands.indexOf(MoveCommand))
-                    }
+                    }}
                   >
                     <Image
                       alt="Add command"
@@ -454,8 +463,8 @@ export const Command29 = (props: MultiMoveChapterProps) => {
                     />
                   </button>
                 </div>
-              </div>
-            ))}
+              </animated.div>
+            )}
           </div>
         </div>
         <div className="flex justify-center">
