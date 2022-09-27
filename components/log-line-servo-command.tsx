@@ -2,13 +2,25 @@ import { useEffect, useRef, useState, SyntheticEvent } from 'react'
 import { LogType } from './log-window'
 import { MainWindowProps } from './main-window'
 
-export interface LogLineServoCommandType extends LogType, MainWindowProps {}
+export interface LogLineServoCommandType
+  extends LogType,
+    MainWindowProps,
+    CommandPayload {}
+
 export interface CommandBytesType {
   Value: string
   Color: string
   Description: string
 }
 
+export interface CommandParameter {
+  Description: string
+  NoOfBytes: number
+}
+export interface CommandPayload {
+  SendingPayload: CommandParameter[]
+  ReceivingPayload: CommandParameter[]
+}
 const LogLineServoCommand = (props: LogLineServoCommandType) => {
   const byteColor = useRef<string[]>([
     ' text-blue-500',
@@ -20,14 +32,14 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
   const byteDescriptionSend = useRef<string[]>([
     'Targeted axis byte',
     'Command byte',
-    'Length byte, it represents the payload length.',
+    'Length byte',
     'Payload bytes!',
   ])
 
   const byteDescriptionReceived = useRef<string[]>([
-    'Sender ID',
-    'Number of parameters received',
-    'Length byte, it represents the payload length.',
+    'Sender ID (R)',
+    'No. of params received',
+    'Length byte',
     'Payload bytes!',
   ])
 
@@ -36,81 +48,122 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
   const rawCommand = useRef<string>('')
   const commandBytes = useRef<CommandBytesType[]>([])
 
-  useEffect(() => {
-    if (props.log.includes('Sent')) {
-      setComponentIsACommand(true)
-      const indexOf0x = props.log.indexOf('0x')
-      stringTo0x.current = props.log.slice(0, indexOf0x)
+  useEffect(
+    (
+      sendingPayload = props.SendingPayload,
+      receivingPayload = props.ReceivingPayload,
+    ) => {
+      if (props.log.includes('Sent')) {
+        setComponentIsACommand(true)
+        const indexOf0x = props.log.indexOf('0x')
+        stringTo0x.current = props.log.slice(0, indexOf0x)
 
-      rawCommand.current = props.log.slice(indexOf0x + 2, props.log.length)
+        rawCommand.current = props.log.slice(indexOf0x + 2, props.log.length)
 
-      for (let i = 0; i < rawCommand.current.length; i += 2) {
-        if (i == 0) {
-          commandBytes.current.push({
-            Value: rawCommand.current.slice(0, 2),
-            Description: byteDescriptionSend.current[0],
-            Color: byteColor.current[0],
-          })
-        } else if (i == 2) {
-          commandBytes.current.push({
-            Value: rawCommand.current.slice(2, 4),
-            Description: byteDescriptionSend.current[1],
-            Color: byteColor.current[1],
-          })
-        } else if (i == 4) {
-          commandBytes.current.push({
-            Value: rawCommand.current.slice(4, 6),
-            Description: byteDescriptionSend.current[2],
-            Color: byteColor.current[2],
-          })
-        } else {
-          commandBytes.current.push({
-            Value: rawCommand.current.slice(6, rawCommand.current.length),
-            Description: byteDescriptionSend.current[3],
-            Color: byteColor.current[3],
-          })
-          break
+        for (let i = 0; i < rawCommand.current.length; i += 2) {
+          if (i == 0) {
+            commandBytes.current.push({
+              Value: rawCommand.current.slice(0, 2),
+              Description: byteDescriptionSend.current[0],
+              Color: byteColor.current[0],
+            })
+          } else if (i == 2) {
+            commandBytes.current.push({
+              Value: rawCommand.current.slice(2, 4),
+              Description: byteDescriptionSend.current[1],
+              Color: byteColor.current[1],
+            })
+          } else if (i == 4) {
+            commandBytes.current.push({
+              Value: rawCommand.current.slice(4, 6),
+              Description: byteDescriptionSend.current[2],
+              Color: byteColor.current[2],
+            })
+          } else {
+            if (sendingPayload.length == 0) {
+              commandBytes.current.push({
+                Value: rawCommand.current.slice(6, rawCommand.current.length),
+                Description: byteDescriptionSend.current[3],
+                Color: byteColor.current[3],
+              })
+            } else {
+              let currentStart = 6
+              let NoOfChars = 0
+              for (let i = 0; i < sendingPayload.length; i++) {
+                NoOfChars = sendingPayload.at(i)!.NoOfBytes * 2
+                commandBytes.current.push({
+                  Value: rawCommand.current.slice(
+                    currentStart,
+                    currentStart + NoOfChars,
+                  ),
+                  Description: sendingPayload.at(i)!.Description,
+                  Color: byteColor.current[i % 2 == 0 ? 3 : 4],
+                })
+                currentStart += NoOfChars
+              }
+            }
+
+            break
+          }
+        }
+      } else if (props.log.includes('Received')) {
+        setComponentIsACommand(true)
+        const indexOf0x = props.log.indexOf('0x')
+        stringTo0x.current = props.log.slice(0, indexOf0x)
+
+        rawCommand.current = props.log.slice(indexOf0x + 2, props.log.length)
+
+        for (let i = 0; i < rawCommand.current.length; i += 2) {
+          if (i == 0) {
+            commandBytes.current.push({
+              Value: rawCommand.current.slice(0, 2),
+              Description: byteDescriptionReceived.current[0],
+              Color: byteColor.current[0],
+            })
+          } else if (i == 2) {
+            commandBytes.current.push({
+              Value: rawCommand.current.slice(2, 4),
+              Description: byteDescriptionReceived.current[1],
+              Color: byteColor.current[1],
+            })
+          } else if (i == 4) {
+            commandBytes.current.push({
+              Value: rawCommand.current.slice(4, 6),
+              Description: byteDescriptionReceived.current[2],
+              Color: byteColor.current[2],
+            })
+          } else {
+            if (receivingPayload.length == 0) {
+              commandBytes.current.push({
+                Value: rawCommand.current.slice(6, rawCommand.current.length),
+                Description: byteDescriptionSend.current[3],
+                Color: byteColor.current[3],
+              })
+            } else {
+              let currentStart = 6
+              let NoOfChars = 0
+              for (let i = 0; i < receivingPayload.length; i++) {
+                NoOfChars = receivingPayload.at(i)!.NoOfBytes * 2
+                commandBytes.current.push({
+                  Value: rawCommand.current.slice(
+                    currentStart,
+                    currentStart + NoOfChars,
+                  ),
+                  Description: receivingPayload.at(i)!.Description,
+                  Color: byteColor.current[i % 2 == 0 ? 3 : 4],
+                })
+                currentStart += NoOfChars
+              }
+            }
+
+            break
+          }
         }
       }
-    }
-    else if(props.log.includes('Received'))
-    {
-      setComponentIsACommand(true)
-      const indexOf0x = props.log.indexOf('0x')
-      stringTo0x.current = props.log.slice(0, indexOf0x)
-
-      rawCommand.current = props.log.slice(indexOf0x + 2, props.log.length)
-
-      for (let i = 0; i < rawCommand.current.length; i += 2) {
-        if (i == 0) {
-          commandBytes.current.push({
-            Value: rawCommand.current.slice(0, 2),
-            Description: byteDescriptionReceived.current[0],
-            Color: byteColor.current[0],
-          })
-        } else if (i == 2) {
-          commandBytes.current.push({
-            Value: rawCommand.current.slice(2, 4),
-            Description: byteDescriptionReceived.current[1],
-            Color: byteColor.current[1],
-          })
-        } else if (i == 4) {
-          commandBytes.current.push({
-            Value: rawCommand.current.slice(4, 6),
-            Description: byteDescriptionReceived.current[2],
-            Color: byteColor.current[2],
-          })
-        } else {
-          commandBytes.current.push({
-            Value: rawCommand.current.slice(6, rawCommand.current.length),
-            Description: byteDescriptionReceived.current[3],
-            Color: byteColor.current[3],
-          })
-          break
-        }
-      }
-    }
-  }, [props.log])
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [props.log],
+  )
 
   return (
     <>
@@ -136,7 +189,11 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
             {commandBytes.current.map((byte) => (
               <div
                 key={commandBytes.current.indexOf(byte)}
-                className={`tooltip ml-2 inline tooltip-primary ${props.lineNumber<3?' tooltip-left ': ' '}` + byte.Color}
+                className={
+                  `tooltip tooltip-primary ml-1 inline ${
+                    props.lineNumber < 3 ? ' tooltip-left ' : '  '
+                  }` + byte.Color
+                }
                 data-tip={byte.Description}
               >
                 <p className="inline break-all">{byte.Value}</p>

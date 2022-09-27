@@ -11,7 +11,6 @@ interface CommandWindowProps extends MainWindowProps {
   isConnected: boolean
 }
 const Command = (props: CommandWindowProps, children: ReactElement) => {
-
   const rawCommandInputBox = useRef<HTMLInputElement | null>(null)
   const controlPanelDiv = useRef<HTMLDivElement | null>(null)
   const AvailableBaudrates = useRef<number[]>([
@@ -26,8 +25,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
   ])
   const [input, setInput] = useState<string>('')
 
-  useEffect(() => {
-  }, [])
+  useEffect(() => {}, [])
 
   const BaudrateSelection = useRef<HTMLSelectElement | null>(null)
   const getBaudrateSelection = (): number => {
@@ -89,8 +87,10 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
             <p className="text-center mb-5 text-2xl">
               <strong>{props.currentCommandDictionary.CommandString}</strong>
             </p>{' '}
-            <p className="text-center mb-5 text-2xl">
-              <strong>{props.currentCommandDictionary.CommandEnum}</strong>
+            <p className="text-center mb-5 text-xl">
+              <strong>
+                Command {props.currentCommandDictionary.CommandEnum}
+              </strong>
             </p>
             <p className="mb-2">
               <b>Description:&nbsp;</b>{' '}

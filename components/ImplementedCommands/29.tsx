@@ -27,7 +27,13 @@ import {
 } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 import Image from 'next/image'
-import { animated, config, Transition, useTransition } from 'react-spring'
+import {
+  animated,
+  config,
+  Transition,
+  useSpring,
+  useTransition,
+} from 'react-spring'
 
 export interface MultiMoveChapterProps extends ChaptersPropsType {
   MoveCommands: MoveCommand[]
@@ -55,7 +61,7 @@ export const Command29 = (props: MultiMoveChapterProps) => {
   const timeInputBox = useRef<HTMLInputElement[] | null[]>([])
 
   //#region TRANSITION
-  const transition = useTransition(props.MoveCommands, {
+  const transitionMulimoves = useTransition(props.MoveCommands, {
     from: { x: 0, y: -100, opacity: 0 },
     enter: { x: 0, y: 0, opacity: 1 },
     leave: { x: 0, y: 100, opacity: 0 },
@@ -70,7 +76,7 @@ export const Command29 = (props: MultiMoveChapterProps) => {
     let arr3 = props.MoveCommands.slice(command + 1, props.MoveCommands.length)
 
     let arr = [...arr1, ...arr3]
-    
+
     props.setMoveCommands(arr)
   }
 
@@ -371,7 +377,7 @@ export const Command29 = (props: MultiMoveChapterProps) => {
             </div>
           </div>
           <div className="flex flex-col justify-center">
-            {transition((style,MoveCommand)=>
+            {transitionMulimoves((style, MoveCommand) => (
               <animated.div
                 style={style}
                 ref={(el) =>
@@ -464,10 +470,10 @@ export const Command29 = (props: MultiMoveChapterProps) => {
                   </button>
                 </div>
               </animated.div>
-            )}
+            ))}
           </div>
         </div>
-        <div className="flex justify-center">
+        <div className="flex justify-center ">
           <div className="mr-4">{props.children}</div>
           <button className="btn btn-primary btn-sm" onClick={execute_command}>
             execute
