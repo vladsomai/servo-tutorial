@@ -24,12 +24,10 @@ const Log = (props: {
 
   return (
     <>
-      <div className="rounded-box mx-2 my-auto h-full w-6/12 overflow-auto flex flex-col justify-center content-center">
+      <div className="rounded-box mx-2 my-auto h-full w-6/12 flex flex-col justify-center content-center overflow-auto ">
         <div className=" mockup-code h-16 w-full rounded-t-box rounded-b-none py-5 bg-slate-700 ">
           <div
-            className={
-              'tooltip tooltip-ghost absolute bottom-0 right-10 z-10'
-            }
+            className={'tooltip tooltip-ghost absolute bottom-0 right-10 z-10'}
             data-tip={'Clear log window'}
           >
             <button
@@ -45,7 +43,7 @@ const Log = (props: {
         </div>
         <div
           ref={logWindow}
-          className=" bg-slate-800 rounded-b-box h-[78vh] overflow-auto px-6 py-3 "
+          className=" bg-slate-800 rounded-b-box h-[78vh] px-6 py-3 overflow-auto"
         >
           <div className="flex flex-col justify-center text-justify font-mono w-full">
             {props.logs.map((log: LogType) => {
@@ -54,7 +52,11 @@ const Log = (props: {
                   <p className="mr-2 text-gray-500 text-right">
                     {log.lineNumber.toString()}&nbsp;
                   </p>
-                  <LogLineServoCommand {...props.mainWindow} {...log} {...props.CommandPayload}/>
+                  <LogLineServoCommand
+                    {...props.mainWindow}
+                    {...log}
+                    {...props.CommandPayload}
+                  />
                 </div>
               )
             })}

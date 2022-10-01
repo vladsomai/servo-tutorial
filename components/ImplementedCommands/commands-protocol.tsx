@@ -13,10 +13,13 @@ const CommandsProtocol = (props: MainWindowProps) => {
             {props.currentCommandDictionary.Description}
           </h4>
           <h4>
-            Parameters to each function are only the axis and the payload, the
-            rest of the bytes will be automatically deduced from the given
-            arguments.
+            Parameters to each command are only the axis and the payload, the
+            command byte will be automatically deduced from the chapter displayed on the screen.
+            <br></br>
+            The length byte is calculated at the end, right before the command is beeing sent to the motor.
           </h4>
+
+          <h3>Send protocol:</h3>
           <ul>
             <li>First byte: Represents the targeted axis of the command.</li>
             <li>
@@ -41,6 +44,24 @@ const CommandsProtocol = (props: MainWindowProps) => {
                 Do not worry,&nbsp; we will explain what arguments each command
                 needs so you can construct your own raw commands.
               </b>
+            </li>
+          </ul>
+          <h3>Receive protocol:</h3>
+          <ul>
+            <li>First byte: Represents a reserved axis byte for the receive commands. This byte is currently set to ASCII &quot;R&quot;.</li>
+            <li>
+              Second byte: Represents the status of the sent command.
+              <br></br>
+              0 indicates success, no payload shall be received.
+              <br></br>
+              1 indicates there are one or more parameters received.
+            </li>
+            <li>
+              Third byte: Represents the length of the payload
+              bytes. Each command has different response payloads.
+            </li>
+            <li>
+              The rest of the bytes will represent the payload the command responded with.
             </li>
           </ul>
         </article>

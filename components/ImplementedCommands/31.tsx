@@ -32,7 +32,7 @@ export const Command31 = (props: ChaptersPropsType) => {
   return (
     <>
       <div className="w-full text-center mb-5">
-      <div className="flex flex-col xl:flex-row justify-center items-center">
+        <div className="flex flex-col xl:flex-row justify-center items-center">
           <div className="m-2">{props.children}</div>
           <input
             ref={textPayloadInputBox}
@@ -42,14 +42,17 @@ export const Command31 = (props: ChaptersPropsType) => {
             defaultValue={'0123456789'}
           />
         </div>
-          <div
-            className="tooltip tooltip-primary"
-            data-tip="Test your connection to the motor using this command."
+        <div
+          className="tooltip tooltip-primary"
+          data-tip="Test your connection to the motor using this command."
+        >
+          <button
+            className="btn btn-primary btn-sm mt-2"
+            onClick={ping_command}
           >
-            <button className="btn btn-primary btn-sm mt-2" onClick={ping_command}>
-              PING
-            </button>
-          </div>
+            PING
+          </button>
+        </div>
       </div>
     </>
   )

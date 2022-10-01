@@ -116,10 +116,32 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
                 )}
               </ol>
             </article>
-            <p className="mb-2">
-              <b>Output:&nbsp;</b>
-              {props.currentCommandDictionary.Output}
-            </p>
+            <article className="prose w-full max-w-full">
+              <h4>Outputs:&nbsp;</h4>
+              <ol className="m-0">
+                {typeof props.currentCommandDictionary.Output == 'string' ? (
+                  <li>
+                    <p>{props.currentCommandDictionary.Output}</p>
+                  </li>
+                ) : (
+                  props.currentCommandDictionary.Output.map((item) => {
+                    //for command 16
+                    if (item.startsWith('Bit'))
+                      return <p className="ml-10">{item}</p>
+                    else
+                      return (
+                        <li
+                          key={props.currentCommandDictionary.Output.indexOf(
+                            item,
+                          )}
+                        >
+                          <p>{item}</p>
+                        </li>
+                      )
+                  })
+                )}
+              </ol>
+            </article>
           </div>
         ) : (
           <CommandsProtocol

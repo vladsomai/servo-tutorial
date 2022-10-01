@@ -41,6 +41,7 @@ import { Command19 } from './ImplementedCommands/19'
 import { Command26 } from './ImplementedCommands/26'
 import { Command29, MoveCommand } from './ImplementedCommands/29'
 import { CommandPayload, CommandParameter } from './log-line-servo-command'
+import { Command21 } from './ImplementedCommands/21'
 
 export type MainWindowProps = {
   currentChapter: number
@@ -148,29 +149,15 @@ const Main = (props: MainWindowProps) => {
       const writer = portSer.current.writable.getWriter()
 
       let data: Uint8Array = new Uint8Array([])
-      try {
-        if (typeof dataToSend == 'string')
-          data = stringToUint8Array(dataToSend.toUpperCase())
-        else data = dataToSend
-      } catch (err) {
-        if (err instanceof Error) {
-          LogAction(err!.message)
-          writer.releaseLock()
+      if (typeof dataToSend == 'string') {
+        data = stringToUint8Array(dataToSend.toUpperCase())
+        if (data.length == 0) {
+          LogAction(
+            'Your message has an invalid length, the number of bytes are not correct.',
+          )
           return
         }
-
-        writer.releaseLock()
-        try {
-          LogAction(err as string)
-        } catch (err) {
-          console.log(
-            'We could not log this error in the log window because it is not a string, please check the error object below: ',
-          )
-          console.log(err)
-        }
-        console.log(err)
-        return
-      }
+      } else data = dataToSend
 
       let hexString = Uint8ArrayToString(data)
       await writer.write(data)
@@ -732,16 +719,31 @@ const Main = (props: MainWindowProps) => {
         />
       </Command20>
     )
-  } else if (props.currentCommandDictionary.CommandEnum == 21)
+  } else if (props.currentCommandDictionary.CommandEnum == 21) {
+    currentCommandPayload.SendingPayload.push({
+      Description: 'Unique ID',
+      NoOfBytes: 8,
+    })
+    currentCommandPayload.SendingPayload.push({
+      Description: 'Alias',
+      NoOfBytes: 1,
+    })
     currentCommandLayout = (
-      <>
-        <p className="text-6xl text-center">
-          Command {props.currentCommandDictionary.CommandEnum} is not
-          implemented
-        </p>
-      </>
+      <Command21
+        {...props}
+        getAxisSelection={getAxisSelection}
+        sendDataToSerialPort={sendDataToSerialPort}
+        LogAction={LogAction}
+        constructCommand={constructCommand}
+      >
+        <SelectAxis
+          LogAction={LogAction}
+          axisSelectionValue={axisSelectionValue}
+          setAxisSelectionValue={setAxisSelectionValue}
+        />
+      </Command21>
     )
-  else if (props.currentCommandDictionary.CommandEnum == 22) {
+  } else if (props.currentCommandDictionary.CommandEnum == 22) {
     currentCommandPayload.ReceivingPayload.push({
       Description: 'Product code',
       NoOfBytes: 1,

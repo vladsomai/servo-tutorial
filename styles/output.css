@@ -2848,10 +2848,6 @@ body[dir="rtl"] .checkbox:checked,
   right: 0.5rem;
 }
 
-.right-32 {
-  right: 8rem;
-}
-
 .bottom-0 {
   bottom: 0px;
 }
@@ -2866,6 +2862,10 @@ body[dir="rtl"] .checkbox:checked,
 
 .z-10 {
   z-index: 10;
+}
+
+.z-20 {
+  z-index: 20;
 }
 
 .m-12 {
@@ -2921,6 +2921,10 @@ body[dir="rtl"] .checkbox:checked,
 
 .mb-2 {
   margin-bottom: 0.5rem;
+}
+
+.ml-10 {
+  margin-left: 2.5rem;
 }
 
 .mt-5 {
@@ -3091,6 +3095,10 @@ body[dir="rtl"] .checkbox:checked,
   overflow: auto;
 }
 
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
+
 .break-all {
   word-break: break-all;
 }
@@ -3190,13 +3198,13 @@ body[dir="rtl"] .checkbox:checked,
   font-size: 10px;
 }
 
-.text-lg {
-  font-size: 1.125rem;
+.text-xl {
+  font-size: 1.25rem;
   line-height: 1.75rem;
 }
 
-.text-xl {
-  font-size: 1.25rem;
+.text-lg {
+  font-size: 1.125rem;
   line-height: 1.75rem;
 }
 
@@ -3280,6 +3288,10 @@ input[type="number"] {
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
+}
+
+.overflow-inherit {
+  overflow: inherit;
 }
 
 .hover\:bg-green-500:hover {

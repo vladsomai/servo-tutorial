@@ -16,8 +16,11 @@ export class Char {
         return this.char;
     }
 
-    getASCII_Code(): number {
+    getDecimalASCII_Code(): number {
         return this.char.charCodeAt(0);
+    }
+    getHexaASCII_Code(): string {
+        return this.char.charCodeAt(0).toString(16);
     }
 }
 
@@ -40,7 +43,7 @@ export class ByteStringType {
 
     toHexValue() {
         let Byte: number = 0;
-        let input: string = this.toString();
+        let input: string = this.toString().toUpperCase();
 
         for (let i = 0; i < 2; i++) {
             switch (input[i]) {
@@ -169,8 +172,9 @@ export class ByteStringType {
 export const stringToUint8Array = (_value: string): Uint8Array => {
     const message = _value;
 
-    if (message.length % 2 !== 0)
-        throw new Error("Your message has an invalid length, the number of bytes are not correct.")
+    if (message.length % 2 !== 0) {
+        return new Uint8Array([]);
+    }
 
     let stringDataBytes: ByteStringType[] = [];
 
@@ -252,7 +256,7 @@ export const maximumPositiveVelocity = 99.20634916015264 * 60
 
 //#region Acceleration
 export const RPMSquared_ToInternalAcceleration = (rpmsq: number): number => {
-    return (rpmsq/60**2) * (645120 / 31250**2) * (2 ** 32);
+    return (rpmsq / 60 ** 2) * (645120 / 31250 ** 2) * (2 ** 32);
 }
 
 export const InternalAccelerationToCommAcceleration = (internalAcceleration: number): number => {

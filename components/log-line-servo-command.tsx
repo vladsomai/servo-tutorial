@@ -38,7 +38,7 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
 
   const byteDescriptionReceived = useRef<string[]>([
     'Sender ID (R)',
-    'No. of params received',
+    'Response status',
     'Length byte',
     'Payload bytes!',
   ])
@@ -169,17 +169,17 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
     <>
       <div className="">
         <p className="inline">
-          {props.date.getDate() +
+          {('0' + props.date.getDate().toString()).slice(-2) +
             '/' +
-            (props.date.getMonth() + 1) +
+            ('0' + (props.date.getMonth() + 1).toString()).slice(-2) +
             '/' +
             props.date.getFullYear() +
             '|' +
-            props.date.getHours() +
+            ('0' + props.date.getHours().toString()).slice(-2) +
             ':' +
-            props.date.getMinutes() +
+            ('0' + props.date.getMinutes().toString()).slice(-2) +
             ':' +
-            props.date.getSeconds() +
+            ('0' + props.date.getSeconds().toString()).slice(-2) +
             ': '}
         </p>
 
@@ -191,7 +191,7 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
                 key={commandBytes.current.indexOf(byte)}
                 className={
                   `tooltip tooltip-primary ml-1 inline ${
-                    props.lineNumber < 3 ? ' tooltip-left ' : '  '
+                    props.lineNumber < 3 ? ' tooltip-left ' : '   '
                   }` + byte.Color
                 }
                 data-tip={byte.Description}
