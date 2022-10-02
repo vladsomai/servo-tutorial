@@ -1,5 +1,4 @@
-import { ReactElement, useEffect, useRef, useState } from 'react'
-import { MotorAxes, MotorAxisType } from '../../servo-engine/motor-axes'
+import { useEffect, useRef, useState } from 'react'
 import {
   InternalVelocityToCommVelocity,
   SecondToTimesteps,

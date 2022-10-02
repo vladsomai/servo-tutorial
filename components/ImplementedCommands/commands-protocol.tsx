@@ -14,9 +14,9 @@ const CommandsProtocol = (props: MainWindowProps) => {
           </h4>
           <h4>
             Parameters to each command are only the axis and the payload, the
-            command byte will be automatically deduced from the chapter displayed on the screen.
+            command byte will be automatically deducted from the chapter displayed on the screen.
             <br></br>
-            The length byte is calculated at the end, right before the command is beeing sent to the motor.
+            The length byte is calculated at the end, right before the command is being sent to the motor.
           </h4>
 
           <h3>Send protocol:</h3>
@@ -28,16 +28,16 @@ const CommandsProtocol = (props: MainWindowProps) => {
             </li>
             <li>
               Third byte: Represents the length of the payload / arguments
-              bytes. They represent paramters that are being passed to the
+              bytes. They represent parameters that are being passed to the
               command.&nbsp;
               <b>
                 Each command has different parameters,&nbsp;in case no
-                parameters are needed you must specify the Third byte as 0x00.
+                parameters are needed, you must specify the Third byte as 0x00.
               </b>
             </li>
             <li>
               The rest of the bytes will represent the payload / arguments to
-              the command described at byte no.&nbsp;2, &nbsp;usually each
+              the command described at byte no.&nbsp;2, &nbsp;usually, each
               command has different parameters so the length byte will differ
               from chapter to chapter. &nbsp;
               <b>
@@ -48,11 +48,11 @@ const CommandsProtocol = (props: MainWindowProps) => {
           </ul>
           <h3>Receive protocol:</h3>
           <ul>
-            <li>First byte: Represents a reserved axis byte for the receive commands. This byte is currently set to ASCII &quot;R&quot;.</li>
+            <li>First byte: Represents a reserved axis byte for the received messages. This byte is currently set to ASCII &quot;R&quot;.</li>
             <li>
               Second byte: Represents the status of the sent command.
               <br></br>
-              0 indicates success, no payload shall be received.
+              0 indicates success and no payload shall be received.
               <br></br>
               1 indicates there are one or more parameters received.
             </li>
@@ -72,7 +72,7 @@ const CommandsProtocol = (props: MainWindowProps) => {
           <h3>Time</h3>
           <ul>
             <li>
-              <strong>Timesteps</strong> are the internal unit used for time in
+              <strong>Timesteps</strong> are the internal unit used in
               movement commands.
               <br></br>
               One timestep is equivalent to <strong>32 microseconds</strong>.
@@ -92,17 +92,17 @@ const CommandsProtocol = (props: MainWindowProps) => {
           <h3>Position</h3>
           <ul>
             <li>
-              Position is better described as the{' '}
+              The Position is better described as the{' '}
               <strong>angular position or just angle</strong>
             </li>
             <li>
-              The internal unit is called <strong>microstep</strong>. There are
+              The internal unit is the <strong>microstep</strong>. There are
               645120 microsteps in one shaft rotation. This can be positive or
               negative.
             </li>
             <li>
               The SI unit for an angle is the <strong>radian</strong>.<br></br>
-              Another well known unit is the{' '}
+              Another well-known unit is the{' '}
               <strong>rotation / revolution</strong>.
             </li>
             <li>
@@ -131,14 +131,14 @@ const CommandsProtocol = (props: MainWindowProps) => {
 
             <li>
               The SI unit is <strong>radians per second</strong>.<br></br> Other
-              well known units for velocity are{' '}
+              well-known units for velocity are{' '}
               <strong>rotations per second</strong> and{' '}
               <strong>rotations per minute (RPM)</strong>.
             </li>
             <li>
               When sending the velocity using the command protocol, we need to
               send the velocity in <strong> communication units</strong> and the
-              motor will self convert it to internal units.
+              motor will self-convert it to internal units.
             </li>
 
             <li>
@@ -179,7 +179,7 @@ const CommandsProtocol = (props: MainWindowProps) => {
             <li>
               The SI unit is <strong> radians per second squared</strong>.
               <br></br>
-              Other well known units are{' '}
+              Other well-known units are{' '}
               <strong>rotations per second squared</strong> and{' '}
               <strong> rotations per minute squared</strong>.
             </li>
@@ -187,7 +187,7 @@ const CommandsProtocol = (props: MainWindowProps) => {
             <li>
               When sending an acceleration using the command protocol, we need
               to send the acceleration in <strong> communication units</strong>{' '}
-              and the motor will self convert it to internal units.
+              and the motor will self-convert it to internal units.
             </li>
 
             <li>

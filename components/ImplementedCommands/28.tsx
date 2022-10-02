@@ -1,6 +1,4 @@
-import { MainWindowProps } from '../main-window'
-import { ReactElement, useRef } from 'react'
-import { MotorAxes, MotorAxisType } from '../../servo-engine/motor-axes'
+import { useRef } from 'react'
 import { ChaptersPropsType } from './0_1'
 import { Uint8ArrayToString } from '../../servo-engine/utils'
 

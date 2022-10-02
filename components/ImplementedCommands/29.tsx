@@ -1,9 +1,7 @@
 import {
   Dispatch,
-  MouseEventHandler,
   SetStateAction,
   SyntheticEvent,
-  useEffect,
   useRef,
   useState,
 } from 'react'
@@ -12,15 +10,11 @@ import {
   SecondToTimesteps,
   maximumNegativeVelocity,
   maximumPositiveVelocity,
-  minimumNegativeVelocity,
-  minimumPositiveVelocity,
   RPM_ToInternalVelocity,
   Uint8ArrayToString,
   maximumPositiveTime,
   minimumPositiveTime,
-  minimumNegativeAcceleration,
   maximumNegativeAcceleration,
-  minimumPositiveAcceleration,
   maximumPositiveAcceleration,
   RPMSquared_ToInternalAcceleration,
   InternalAccelerationToCommAcceleration,
@@ -29,9 +23,6 @@ import { ChaptersPropsType } from './0_1'
 import Image from 'next/image'
 import {
   animated,
-  config,
-  Transition,
-  useSpring,
   useTransition,
 } from 'react-spring'
 
