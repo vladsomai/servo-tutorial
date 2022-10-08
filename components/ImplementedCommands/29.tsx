@@ -53,9 +53,9 @@ export const Command29 = (props: MultiMoveChapterProps) => {
 
   //#region TRANSITION
   const transitionMulimoves = useTransition(props.MoveCommands, {
-    from: { x: 0, y: -100, opacity: 0 },
-    enter: { x: 0, y: 0, opacity: 1 },
-    leave: { x: 0, y: 100, opacity: 0 },
+    from: { y: -100, opacity: 0 },
+    enter: { y: 0, opacity: 1 },
+    leave: { y: 100, opacity: 0 },
   })
   //#endregion TRANSITION
   const resetAllCommands = () => {
@@ -211,6 +211,12 @@ export const Command29 = (props: MultiMoveChapterProps) => {
   const execute_command = () => {
     const selectedAxis = props.getAxisSelection()
     if (selectedAxis == '') return
+
+    if(props.MoveCommands.length == 0)
+    {
+      props.LogAction("Please add at least one command!")
+      return
+    }
 
     let u32BitMovementTypes = 0
     let timestepsHexa: string[] = []

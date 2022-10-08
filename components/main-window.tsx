@@ -40,8 +40,9 @@ import { Command14 } from './ImplementedCommands/14'
 import { Command19 } from './ImplementedCommands/19'
 import { Command26 } from './ImplementedCommands/26'
 import { Command29, MoveCommand } from './ImplementedCommands/29'
-import { CommandPayload, CommandParameter } from './log-line-servo-command'
+import { CommandPayload } from './log-line-servo-command'
 import { Command21 } from './ImplementedCommands/21'
+import { animated, useTransition } from '@react-spring/web'
 
 export type MainWindowProps = {
   currentChapter: number
@@ -1081,16 +1082,17 @@ const Main = (props: MainWindowProps) => {
         />
       </Command254>
     )
+
   return (
     <>
-      <div className="flex w-full bg-base-300 h-[85vh] rounded-box overflow-auto">
+      <div className="flex w-full bg-base-300 h-[85vh] rounded-box overflow-auto" >
         <Command
           {...props}
           sendDataToSerialPort={sendDataToSerialPort}
           connectToSerialPort={connectToSerialPort}
           disconnectFromSerialPort={disconnectFromSerialPort}
           isConnected={isConnected}
-        >
+          >
           {currentCommandLayout}
         </Command>
 
