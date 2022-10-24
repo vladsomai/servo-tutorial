@@ -1,4 +1,4 @@
-import { forwardRef, SyntheticEvent, useRef } from 'react'
+import { useRef } from 'react'
 import { MotorAxes, MotorAxisType } from '../servo-engine/motor-axes'
 
 export type SelectAxisPropsType = {

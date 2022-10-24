@@ -279,3 +279,50 @@ export const maximumPositiveAcceleration = 697544642.54
 // MAX_ACC_RPS^2 = (internal_acc) / 2,837,267.76524341248
 
 //#endregion Acceleration
+
+
+export const makeCRCTable = () => {
+    let c;
+    let crcTable = [];
+    for (let n = 0; n < 256; n++) {
+        c = n;
+        for (let k = 0; k < 8; k++) {
+            c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+        }
+        crcTable[n] = c;
+    }
+    return crcTable
+}
+
+export const crcTable = makeCRCTable();
+
+export const crc32 = (data: Uint8Array) => {
+    let crc = 0 ^ (-1);
+    for (let i = 0; i < data.length; i++) {
+        crc = (crc >>> 8) ^ crcTable[(crc ^ data[i]) & 0xFF];
+    }
+    return (crc ^ (-1)) >>> 0;
+};
+
+export const uint32ToUint8Arr = (uint32: number) => {
+    let uint32Str = uint32.toString(16)
+
+    //Not a 32bit number
+    if (uint32Str.length > 8) return;
+
+    let noOfZeros = 8 - uint32Str.length;
+    let zeroArr = ''
+    for (let i = 0; i < noOfZeros; i++) {
+        zeroArr += '0';
+    }
+
+    uint32Str = zeroArr + uint32Str
+
+    let ret = stringToUint8Array(uint32Str)
+    return ret
+}
+
+export const sleep = (time_ms: number) =>
+    new Promise((resolve, reject) => {
+        setTimeout(resolve, time_ms)
+    })

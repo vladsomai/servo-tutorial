@@ -1,4 +1,11 @@
-import { useEffect, useState, useRef, useCallback, ReactElement } from 'react'
+import {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  ReactElement,
+  SyntheticEvent,
+} from 'react'
 import Log from './log-window'
 import Command from './command-window'
 import { Uint8ArrayToString, stringToUint8Array } from '../servo-engine/utils'
@@ -53,6 +60,7 @@ const Main = (props: MainWindowProps) => {
   const portSer = useRef<SerialPort | null>(null)
   const reader = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null)
   const [logs, setLogs] = useState<LogType[]>([])
+  const logsRef = useRef<LogType[]>([])
   const currentCommandRecvLength = useRef<number>(0)
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [axisSelectionValue, setAxisSelectionValue] = useState<string>(
@@ -71,14 +79,17 @@ const Main = (props: MainWindowProps) => {
   const lineNumber = useRef<number>(0)
   const LogAction = (log: string): void => {
     lineNumber.current++
-    setLogs((prev) => [
-      ...prev,
+
+    logsRef.current = [
+      ...logsRef.current,
       { lineNumber: lineNumber.current, date: new Date(), log: log },
-    ])
+    ]
+    setLogs(logsRef.current)
   }
 
   const clearLogWindow = () => {
     lineNumber.current = 0
+    logsRef.current = []
     setLogs([])
   }
 
@@ -122,6 +133,15 @@ const Main = (props: MainWindowProps) => {
     }
   }, [])
 
+  //initialize the ref with the All axes
+  const axisRef = useRef<string>(
+    MotorAxes.find((item) => item.AxisName === 'All axes')?.AxisName as string,
+  )
+
+  useEffect(() => {
+    axisRef.current = axisSelectionValue
+  }, [axisSelectionValue])
+
   useEffect(() => {
     currentCommandRecvLength.current =
       props.currentCommandDictionary.ReceiveLength
@@ -139,41 +159,62 @@ const Main = (props: MainWindowProps) => {
     e.g. "410000" , it will send on the serial port the raw binary repr. of that string e.g. [0x41,0,0]
     when sending succeds, the function will output the send bytes on the log windows as a hexa decima string
  */
-  const sendDataToSerialPort = async (dataToSend: string | Uint8Array) => {
-    if (dataToSend.length === 0) {
-      LogAction(
-        'We know you are impatient dear scholar, but you must enter at least one byte!',
-      )
-      return
-    }
-    if (portSer && portSer.current && portSer.current.writable) {
-      const writer = portSer.current.writable.getWriter()
+  const sendDataToSerialPort = useCallback(
+    async (dataToSend: string | Uint8Array) => {
+      if (dataToSend.length === 0) {
+        LogAction(
+          'We know you are impatient dear scholar, but you must enter at least one byte!',
+        )
+        return
+      }
+      if (portSer && portSer.current && portSer.current.writable) {
+        const writer = portSer.current.writable.getWriter()
 
-      let data: Uint8Array = new Uint8Array([])
-      if (typeof dataToSend == 'string') {
-        data = stringToUint8Array(dataToSend.toUpperCase())
-        if (data.length == 0) {
-          LogAction(
-            'Your message has an invalid length, the number of bytes are not correct.',
-          )
-          return
+        let data: Uint8Array = new Uint8Array([])
+        if (typeof dataToSend == 'string') {
+          data = stringToUint8Array(dataToSend.toUpperCase())
+          if (data.length == 0) {
+            LogAction('Your message has an invalid length!')
+            return
+          }
+        } else {
+          data = dataToSend
         }
-      } else data = dataToSend
 
-      let hexString = Uint8ArrayToString(data)
-      await writer.write(data)
+        let hexString = Uint8ArrayToString(data)
+        await writer.write(data)
 
-      LogAction('Sent: 0x' + hexString.toUpperCase())
+        const commandNo = data.slice(1, 2)?.at(0)
+        if (props.currentCommandDictionary.CommandEnum != 23) {
+          LogAction('Sent: 0x' + hexString.toUpperCase())
+        }
 
-      timerHandle.current = setTimeout(() => {
-        LogAction('The command timed out.')
-      }, 1000)
+        const noTimeoutForCommands = [6, 23, 27, 28]
 
-      writer.releaseLock()
-    } else {
-      LogAction('Sending data is not possible, you must connect first!')
-    }
-  }
+        //Do not log the sent bytes for certain commands
+        if (
+          !noTimeoutForCommands.includes(commandNo as number) &&
+          props.currentCommandDictionary.CommandEnum != 23
+        ) {
+          timerHandle.current = setTimeout(() => {
+            LogAction('The command timed out.')
+          }, 1000)
+        } else {
+          /* the firmware upgrade command sends alot of data,
+           * avoid  overloading the log window
+           */
+          if (props.currentCommandDictionary.CommandEnum != 23) {
+            LogAction('Command sent sucessfully!')
+          }
+        }
+
+        writer.releaseLock()
+      } else {
+        LogAction('Sending data is not possible, you must connect first!')
+      }
+    },
+    [props.currentCommandDictionary.CommandEnum],
+  )
 
   const readDataFromSerialPortUntilClosed = async () => {
     if (portSer && portSer.current) {
@@ -231,6 +272,32 @@ const Main = (props: MainWindowProps) => {
       }
     }
   }
+
+  useEffect(() => {
+    const onAltRPressed = (e: KeyboardEvent) => {
+      if (e.key == 'r' && e.altKey) {
+        const initialRawBytes = new Uint8Array(3)
+
+        //get value of axis
+        let axisCode = 0
+        for (const motorAxis of MotorAxes) {
+          if (motorAxis.AxisName == axisRef.current)
+            axisCode = motorAxis.AxisCode
+        }
+        initialRawBytes.set([axisCode, 27, 0])
+
+        sendDataToSerialPort(initialRawBytes)
+      } else if (e.key == 'R' && e.altKey) {
+        sendDataToSerialPort('FF1B00')
+      }
+    }
+
+    document.addEventListener('keydown', onAltRPressed)
+
+    return () => {
+      document.removeEventListener('keydown', onAltRPressed)
+    }
+  }, [sendDataToSerialPort])
 
   /*
   This function will create a raw command containg an array of unsigned integers that represent the data.
@@ -791,6 +858,7 @@ const Main = (props: MainWindowProps) => {
         getAxisSelection={getAxisSelection}
         sendDataToSerialPort={sendDataToSerialPort}
         LogAction={LogAction}
+        isConnected={isConnected}
         constructCommand={constructCommand}
       >
         <SelectAxis
@@ -1085,14 +1153,14 @@ const Main = (props: MainWindowProps) => {
 
   return (
     <>
-      <div className="flex w-full bg-base-300 h-[85vh] rounded-box overflow-auto" >
+      <div className="flex w-full bg-base-300 h-[85vh] rounded-box overflow-auto">
         <Command
           {...props}
           sendDataToSerialPort={sendDataToSerialPort}
           connectToSerialPort={connectToSerialPort}
           disconnectFromSerialPort={disconnectFromSerialPort}
           isConnected={isConnected}
-          >
+        >
           {currentCommandLayout}
         </Command>
 

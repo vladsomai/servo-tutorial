@@ -235,7 +235,7 @@ export const MotorCommands: MotorCommandsDictionary[]
             "CommandString": "FIRMWARE_UPGRADE_COMMAND",
             "CommandEnum": 23,
             "Description": "Upgrade one page of flash memory (several of these are needed to do a full firmware upgrade). Documentation to be done later.",
-            "Input": "None",
+            "Input": "Firmware file",
             "Output": "Success_response"
         },
         {

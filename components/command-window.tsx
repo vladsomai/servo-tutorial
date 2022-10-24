@@ -24,7 +24,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
       to: { opacity: 1 },
       config: config.molasses,
     })
-  }, [props.currentChapter,api])
+  }, [props.currentChapter, api])
 
   if (props.currentCommandDictionary.CommandEnum !== 100)
     return (
@@ -99,7 +99,16 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
                   props.currentCommandDictionary.Output.map((item) => {
                     //for command 16
                     if (item.startsWith('Bit'))
-                      return <p className="ml-10">{item}</p>
+                      return (
+                        <p
+                          key={props.currentCommandDictionary.Output.indexOf(
+                            item,
+                          )}
+                          className="ml-10"
+                        >
+                          {item}
+                        </p>
+                      )
                     else
                       return (
                         <li
