@@ -1,9 +1,8 @@
 import '../styles/output.css'
 import type { AppProps } from 'next/app'
-import { ReactElement, ReactNode, useState } from 'react'
+import { ReactElement, ReactFragment, ReactNode, useState } from 'react'
 import type { NextPage } from 'next'
-import { useContext, createContext } from 'react'
-import App from 'next/app'
+import { createContext } from 'react'
 
 export type GlobalStateType = {
   theme: {
@@ -11,8 +10,10 @@ export type GlobalStateType = {
     setTheme: Function
   }
   modal: {
-    modalIsShown: boolean
-    showModal: Function
+    Title: string
+    setTitle: Function
+    Description: ReactNode
+    setDescription: Function
   }
 }
 
@@ -22,8 +23,10 @@ const GlobalState: GlobalStateType = {
     setTheme: () => {},
   },
   modal: {
-    modalIsShown: false,
-    showModal: () => {},
+    Title: '',
+    setTitle: () => {},
+    Description: <></>,
+    setDescription: () => {},
   },
 }
 export const GlobalContext = createContext(GlobalState)
@@ -37,9 +40,9 @@ type AppPropsWithLayout = AppProps & {
 }
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-
   const [_theme, _setTheme] = useState('')
-  const [_modalIsShown, _showModal] = useState(false)
+  const [_modalTitle, _setModalTitle] = useState('')
+  const [_modalDescription, _setModalDescription] = useState(<></>)
 
   const GlobalState: GlobalStateType = {
     theme: {
@@ -47,8 +50,10 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       setTheme: _setTheme,
     },
     modal: {
-      modalIsShown: _modalIsShown,
-      showModal: _showModal,
+      Title: _modalTitle,
+      setTitle: _setModalTitle,
+      Description: _modalDescription,
+      setDescription: _setModalDescription,
     },
   }
 

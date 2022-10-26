@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState, SyntheticEvent } from 'react'
+import { hexStringToASCII } from '../servo-engine/utils'
 import { LogType } from './log-window'
 import { MainWindowProps } from './main-window'
+import { useContext } from 'react'
+import { GlobalContext } from '../pages/_app'
 
 export interface LogLineServoCommandType
   extends LogType,
@@ -22,12 +25,30 @@ export interface CommandPayload {
   ReceivingPayload: CommandParameter[]
 }
 const LogLineServoCommand = (props: LogLineServoCommandType) => {
+  const globalContext = useContext(GlobalContext)
+  const descriptionObj = (
+    <>
+      <article className="mb-5 prose prose-lg max-w-full spacin tracking-wide">
+        <p className='text-xl mt-10'>Please verify each of the following is true:</p>
+        <ol className=''>
+          <li>You are connected to the serial port.</li>
+          <li>You selected the correct axis.</li>
+          <li>The motor is powered on.</li>
+          <li>The motor is connected to the USB port.</li>
+        </ol>
+      </article>
+    </>
+  )
+  const troubleshoot = () => {
+    globalContext.modal.setTitle('Troubleshooting guide')
+    globalContext.modal.setDescription(descriptionObj)
+  }
   const byteColor = useRef<string[]>([
+    ' text-violet-400',
+    ' text-violet-500',
+    ' text-violet-400',
+    ' text-blue-400',
     ' text-blue-500',
-    ' text-red-500',
-    ' text-yellow-500',
-    ' text-green-500',
-    ' text-green-600',
   ])
   const byteDescriptionSend = useRef<string[]>([
     'Targeted axis byte',
@@ -44,6 +65,9 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
   ])
 
   const [componentIsACommand, setComponentIsACommand] = useState<boolean>(false)
+  const [componentIsATroubleshoot, setComponentIsATroubleshoot] = useState<
+    boolean
+  >(false)
   const stringTo0x = useRef<string>('')
   const rawCommand = useRef<string>('')
   const commandBytes = useRef<CommandBytesType[]>([])
@@ -53,6 +77,9 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
       sendingPayload = props.SendingPayload,
       receivingPayload = props.ReceivingPayload,
     ) => {
+      setComponentIsACommand(false)
+      setComponentIsATroubleshoot(false)
+
       if (props.log.includes('Sent')) {
         setComponentIsACommand(true)
         const indexOf0x = props.log.indexOf('0x')
@@ -143,13 +170,23 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
               let currentStart = 6
               let NoOfChars = 0
               for (let i = 0; i < receivingPayload.length; i++) {
-                NoOfChars = receivingPayload.at(i)!.NoOfBytes * 2
+                const payloadAtI = receivingPayload.at(i) as CommandParameter
+                NoOfChars = payloadAtI.NoOfBytes * 2
+
+                //convert the payload to ascii if command 24 comes
+                const currentPayloadDescription =
+                  props.currentCommandDictionary.CommandEnum == 24
+                    ? hexStringToASCII(
+                        rawCommand.current.slice(6, rawCommand.current.length),
+                      )
+                    : payloadAtI.Description
+
                 commandBytes.current.push({
                   Value: rawCommand.current.slice(
                     currentStart,
                     currentStart + NoOfChars,
                   ),
-                  Description: receivingPayload.at(i)!.Description,
+                  Description: currentPayloadDescription,
                   Color: byteColor.current[i % 2 == 0 ? 3 : 4],
                 })
                 currentStart += NoOfChars
@@ -159,6 +196,8 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
             break
           }
         }
+      } else if (props.log.includes('timed out')) {
+        setComponentIsATroubleshoot(true)
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -201,7 +240,20 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
             ))}
           </div>
         ) : (
-          <p className="inline">{props.log}</p>
+          <>
+            <p className="inline">{props.log}</p>
+            {componentIsATroubleshoot && (
+              <>
+                <label
+                  className="inline link text-yellow-300"
+                  onClick={troubleshoot}
+                  htmlFor="my-modal-4"
+                >
+                  Troubleshoot
+                </label>
+              </>
+            )}
+          </>
         )}
       </div>
     </>

@@ -21,7 +21,7 @@ const Chapters = (props: ChaptersProps) => {
 
   return (
     <>
-      <div className="grid w-[10%] card bg-base-300 rounded-box place-items-center h-[85vh] overflow-auto mr-2">
+      <div className="grid w-[10%] h-full card bg-base-300 rounded-box place-items-center overflow-auto mr-2">
         <div className="flex flex-col w-full border-opacity-50 my-5">
           <div className="flex flex-col items-center">
             {chapters.map((i) => {

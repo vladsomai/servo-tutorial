@@ -22,7 +22,6 @@ class MyDocument extends Document {
           ></link>
 
         </Head>
-        <Modal {...{ Description: '', Title: '' }} />
         <body>
           <Main />
           <NextScript />

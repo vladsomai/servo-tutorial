@@ -10,11 +10,9 @@ import {
   MotorCommandsDictionary,
 } from '../../servo-engine/motor-commands'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 
 const Tutorial: NextPageWithLayout = () => {
   const router = useRouter()
-  const { chapterID } = router.query
 
   const [currentChapter, setCurrentChapter] = useState(1)
   const [currentCommandDictionary, setCurrentCommandDictionary] = useState<
@@ -26,16 +24,25 @@ const Tutorial: NextPageWithLayout = () => {
   }, [currentChapter])
 
   useEffect(() => {
-    if (chapterID !== undefined) {
-      setCurrentChapter(parseInt(chapterID as string))
+    if (router.isReady) {
+      const { chapterID } = router.query
+
+      const chapter = parseInt(chapterID as string)
+      if (chapter != 0 && chapter <= MotorCommands.length) {
+        setCurrentChapter(chapter)
+      } else {
+        router.push('/404')
+        setCurrentChapter(1)
+      }
     }
-  }, [chapterID])
+  }, [router])
+
   return (
     <>
       <Head>
-        <title>{`Chapter ${chapterID ? chapterID : ''}`}</title>
+        <title>{`Chapter ${currentChapter ? currentChapter : ''}`}</title>
       </Head>
-      <div className="flex animate__animated animate__fadeIn">
+      <div className="flex animate__animated animate__fadeIn h-full w-full">
         <Chapters {...{ currentChapter, setCurrentChapter }} />
         <Main {...{ currentChapter, currentCommandDictionary }} />
       </div>

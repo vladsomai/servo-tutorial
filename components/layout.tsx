@@ -1,14 +1,17 @@
 import Navbar from './navbar'
 import Footer from './footer'
+import Modal from './modal'
 
 export default function Layout({ session, children }: any) {
   return (
     <>
-    <div className='h-[9vh]'>
-      <Navbar />
-    </div>
+      <Modal />
 
-      <main className="hidden lg:block tracking-wider">
+      <div className="h-[7vh]">
+        <Navbar />
+      </div>
+
+      <main className="hidden lg:block tracking-wider h-[88vh] px-3">
         {children}
       </main>
 

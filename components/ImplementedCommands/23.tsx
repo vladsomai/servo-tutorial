@@ -190,11 +190,15 @@ export const Command23 = (props: FirmwareCmdProps) => {
           remainingBytesToFlash.slice(0, FLASH_PAGE_SIZE),
         )
 
-        await props.sendDataToSerialPort(byteArray.slice(0, 1000))
+        await props.sendDataToSerialPort(byteArray.slice(0, 1000), false, false)
         await sleep(50)
-        await props.sendDataToSerialPort(byteArray.slice(1000, 2000))
+        await props.sendDataToSerialPort(
+          byteArray.slice(1000, 2000),
+          false,
+          false,
+        )
         await sleep(50)
-        await props.sendDataToSerialPort(byteArray.slice(2000))
+        await props.sendDataToSerialPort(byteArray.slice(2000), false, false)
         await sleep(50)
 
         remainingBytesToFlash = remainingBytesToFlash.slice(FLASH_PAGE_SIZE)
@@ -205,14 +209,14 @@ export const Command23 = (props: FirmwareCmdProps) => {
     props.LogAction('Firmware upgrade in progress...')
 
     //System reset
-    await props.sendDataToSerialPort('FF1B00')
+    await props.sendDataToSerialPort('FF1B00', false, false)
 
     await sleep(100)
     await execute_programming()
     await sleep(100)
 
     //System reset
-    await props.sendDataToSerialPort('FF1B00')
+    await props.sendDataToSerialPort('FF1B00', false, false)
 
     props.LogAction('Firmware upgrade finished succesfully!')
   }
@@ -233,7 +237,7 @@ export const Command23 = (props: FirmwareCmdProps) => {
           />
         </div>
         <div className="flex justify-center">
-          <div className="mr-4">{props.children}</div>
+          {/* <div className="mr-4">{props.children}</div> */}
           <button className="btn btn-primary btn-sm" onClick={execute_command}>
             execute
           </button>

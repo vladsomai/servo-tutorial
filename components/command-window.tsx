@@ -28,7 +28,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
 
   if (props.currentCommandDictionary.CommandEnum !== 100)
     return (
-      <div className={`overflow-auto relative px-5 mx-2 w-6/12`}>
+      <div className={`overflow-auto relative px-5 w-6/12`}>
         <div className="absolute top-4 right-2">
           {props.isConnected ? (
             <button
@@ -132,7 +132,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
     return (
       <animated.div
         style={fade}
-        className={`overflow-auto relative px-5 mx-2 w-full`}
+        className={`overflow-auto relative`}
       >
         <CommandsProtocol
           currentCommandDictionary={props.currentCommandDictionary}

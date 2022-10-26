@@ -2,8 +2,8 @@ const Footer = () => {
   const currentDate: Date = new Date()
 
   return (
-    <footer className="">
-      <p className="h-[5vh] flex justify-center items-center">
+    <footer className="h-[5vh]">
+      <p className="flex flex-col text-center h-full justify-center text-xs">
         &copy;&nbsp;Tom&apos;s company&nbsp;- {currentDate.getFullYear()}
       </p>
     </footer>

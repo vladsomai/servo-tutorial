@@ -1,55 +1,47 @@
-import {
-  useEffect,
-  useState,
-  useRef,
-  useCallback,
-  ReactElement,
-  SyntheticEvent,
-} from 'react'
+import { useEffect, useState, useRef, useCallback, ReactElement } from 'react'
+import React from 'react'
 import Log from './log-window'
 import Command from './command-window'
 import { Uint8ArrayToString, stringToUint8Array } from '../servo-engine/utils'
 import { MotorCommandsDictionary } from '../servo-engine/motor-commands'
 import { LogType } from '../components/log-window'
 import { MotorAxes } from '../servo-engine/motor-axes'
-import { Command1 } from './ImplementedCommands/0_1'
-import { Command31 } from './ImplementedCommands/31'
 import SelectAxis from './selectAxis'
-import React from 'react'
-import { Command10 } from './ImplementedCommands/10'
-import { Command8 } from './ImplementedCommands/8'
-import { Command4 } from './ImplementedCommands/4'
+import { CommandPayload } from './log-line-servo-command'
+import { Command1 } from './ImplementedCommands/0_1'
 import { Command2 } from './ImplementedCommands/2'
-import { Command7 } from './ImplementedCommands/7'
+import { Command3 } from './ImplementedCommands/3'
+import { Command4 } from './ImplementedCommands/4'
+import { Command5 } from './ImplementedCommands/5'
 import { Command6 } from './ImplementedCommands/6'
+import { Command7 } from './ImplementedCommands/7'
+import { Command8 } from './ImplementedCommands/8'
 import { Command9 } from './ImplementedCommands/9'
+import { Command10 } from './ImplementedCommands/10'
 import { Command11 } from './ImplementedCommands/11'
 import { Command12 } from './ImplementedCommands/12'
 import { Command13 } from './ImplementedCommands/13'
+import { Command14 } from './ImplementedCommands/14'
 import { Command15 } from './ImplementedCommands/15'
 import { Command16 } from './ImplementedCommands/16'
 import { Command17 } from './ImplementedCommands/17'
 import { Command18 } from './ImplementedCommands/18'
+import { Command19 } from './ImplementedCommands/19'
 import { Command20 } from './ImplementedCommands/20'
+import { Command21 } from './ImplementedCommands/21'
 import { Command22 } from './ImplementedCommands/22'
 import { Command23 } from './ImplementedCommands/23'
 import { Command24 } from './ImplementedCommands/24'
 import { Command25 } from './ImplementedCommands/25'
+import { Command26 } from './ImplementedCommands/26'
 import { Command27 } from './ImplementedCommands/27'
+import { Command28 } from './ImplementedCommands/28'
+import { Command29, MoveCommand } from './ImplementedCommands/29'
+import { Command30 } from './ImplementedCommands/30'
+import { Command31 } from './ImplementedCommands/31'
+import { Command32 } from './ImplementedCommands/32'
 import { Command33 } from './ImplementedCommands/33'
 import { Command254 } from './ImplementedCommands/254'
-import { Command32 } from './ImplementedCommands/32'
-import { Command30 } from './ImplementedCommands/30'
-import { Command28 } from './ImplementedCommands/28'
-import { Command3 } from './ImplementedCommands/3'
-import { Command5 } from './ImplementedCommands/5'
-import { Command14 } from './ImplementedCommands/14'
-import { Command19 } from './ImplementedCommands/19'
-import { Command26 } from './ImplementedCommands/26'
-import { Command29, MoveCommand } from './ImplementedCommands/29'
-import { CommandPayload } from './log-line-servo-command'
-import { Command21 } from './ImplementedCommands/21'
-import { animated, useTransition } from '@react-spring/web'
 
 export type MainWindowProps = {
   currentChapter: number
@@ -160,7 +152,11 @@ const Main = (props: MainWindowProps) => {
     when sending succeds, the function will output the send bytes on the log windows as a hexa decima string
  */
   const sendDataToSerialPort = useCallback(
-    async (dataToSend: string | Uint8Array) => {
+    async (
+      dataToSend: string | Uint8Array,
+      enableSentLogging = true,
+      enableTimoutLogging = true,
+    ) => {
       if (dataToSend.length === 0) {
         LogAction(
           'We know you are impatient dear scholar, but you must enter at least one byte!',
@@ -184,28 +180,19 @@ const Main = (props: MainWindowProps) => {
         let hexString = Uint8ArrayToString(data)
         await writer.write(data)
 
-        const commandNo = data.slice(1, 2)?.at(0)
-        if (props.currentCommandDictionary.CommandEnum != 23) {
+        if (enableSentLogging) {
           LogAction('Sent: 0x' + hexString.toUpperCase())
         }
 
-        const noTimeoutForCommands = [6, 23, 27, 28]
-
         //Do not log the sent bytes for certain commands
-        if (
-          !noTimeoutForCommands.includes(commandNo as number) &&
-          props.currentCommandDictionary.CommandEnum != 23
-        ) {
+        if (enableTimoutLogging) {
           timerHandle.current = setTimeout(() => {
             LogAction('The command timed out.')
           }, 1000)
-        } else {
-          /* the firmware upgrade command sends alot of data,
-           * avoid  overloading the log window
-           */
-          if (props.currentCommandDictionary.CommandEnum != 23) {
-            LogAction('Command sent sucessfully!')
-          }
+        }
+
+        if (enableSentLogging && !enableTimoutLogging) {
+          LogAction('Command sent sucessfully!')
         }
 
         writer.releaseLock()
@@ -213,7 +200,7 @@ const Main = (props: MainWindowProps) => {
         LogAction('Sending data is not possible, you must connect first!')
       }
     },
-    [props.currentCommandDictionary.CommandEnum],
+    [],
   )
 
   const readDataFromSerialPortUntilClosed = async () => {
@@ -274,7 +261,8 @@ const Main = (props: MainWindowProps) => {
   }
 
   useEffect(() => {
-    const onAltRPressed = (e: KeyboardEvent) => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      /**System Reset shortcut */
       if (e.key == 'r' && e.altKey) {
         const initialRawBytes = new Uint8Array(3)
 
@@ -286,16 +274,46 @@ const Main = (props: MainWindowProps) => {
         }
         initialRawBytes.set([axisCode, 27, 0])
 
-        sendDataToSerialPort(initialRawBytes)
+        sendDataToSerialPort(initialRawBytes, true, false)
       } else if (e.key == 'R' && e.altKey) {
-        sendDataToSerialPort('FF1B00')
+        sendDataToSerialPort('FF1B00', true, false)
+      } else if (e.key == 'E' && e.altKey && e.shiftKey) {
+        /**Enable MOSFETS sortcut */
+        const initialRawBytes = new Uint8Array(3)
+
+        //get value of axis
+        let axisCode = 0
+        for (const motorAxis of MotorAxes) {
+          if (motorAxis.AxisName == axisRef.current)
+            axisCode = motorAxis.AxisCode
+        }
+        initialRawBytes.set([axisCode, 1, 0])
+
+        sendDataToSerialPort(initialRawBytes, true, true)
+      } else if (e.key == 'e' && e.altKey && e.shiftKey) {
+        sendDataToSerialPort('FF0100', true, true)
+      } else if (e.key == 'D' && e.altKey && e.shiftKey) {
+        /**Disable MOSFETS shortcut */
+        const initialRawBytes = new Uint8Array(3)
+
+        //get value of axis
+        let axisCode = 0
+        for (const motorAxis of MotorAxes) {
+          if (motorAxis.AxisName == axisRef.current)
+            axisCode = motorAxis.AxisCode
+        }
+        initialRawBytes.set([axisCode, 0, 0])
+
+        sendDataToSerialPort(initialRawBytes, true, true)
+      } else if (e.key == 'd' && e.altKey && e.shiftKey) {
+        sendDataToSerialPort('FF0000', true, true)
       }
     }
 
-    document.addEventListener('keydown', onAltRPressed)
+    document.addEventListener('keydown', onKeyDown)
 
     return () => {
-      document.removeEventListener('keydown', onAltRPressed)
+      document.removeEventListener('keydown', onKeyDown)
     }
   }, [sendDataToSerialPort])
 
@@ -1153,7 +1171,7 @@ const Main = (props: MainWindowProps) => {
 
   return (
     <>
-      <div className="flex w-full bg-base-300 h-[85vh] rounded-box overflow-auto">
+      <div className="flex w-full h-full bg-base-300 rounded-box overflow-auto">
         <Command
           {...props}
           sendDataToSerialPort={sendDataToSerialPort}

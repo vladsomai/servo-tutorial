@@ -326,3 +326,19 @@ export const sleep = (time_ms: number) =>
     new Promise((resolve, reject) => {
         setTimeout(resolve, time_ms)
     })
+
+
+export const hexStringToASCII = (_input: string): string => {
+
+    let strToNumberArr = stringToUint8Array(_input)
+
+    let ret = ''
+    for (let i = 0; i < strToNumberArr.length; i++) {
+        if (strToNumberArr[i] == 0) break;
+
+        ret += String.fromCharCode(strToNumberArr[i]);
+    }
+
+    ret = "To ASCII: " + ret;
+    return ret
+}

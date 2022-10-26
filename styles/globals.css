@@ -8,12 +8,6 @@
   }
 }
 
-html {
-  margin-top: 1vh;
-  margin-left: 1vw;
-  margin-right: 1vw;
-}
-
 div::-webkit-scrollbar {
   width: 7px;
   height: 7px;

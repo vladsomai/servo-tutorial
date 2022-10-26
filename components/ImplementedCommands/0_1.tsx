@@ -2,7 +2,11 @@ import { MainWindowProps } from '../main-window'
 import { ReactElement } from 'react'
 
 export interface ChaptersPropsType extends MainWindowProps {
-  sendDataToSerialPort: (dataToSend: string | Uint8Array) => void
+  sendDataToSerialPort: (
+    dataToSend: string | Uint8Array,
+    enableSentLogging?: boolean,
+    enableTimoutLogging?: boolean,
+  ) => void
   LogAction: (log: string) => void
   constructCommand: (_axis: string, _payload: string) => Uint8Array
   getAxisSelection: () => string
