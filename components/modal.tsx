@@ -6,8 +6,7 @@ export type ModalPropertiesType = {}
 
 const Modal = (props: ModalPropertiesType) => {
   const value = useContext(GlobalContext)
-  useEffect(() => {
-  })
+  useEffect(() => {})
 
   return (
     <>
@@ -20,8 +19,10 @@ const Modal = (props: ModalPropertiesType) => {
           >
             ✕
           </label>
-          <h1 className="text-2xl tracking-widest font-bold">{value.modal.Title}</h1>
-          <p className="py-4">{value.modal.Description}</p>
+          <h1 className="text-2xl tracking-widest font-bold">
+            {value.modal.Title}
+          </h1>
+          <div className="py-4">{value.modal.Description}</div>
         </label>
       </label>
     </>

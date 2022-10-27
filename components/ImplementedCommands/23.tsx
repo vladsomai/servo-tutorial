@@ -1,6 +1,7 @@
 import { SyntheticEvent, useRef } from 'react'
 import { crc32, sleep } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
+import Image from 'next/image'
 
 interface FirmwareCmdProps extends ChaptersPropsType {
   isConnected: boolean
@@ -133,6 +134,8 @@ export const Command23 = (props: FirmwareCmdProps) => {
     //#region constructOneTelegram
     const constructOneTelegram = (pageNum: number, data: Uint8Array) => {
       //#region FLASH_PAGE_SIZE
+
+      //model code, fw compatibility code, page number
       const fps = 8 + 1 + 1 + FLASH_PAGE_SIZE
       /* Convert the fps to u16*/
       const rawFpsArr = new ArrayBuffer(2)
@@ -237,12 +240,195 @@ export const Command23 = (props: FirmwareCmdProps) => {
           />
         </div>
         <div className="flex justify-center">
-          {/* <div className="mr-4">{props.children}</div> */}
           <button className="btn btn-primary btn-sm" onClick={execute_command}>
             execute
           </button>
         </div>
       </div>
+      <article className="mb-5 prose prose-slate max-w-full">
+        <div className="flex justify-center">
+          <h2>
+            Let&apos;s learn how to implement the firmware upgrade command
+          </h2>
+        </div>
+        <h3>Preparing the firmware</h3>
+        <p>
+          Firstly, we must understand how the firmware file is structured, here
+          is a sample:{' '}
+        </p>
+        <Image
+          className="mask rounded-box"
+          width={793}
+          height={964}
+          src="/FirmwareFile.png"
+          alt="main picture"
+          priority
+        ></Image>
+        <p></p>
+        <ul>
+          <li>
+            First 8 bytes represent the model code. In the following guide, we
+            will refer to those 8 bytes as <b>model code</b>.
+          </li>
+          <li>
+            9th byte represent the firmware compatibility code. In the following
+            guide, we will refer to this byte as <b>fw compatibility code</b>.
+          </li>
+          <li>Bytes 10 to 13 are currently not used.</li>
+          <li>
+            The rest of the bytes from the firmware file represent the
+            application code. All the following operations will involve
+            manipulating this byte array(from 14th byte to the end of the
+            firmware file). In the following guide, we will refer to those bytes
+            as <b>fw app code</b>.
+          </li>
+        </ul>
+        <h4>Flash memory mapping</h4>
+        <p>
+          {' '}
+          The flash memory is organized in <b>pages</b> each containing{' '}
+          <b>2048 bytes.</b>
+        </p>
+        <p>
+          The microcontroller has 31 flash pages available for the user in the
+          following form:
+        </p>
+        <ol>
+          <li>Pages 1 to 5 are reserved for bootloader code.</li>
+          <li>Pages 6 to 30 are reserved for application code.</li>
+          <li>Page 31 is reserved for flash settings.</li>
+        </ol>
+        <p>
+          Pages 1 to 5 and 31 will be set by the manufacturer of the motor, you
+          must not write at those memory addreses yourself. To summerize, the
+          memory map looks like this:
+        </p>
+        <div className="overflow-x-auto">
+          <table className="table w-full">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Start address</th>
+                <th>End address</th>
+                <th>Size (bytes)</th>
+                <th>Pages</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>1</th>
+                <td>0</td>
+                <td>0x3FF</td>
+                <td>10240</td>
+                <td>5</td>
+                <td>Bootloader area</td>
+              </tr>
+              <tr>
+                <th>2</th>
+                <td>0x400</td>
+                <td>0xEFF</td>
+                <td>51200</td>
+                <td>25</td>
+                <td>Application area</td>
+              </tr>
+              <tr>
+                <th>1</th>
+                <td>0xF000</td>
+                <td>0xF7FF</td>
+                <td>2048</td>
+                <td>1</td>
+                <td>Flash settings area</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Steps to follow in preparing the firmware flashing process</h4>
+        <ol>
+          <li>Load the firmware file.</li>
+          <li>
+            Split the firmware file into 4 uint8_t arrays containing all the
+            bullets described above in the structure of the file.
+          </li>
+          <li>
+            Verify the application code is not larger than the maximum flash
+            size reserved for application area.
+          </li>
+          <li>
+            Compute the firmware size in machine <b>words</b>. This is achieved
+            by getting the length of the <b>fw app code</b> and dividing it by
+            4. The firmware size than needs to be stored into a uint32_t with
+            little endian format.
+          </li>
+          <li>
+            Compute the CRC32 using the <b>fw app code</b>. You can find
+            exapmples on the web on how to implement a CRC32 function. The CRC32
+            value needs to be stored into an uint32_t with little endian format.
+          </li>
+          <li>
+            Compute the final firmware that you will use to send over the serial
+            port. The final firmware must have the first 4 bytes the ones
+            computed at step 4(the ones stored in little endian format), the{' '}
+            <b>fw app code</b> and the CRC32 bytes computed at step 5. Keep in
+            mind the following rules:
+          </li>
+          <ul>
+            <li>
+              Calculate the current size of the final firmware by adding up the
+              firmware size bytes(4bytes / 32bits), fw app code size(variable in
+              length), CRC32 bytes(4bytes / 32bits). We will call this size{' '}
+              <b>fw size without padding</b>
+            </li>
+            <li>
+              You will need to concatenate &apos;0&apos; bytes at the end, until
+              a full flash page is completed. Generate a new uint8_t array full
+              of &apos;0&apos; with the size equal to{' '}
+              <i> ceil(currentFwSize / 2048)</i>
+            </li>
+          </ul>
+          <li>
+            At this point you shall have the following uint8_t array: fw_size +
+            fw_app_code + CRC32 + zeros until the end of a page. We will call
+            this the <b>final fw app code</b>
+          </li>
+        </ol>
+        <h2>Executing the flashing process</h2>
+        <p>
+          Using the final array constructed above, we will need to break it up
+          into chunks of 2048 bytes where you will also append the axis, command
+          and length bytes. We will call this array the <b>telegram</b>.
+        </p>
+        <h4>Constructing the telegram</h4>
+        <ol>
+          <li>Byte 0: Axis - set to 255 / 0xFF.</li>
+          <li>Byte 1: Command no. (23)</li>
+          <li>Byte 2: Length byte - set to 255 / 0xFF.</li>
+          <li>
+            Bytes 3,4: Flash page size(8+1+1+2048), where 8 is size of model
+            code, 1 is size of fw compatibility code, 1 is page number that is
+            currently beeing written to, 2048 is the flash page size.
+          </li>
+          <li>Bytes 5 to 12: Model code.</li>
+          <li>Byte 13: Fw compatibility code.</li>
+          <li>
+            Byte 14: The current page number that is being written to (this is a
+            uint8_t and range from 5 to 29).
+          </li>
+          <li>
+            Bytes 15 to 2062: The 2048 bytes chunk from the final fw app code
+          </li>
+        </ol>
+        <h4>Execution</h4>
+        <ol>
+          <li>Do a firmware reset (command 27).</li>
+          <li>
+            Construct telegram until all 2048 chunks are sent over the serial
+            port to the motor, using a delay of 50ms between all the telegrams.
+          </li>
+          <li>Do a firmware reset (command 27).</li>
+        </ol>
+      </article>
     </>
   )
 }

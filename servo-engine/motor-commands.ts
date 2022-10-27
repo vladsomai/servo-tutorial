@@ -193,7 +193,7 @@ export const MotorCommands: MotorCommandsDictionary[]
             "Output": "Success_response"
         },
         {
-            "ReceiveLength": 3,
+            "ReceiveLength": 16,
             "CommandString": "DETECT_DEVICES_COMMAND",
             "CommandEnum": 20,
             "Description": "Detect devices",

@@ -2,8 +2,15 @@ import { useEffect, useState, useRef, useCallback, ReactElement } from 'react'
 import React from 'react'
 import Log from './log-window'
 import Command from './command-window'
-import { Uint8ArrayToString, stringToUint8Array } from '../servo-engine/utils'
-import { MotorCommandsDictionary } from '../servo-engine/motor-commands'
+import {
+  Uint8ArrayToString,
+  stringToUint8Array,
+  sleep,
+} from '../servo-engine/utils'
+import {
+  MotorCommands,
+  MotorCommandsDictionary,
+} from '../servo-engine/motor-commands'
 import { LogType } from '../components/log-window'
 import { MotorAxes } from '../servo-engine/motor-axes'
 import SelectAxis from './selectAxis'
@@ -134,10 +141,10 @@ const Main = (props: MainWindowProps) => {
     axisRef.current = axisSelectionValue
   }, [axisSelectionValue])
 
-  useEffect(() => {
-    currentCommandRecvLength.current =
-      props.currentCommandDictionary.ReceiveLength
-  }, [props.currentCommandDictionary])
+  // useEffect(() => {
+  //   currentCommandRecvLength.current =
+  //     props.currentCommandDictionary.ReceiveLength
+  // }, [props.currentCommandDictionary])
 
   useEffect(() => {
     return () => {
@@ -177,14 +184,21 @@ const Main = (props: MainWindowProps) => {
           data = dataToSend
         }
 
-        let hexString = Uint8ArrayToString(data)
+        /* we will need to find current command receive
+           length so we can wait for whole receive message later
+        */
+        MotorCommands.forEach((element) => {
+          if (data[1] == element.CommandEnum) {
+            currentCommandRecvLength.current = element.ReceiveLength
+          }
+        })
         await writer.write(data)
 
+        let hexString = Uint8ArrayToString(data)
         if (enableSentLogging) {
           LogAction('Sent: 0x' + hexString.toUpperCase())
         }
 
-        //Do not log the sent bytes for certain commands
         if (enableTimoutLogging) {
           timerHandle.current = setTimeout(() => {
             LogAction('The command timed out.')
@@ -212,7 +226,7 @@ const Main = (props: MainWindowProps) => {
           try {
             while (true) {
               if (portSer.current != null && portSer.current.readable) {
-                const { value, done } = await reader.current!.read()
+                const { value, done } = await reader.current.read()
                 if (done) {
                   LogAction('Reader is now closed!')
                   reader.current.releaseLock()
