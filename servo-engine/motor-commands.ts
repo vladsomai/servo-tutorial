@@ -20,23 +20,23 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "DISABLE_MOSFETS_COMMAND",
+            "CommandString": "Disable MOSFETs",
             "CommandEnum": 0,
-            "Description": "Disable MOSFETS (note that MOSFETs are disabled after initial power on)",
+            "Description": "Disables the MOSFETS (note that MOSFETs are disabled after initial power on). This command can be executed using ALT + SHIFT + d to disable MOSFETs for the current selected axis or ALT + SHIFT + D to disable MOSFETs on all axes.",
             "Input": "None",
             "Output": "Success_response"
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "ENABLE_MOSFETS_COMMAND",
+            "CommandString": "Enable MOSFETs",
             "CommandEnum": 1,
-            "Description": "Enable MOSFETS",
+            "Description": "Enables the MOSFETS. This command can be executed using ALT + SHIFT + e to enable MOSFETs for the current selected axis or ALT + SHIFT + E to enable MOSFETs on all axes.",
             "Input": "None",
             "Output": "Success_response"
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "SET_MAX_VELOCITY_COMMAND",
+            "CommandString": "Set maximum velocity",
             "CommandEnum": 3,
             "Description": "Sets maximum velocity (this is not used at this time)",
             "Input": "u32: Maximum velocity",
@@ -44,7 +44,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "SET_POSITION_AND_FINISH_TIME_COMMAND",
+            "CommandString": "Set position and finish time",
             "CommandEnum": 4,
             "Description": "Move to this new given position and finish the move at the given absolution time",
             "Input": [
@@ -55,7 +55,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "SET_MAX_ACCELERATION_COMMAND",
+            "CommandString": "Set maximum acceleration",
             "CommandEnum": 5,
             "Description": "Sets max acceleration",
             "Input": "i32: The maximum acceleration",
@@ -63,7 +63,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "START_CALIBRATION_COMMAND",
+            "CommandString": "Start calibration",
             "CommandEnum": 6,
             "Description": "Starts a calibration, which will determine the average values of the hall sensors and will determine if they are working correctly",
             "Input": "None",
@@ -71,7 +71,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 6,
-            "CommandString": "CAPTURE_HALL_SENSOR_DATA_COMMAND",
+            "CommandString": "Capture hall sensor data",
             "CommandEnum": 7,
             "Description": "Start sending hall sensor data (work in progress; don't send this command)",
             "Input": "u8: Indicates the type of data to read. Currently 1 to 4 are valid. 0 indicates turning off the reading.",
@@ -79,7 +79,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "RESET_TIME_COMMAND",
+            "CommandString": "Reset time",
             "CommandEnum": 8,
             "Description": "Resets the absolute time to zero (call this first before issuing any movement commands)",
             "Input": "None",
@@ -87,7 +87,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 9,
-            "CommandString": "TIME_SYNC_COMMAND",
+            "CommandString": "Time sync",
             "CommandEnum": 10,
             "Description": "Sends the master time to the motor so that it can sync its own clock (do this 10 times per second)",
             "Input": "u48: The motor absolute time that the motor should sync to (in microseconds)",
@@ -98,7 +98,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 9,
-            "CommandString": "GET_CURRENT_TIME_COMMAND",
+            "CommandString": "Get current time",
             "CommandEnum": 9,
             "Description": "Gets the current absolute time",
             "Input": "None",
@@ -106,7 +106,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "GET_N_ITEMS_IN_QUEUE_COMMAND",
+            "CommandString": "Get queue size",
             "CommandEnum": 11,
             "Description": "Get the number of items currently in the movement queue (if this gets too large, don't queue any more movement commands)",
             "Input": "None",
@@ -114,7 +114,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "EMERGENCY_STOP_COMMAND",
+            "CommandString": "Emergency stop",
             "CommandEnum": 12,
             "Description": "Emergency stop (stop all movement, disable MOSFETS, clear the queue)",
             "Input": "None",
@@ -122,7 +122,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "ZERO_POSITION_COMMAND",
+            "CommandString": "Zero position",
             "CommandEnum": 13,
             "Description": "Make the current position the position zero (origin)",
             "Input": "None",
@@ -130,7 +130,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "HOMING_COMMAND",
+            "CommandString": "Homing",
             "CommandEnum": 14,
             "Description": "Homing (or in other words, move until a crash and then stop immediately)",
             "Input": [
@@ -141,7 +141,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "GET_POSITION_COMMAND",
+            "CommandString": "Get current position",
             "CommandEnum": 15,
             "Description": "Gets the current position",
             "Input": "None",
@@ -149,7 +149,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "GET_STATUS_COMMAND",
+            "CommandString": "Get status",
             "CommandEnum": 16,
             "Description": "Gets the status",
             "Input": "None",
@@ -167,7 +167,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "GO_TO_CLOSED_LOOP_COMMAND",
+            "CommandString": "Go to closed loop",
             "CommandEnum": 17,
             "Description": "Go to closed loop position control mode",
             "Input": "None",
@@ -175,7 +175,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "GET_UPDATE_FREQUENCY_COMMAND",
+            "CommandString": "Get update frequency",
             "CommandEnum": 18,
             "Description": "Get the update frequency (reciprocal of the time step)",
             "Input": "None",
@@ -183,9 +183,9 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "MOVE_WITH_ACCELERATION_COMMAND",
+            "CommandString": "Move with acceleration",
             "CommandEnum": 19,
-            "Description": "Move with acceleration",
+            "Description": "Rotates the motor with the specified acceleration",
             "Input": [
                 "i32: The acceleration (the unit is microsteps per time step per time step * 2^24).",
                 "u32: The number of time steps to apply this acceleration. Use command 18 to get the frequency of the time steps. After this many time steps, the acceleration will go to zero and velocity will be maintained."
@@ -194,7 +194,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 16,
-            "CommandString": "DETECT_DEVICES_COMMAND",
+            "CommandString": "Detect devices",
             "CommandEnum": 20,
             "Description": "Detect devices",
             "Input": "None",
@@ -206,9 +206,9 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "SET_DEVICE_ALIAS_COMMAND",
+            "CommandString": "Set device alias",
             "CommandEnum": 21,
-            "Description": "Set device alias",
+            "Description": "Sets device alias",
             "Input": [
                 "u64_unique_id: Unique ID of the target device.",
                 "u8_alias: The alias (short one byte ID) such as X, Y, Z, E, etc. Cannot be R because this is reserved for a response message."
@@ -217,7 +217,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "GET_PRODUCT_INFO_COMMAND",
+            "CommandString": "Get product info",
             "CommandEnum": 22,
             "Description": "Get product information",
             "Input": "None",
@@ -232,7 +232,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "FIRMWARE_UPGRADE_COMMAND",
+            "CommandString": "Firmware upgrade",
             "CommandEnum": 23,
             "Description": "Upgrade one page of flash memory (several of these are needed to do a full firmware upgrade). Documentation to be done later.",
             "Input": "Firmware file",
@@ -240,7 +240,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "GET_PRODUCT_DESCRIPTION_COMMAND",
+            "CommandString": "Get product description",
             "CommandEnum": 24,
             "Description": "Get the product description. Documentation to be done later.",
             "Input": "None",
@@ -248,7 +248,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "GET_FIRMWARE_VERSION_COMMAND",
+            "CommandString": "Get firmware version",
             "CommandEnum": 25,
             "Description": "Get the firmware version. Documentation to be done later.",
             "Input": "None",
@@ -256,9 +256,9 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "MOVE_WITH_VELOCITY_COMMAND",
+            "CommandString": "Move with velocity",
             "CommandEnum": 26,
-            "Description": "Move with velocity",
+            "Description": "Rotates the motor with the specified velocity",
             "Input": [
                 "i32: The velocity (the unit is microsteps per time step * 2^20).",
                 "u32: The number of time steps to maintain this velocity. Use command 18 to get the frequency of the time steps. After this many time steps, If the queue becomes empty, the motor will maintain the last velocity indefinitely. The velocity will take affect immediately if the queue is empty or will take affect immediately when this queued item is reached."
@@ -267,15 +267,15 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "SYSTEM_RESET_COMMAND",
+            "CommandString": "System reset",
             "CommandEnum": 27,
-            "Description": "System reset / go to the bootloader. The motor will reset immediately and will enter the bootloader. If there is no command sent within a short time, the motor will exit the bootloader and run the application from the beginning.",
+            "Description": "System reset / go to the bootloader. The motor will reset immediately and will enter the bootloader. If there is no command sent within a short time, the motor will exit the bootloader and run the application from the beginning. This command can be executed using ALT + r to reset the current selected axis or ALT + R to reset all axes.",
             "Input": "None",
             "Output": "None"
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "SET_MAXIMUM_MOTOR_CURRENT",
+            "CommandString": "Set maximum motor current",
             "CommandEnum": 28,
             "Description": "Set the maximum motor current and maximum regeneration current. The values are stored in non-volatile memory and survive a reset.",
             "Input": [
@@ -286,7 +286,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "MULTI_MOVE_COMMAND",
+            "CommandString": "Multi-move",
             "CommandEnum": 29,
             "Description": "Multi-move command",
             "Input": [
@@ -298,7 +298,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "SET_SAFETY_LIMITS_COMMAND",
+            "CommandString": "Set safety limits",
             "CommandEnum": 30,
             "Description": "Set safety limits (to prevent motion from exceeding set bounds)",
             "Input": [
@@ -309,7 +309,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 13,
-            "CommandString": "PING_COMMAND",
+            "CommandString": "Ping",
             "CommandEnum": 31,
             "Description": "Send a payload containing any data and the device will respond with the same data back",
             "Input": "buf10: Any binary data payload to send to the device",
@@ -317,7 +317,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "CONTROL_HALL_SENSOR_STATISTICS_COMMAND",
+            "CommandString": "Control hall sensor statistics",
             "CommandEnum": 32,
             "Description": "Turn on or off the gathering of statistics for the hall sensors and reset the statistics",
             "Input": "u8: 0 = turn off statistics gathering, 1 = reset statistics and turn on gathering",
@@ -325,7 +325,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 43,
-            "CommandString": "GET_HALL_SENSOR_STATISTICS_COMMAND",
+            "CommandString": "Get hall sesor statistics",
             "CommandEnum": 33,
             "Description": "Read back the statistics gathered from the hall sensors. Useful for checking the hall sensor health and noise in the system.",
             "Input": "None ",
@@ -344,7 +344,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "ADD_TO_QUEUE_TEST_COMMAND",
+            "CommandString": "Add to queue test",
             "CommandEnum": 254,
             "Description": "Used for testing of some calculations that predict of the motion will go out of the set safety limits",
             "Input": "None",
@@ -352,7 +352,7 @@ export const MotorCommands: MotorCommandsDictionary[]
         },
         {
             "ReceiveLength": 3,
-            "CommandString": "TRAPEZOID_MOVE_COMMAND",
+            "CommandString": "Trapezoid move",
             "CommandEnum": 2,
             "Description": "Move immediately to the given position using the currently set speed (the speed is set by a separate command)",
             "Input": [
