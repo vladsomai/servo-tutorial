@@ -6,7 +6,7 @@ import type { NextPageWithLayout } from './_app'
 import 'animate.css'
 
 const Home: NextPageWithLayout = () => {
-  const MainPicHeight = 400
+  const MainPicHeight = 300
   const MainPicAspectRation = 1.37
 
   return (
@@ -15,9 +15,9 @@ const Home: NextPageWithLayout = () => {
         <title>Home</title>
       </Head>
       <div className="text-center animate__animated animate__fadeIn h-[85vh]">
-        <div className=" flex flex-col justify-evenly h-[80%]">
-          <h1 className="text-6xl">Welcome Scholar!</h1>
-          <p className="text-2xl">
+        <div className=" flex flex-col h-full">
+          <h1 className="text-6xl my-20">Welcome Scholar!</h1>
+          <p className="text-2xl mb-11">
             We are happy to see you, this tutorial will teach you how to use a
             servo motor.
           </p>
