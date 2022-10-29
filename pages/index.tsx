@@ -1,13 +1,17 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import Layout from '../components/layout'
-import type { ReactElement, ReactNode } from 'react'
+import { ReactElement, ReactNode, useEffect, useRef, useState } from 'react'
 import type { NextPageWithLayout } from './_app'
 import 'animate.css'
 
 const Home: NextPageWithLayout = () => {
-  const MainPicHeight = 300
+  const [MainPicHeight, setMainPicHeight] = useState(50)
   const MainPicAspectRation = 1.37
+
+  useEffect(() => {
+    setMainPicHeight(window.innerWidth/5)
+  }, [])
 
   return (
     <>
@@ -16,8 +20,8 @@ const Home: NextPageWithLayout = () => {
       </Head>
       <div className="text-center animate__animated animate__fadeIn h-[85vh]">
         <div className=" flex flex-col h-full">
-          <h1 className="text-6xl my-20">Welcome Scholar!</h1>
-          <p className="text-2xl mb-11">
+          <h1 className="text-6xl xl:text-4xl my-10">Welcome Scholar!</h1>
+          <p className="text-2xl xl:text-lg mb-5">
             We are happy to see you, this tutorial will teach you how to use a
             servo motor.
           </p>

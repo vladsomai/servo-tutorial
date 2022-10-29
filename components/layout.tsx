@@ -15,7 +15,7 @@ export default function Layout({ session, children }: any) {
         {children}
       </main>
 
-      <main className="lg:hidden flex justify-center items-center text-center">
+      <main className="lg:hidden h-[88vh] flex justify-center items-center text-center">
         <h1 className="text-6xl">
           You cannot view this website on small screens!
         </h1>
