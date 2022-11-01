@@ -276,8 +276,9 @@ const Main = (props: MainWindowProps) => {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      e.preventDefault();
       /**System Reset shortcut */
-      if (e.key == 'r' && e.altKey) {
+      if (e.key == 'r' && e.ctrlKey) {
         const initialRawBytes = new Uint8Array(3)
 
         //get value of axis
@@ -289,9 +290,9 @@ const Main = (props: MainWindowProps) => {
         initialRawBytes.set([axisCode, 27, 0])
 
         sendDataToSerialPort(initialRawBytes, true, false)
-      } else if (e.key == 'R' && e.altKey) {
+      } else if (e.key == 'R' && e.ctrlKey) {
         sendDataToSerialPort('FF1B00', true, false)
-      } else if (e.key == 'E' && e.altKey && e.shiftKey) {
+      } else if (e.key == 'e' && e.ctrlKey) {
         /**Enable MOSFETS sortcut */
         const initialRawBytes = new Uint8Array(3)
 
@@ -304,9 +305,9 @@ const Main = (props: MainWindowProps) => {
         initialRawBytes.set([axisCode, 1, 0])
 
         sendDataToSerialPort(initialRawBytes, true, true)
-      } else if (e.key == 'e' && e.altKey && e.shiftKey) {
+      } else if (e.key == 'E' && e.ctrlKey) {
         sendDataToSerialPort('FF0100', true, true)
-      } else if (e.key == 'D' && e.altKey && e.shiftKey) {
+      } else if (e.key == 'd' && e.ctrlKey) {
         /**Disable MOSFETS shortcut */
         const initialRawBytes = new Uint8Array(3)
 
@@ -319,7 +320,7 @@ const Main = (props: MainWindowProps) => {
         initialRawBytes.set([axisCode, 0, 0])
 
         sendDataToSerialPort(initialRawBytes, true, true)
-      } else if (e.key == 'd' && e.altKey && e.shiftKey) {
+      } else if (e.key == 'D' && e.ctrlKey) {
         sendDataToSerialPort('FF0000', true, true)
       }
     }

@@ -22,7 +22,7 @@ export const MotorCommands: MotorCommandsDictionary[]
             "ReceiveLength": 3,
             "CommandString": "Disable MOSFETs",
             "CommandEnum": 0,
-            "Description": "Disables the MOSFETS (note that MOSFETs are disabled after initial power on). This command can be executed using ALT + SHIFT + d to disable MOSFETs for the current selected axis or ALT + SHIFT + D to disable MOSFETs on all axes.",
+            "Description": "Disables the MOSFETS (note that MOSFETs are disabled after initial power on).",
             "Input": "None",
             "Output": "Success_response"
         },
@@ -30,7 +30,7 @@ export const MotorCommands: MotorCommandsDictionary[]
             "ReceiveLength": 3,
             "CommandString": "Enable MOSFETs",
             "CommandEnum": 1,
-            "Description": "Enables the MOSFETS. This command can be executed using ALT + SHIFT + e to enable MOSFETs for the current selected axis or ALT + SHIFT + E to enable MOSFETs on all axes.",
+            "Description": "Enables the MOSFETS.",
             "Input": "None",
             "Output": "Success_response"
         },
@@ -269,7 +269,7 @@ export const MotorCommands: MotorCommandsDictionary[]
             "ReceiveLength": 3,
             "CommandString": "System reset",
             "CommandEnum": 27,
-            "Description": "System reset / go to the bootloader. The motor will reset immediately and will enter the bootloader. If there is no command sent within a short time, the motor will exit the bootloader and run the application from the beginning. This command can be executed using ALT + r to reset the current selected axis or ALT + R to reset all axes.",
+            "Description": "System reset / go to the bootloader. The motor will reset immediately and will enter the bootloader. If there is no command sent within a short time, the motor will exit the bootloader and run the application from the beginning.",
             "Input": "None",
             "Output": "None"
         },

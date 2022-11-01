@@ -1,7 +1,9 @@
 import { ReactElement, useEffect } from 'react'
 import { MainWindowProps } from './main-window'
 import CommandsProtocol from './ImplementedCommands/commands-protocol'
-
+import Image from 'next/image'
+import { useContext } from 'react'
+import { GlobalContext } from '../pages/_app'
 import { animated, useSpring, config } from '@react-spring/web'
 
 interface CommandWindowProps extends MainWindowProps {
@@ -12,6 +14,79 @@ interface CommandWindowProps extends MainWindowProps {
   isConnected: boolean
 }
 const Command = (props: CommandWindowProps, children: ReactElement) => {
+  const commandsWithShortcuts = [0, 1, 27]
+  const globalContext = useContext(GlobalContext)
+  const iconSize = 25
+  const descriptionObjResetCmd = (
+    <ul className="">
+      <li>
+        <kbd className="kbd text-neutral-content">ctrl</kbd>+
+        <kbd className="kbd text-neutral-content">r</kbd>
+        <p className="inline"> to reset the current selected axis</p>
+      </li>
+      <li>
+        <kbd className="kbd text-neutral-content">ctrl</kbd>+
+        <kbd className="kbd text-neutral-content">R</kbd>
+        <p className="inline"> to reset all axes</p>
+      </li>
+    </ul>
+  )
+  const descriptionObjEnableCmd = (
+    <ul className="">
+      <li>
+        <kbd className="kbd text-neutral-content">ctrl</kbd>+
+        <kbd className="kbd text-neutral-content">e</kbd>
+        <p className="inline">
+          {' '}
+          to enable MOSFETs for the current selected axis
+        </p>
+      </li>
+      <li>
+        <kbd className="kbd text-neutral-content">ctrl</kbd>+
+        <kbd className="kbd text-neutral-content">E</kbd>
+        <p className="inline"> to enable MOSFETs on all axes</p>
+      </li>
+    </ul>
+  )
+  const descriptionObjDisableCmd = (
+    <ul className="">
+      <li>
+        <kbd className="kbd text-neutral-content">ctrl</kbd>+
+        <kbd className="kbd text-neutral-content">d</kbd>
+        <p className="inline">
+          {' '}
+          to disable MOSFETs for the current selected axis
+        </p>
+      </li>
+      <li>
+        <kbd className="kbd text-neutral-content">ctrl</kbd>+
+        <kbd className="kbd text-neutral-content">D</kbd>
+        <p className="inline"> to disable MOSFETs on all axes</p>
+      </li>
+    </ul>
+  )
+  const shortcuts = (currentCommand: number) => {
+    let title = 'This command supports shortcuts'
+    let descriptionObj = <></>
+
+    switch (currentCommand) {
+      case 27:
+        descriptionObj = descriptionObjResetCmd
+        break
+      case 0:
+        descriptionObj = descriptionObjDisableCmd
+        break
+      case 1:
+        descriptionObj = descriptionObjEnableCmd
+        break
+      default:
+        title =
+          'You should not see this text, please contact your administrator.'
+        break
+    }
+    globalContext.modal.setTitle(title)
+    globalContext.modal.setDescription(descriptionObj)
+  }
   const [fade, api] = useSpring(() => ({
     from: { opacity: 0 },
     to: { opacity: 1 },
@@ -54,6 +129,31 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
             </button>
           )}
         </div>
+        {commandsWithShortcuts.includes(
+          props.currentCommandDictionary.CommandEnum,
+        ) ? (
+          <animated.div
+            style={fade}
+            className="bg-primary rounded-full absolute top-4 left-4 pt-2 px-2 m-0"
+          >
+            <label
+              className="inline link"
+              onClick={() => {
+                shortcuts(props.currentCommandDictionary.CommandEnum)
+              }}
+              htmlFor="my-modal-4"
+            >
+              <Image
+                className="mask mask-squircle p-0 m-0"
+                src={'/info-circle-fill.svg'}
+                width={iconSize}
+                height={iconSize}
+                alt="main picture"
+                priority
+              ></Image>
+            </label>
+          </animated.div>
+        ) : null}
         <animated.div style={fade}>
           <div className="mb-5 mt-16">
             <p className="text-center mb-5 text-2xl">
@@ -130,10 +230,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
     )
   else
     return (
-      <animated.div
-        style={fade}
-        className={`overflow-auto relative`}
-      >
+      <animated.div style={fade} className={`overflow-auto relative`}>
         <CommandsProtocol
           currentCommandDictionary={props.currentCommandDictionary}
           currentChapter={props.currentChapter}
