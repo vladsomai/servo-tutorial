@@ -132,7 +132,6 @@ const Main = (props: MainWindowProps) => {
     }
   }, [])
 
-  //initialize the ref with the All axes
   const axisRef = useRef<string>(
     MotorAxes.find((item) => item.AxisName === 'All axes')?.AxisName as string,
   )
@@ -140,11 +139,6 @@ const Main = (props: MainWindowProps) => {
   useEffect(() => {
     axisRef.current = axisSelectionValue
   }, [axisSelectionValue])
-
-  // useEffect(() => {
-  //   currentCommandRecvLength.current =
-  //     props.currentCommandDictionary.ReceiveLength
-  // }, [props.currentCommandDictionary])
 
   useEffect(() => {
     return () => {
@@ -276,11 +270,10 @@ const Main = (props: MainWindowProps) => {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      e.preventDefault();
       /**System Reset shortcut */
       if (e.key == 'r' && e.ctrlKey) {
+        e.preventDefault();
         const initialRawBytes = new Uint8Array(3)
-
         //get value of axis
         let axisCode = 0
         for (const motorAxis of MotorAxes) {
@@ -291,8 +284,10 @@ const Main = (props: MainWindowProps) => {
 
         sendDataToSerialPort(initialRawBytes, true, false)
       } else if (e.key == 'R' && e.ctrlKey) {
+        e.preventDefault();
         sendDataToSerialPort('FF1B00', true, false)
       } else if (e.key == 'e' && e.ctrlKey) {
+        e.preventDefault();
         /**Enable MOSFETS sortcut */
         const initialRawBytes = new Uint8Array(3)
 
@@ -306,8 +301,10 @@ const Main = (props: MainWindowProps) => {
 
         sendDataToSerialPort(initialRawBytes, true, true)
       } else if (e.key == 'E' && e.ctrlKey) {
+        e.preventDefault();
         sendDataToSerialPort('FF0100', true, true)
       } else if (e.key == 'd' && e.ctrlKey) {
+        e.preventDefault();
         /**Disable MOSFETS shortcut */
         const initialRawBytes = new Uint8Array(3)
 
@@ -321,6 +318,7 @@ const Main = (props: MainWindowProps) => {
 
         sendDataToSerialPort(initialRawBytes, true, true)
       } else if (e.key == 'D' && e.ctrlKey) {
+        e.preventDefault();
         sendDataToSerialPort('FF0000', true, true)
       }
     }
