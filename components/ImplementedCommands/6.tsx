@@ -6,7 +6,7 @@ export const Command6 = (props: ChaptersPropsType) => {
     if (selectedAxis == '') return
 
     const rawData = props.constructCommand(selectedAxis, '')
-    props.sendDataToSerialPort(rawData)
+    props.sendDataToSerialPort(rawData,true,false)
   }
   return (
     <>

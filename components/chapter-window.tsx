@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
-import { MotorCommands } from '../servo-engine/motor-commands'
+import { MutableRefObject, useEffect, useState } from 'react'
 import 'animate.css'
 import Link from 'next/link'
+import { MotorCommandsDictionary } from '../servo-engine/motor-commands'
 
 export type ChaptersProps = {
   currentChapter: number
   setCurrentChapter: Function
+  MotorCommands: MutableRefObject<MotorCommandsDictionary[]>
 }
 
 const Chapters = (props: ChaptersProps) => {
@@ -13,11 +14,11 @@ const Chapters = (props: ChaptersProps) => {
 
   useEffect(() => {
     let arr = []
-    for (let i = 1; i <= MotorCommands.length; i++) {
+    for (let i = 1; i <= props.MotorCommands.current.length; i++) {
       arr.push(i)
     }
     setChapters(arr)
-  }, [])
+  }, [props.MotorCommands])
 
   return (
     <>
@@ -28,7 +29,6 @@ const Chapters = (props: ChaptersProps) => {
               return (
                 <Link key={i} href={`/tutorial/${i}`}>
                   <a
-                    
                     className={`btn btn-xs sm:btn-sm md:btn-sm lg:btn-md mb-1 animate__animated animate__fadeIn ${
                       props.currentChapter === i
                         ? ' btn-primary '

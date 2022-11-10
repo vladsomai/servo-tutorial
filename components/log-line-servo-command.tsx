@@ -4,6 +4,10 @@ import { LogType } from './log-window'
 import { MainWindowProps } from './main-window'
 import { useContext } from 'react'
 import { GlobalContext } from '../pages/_app'
+import {
+  troubleshootConnection,
+  troubleshootIncompleteResponse,
+} from './modalComponents'
 
 export interface LogLineServoCommandType
   extends LogType,
@@ -24,24 +28,29 @@ export interface CommandPayload {
   SendingPayload: CommandParameter[]
   ReceivingPayload: CommandParameter[]
 }
+enum TroubleshootType {
+  connection,
+  incompleteMessage,
+}
+
 const LogLineServoCommand = (props: LogLineServoCommandType) => {
   const globalContext = useContext(GlobalContext)
-  const descriptionObj = (
-    <>
-      <article className="mb-5 prose prose-lg max-w-full spacin tracking-wide">
-        <p className='text-xl mt-10'>Please verify each of the following is true:</p>
-        <ol className=''>
-          <li>You are connected to the serial port.</li>
-          <li>You selected the correct axis.</li>
-          <li>The motor is powered on.</li>
-          <li>The motor is connected to the USB port.</li>
-        </ol>
-      </article>
-    </>
-  )
+
+  const troubleshootType = useRef<TroubleshootType>(TroubleshootType.connection)
+
   const troubleshoot = () => {
-    globalContext.modal.setTitle('Troubleshooting guide')
-    globalContext.modal.setDescription(descriptionObj)
+    switch (troubleshootType.current) {
+      case TroubleshootType.connection:
+        globalContext.modal.setTitle('Troubleshooting guide')
+        globalContext.modal.setDescription(troubleshootConnection)
+        break
+      case TroubleshootType.incompleteMessage:
+        globalContext.modal.setTitle('Troubleshooting guide')
+        globalContext.modal.setDescription(troubleshootIncompleteResponse)
+        break
+      default:
+        break
+    }
   }
   const byteColor = useRef<string[]>([
     ' text-violet-400',
@@ -198,6 +207,10 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
         }
       } else if (props.log.includes('timed out')) {
         setComponentIsATroubleshoot(true)
+        troubleshootType.current = TroubleshootType.connection
+      } else if (props.log.includes('incomplete')) {
+        setComponentIsATroubleshoot(true)
+        troubleshootType.current = TroubleshootType.incompleteMessage
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

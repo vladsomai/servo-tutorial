@@ -1,26 +1,38 @@
 import Head from 'next/head'
-import { ReactElement, useEffect, useState } from 'react'
+import { ReactElement, useEffect, useRef, useState } from 'react'
 import type { NextPageWithLayout } from '../_app'
 import Layout from '../../components/layout'
 import 'animate.css'
 import Chapters from '../../components/chapter-window'
-import Main from '../../components/main-window'
+import Main, { MainWindowProps } from '../../components/main-window'
 import {
-  MotorCommands,
-  MotorCommandsDictionary,
+  MotorCommandsDictionary, CommandsProtocoolChapter
 } from '../../servo-engine/motor-commands'
+import RawMotorCommands from '../../public/motor_commands.json' assert {type: 'json'};
 import { useRouter } from 'next/router'
 
 const Tutorial: NextPageWithLayout = () => {
   const router = useRouter()
 
+  const MotorCommands = useRef<
+    MotorCommandsDictionary[] 
+  >([])
   const [currentChapter, setCurrentChapter] = useState(1)
   const [currentCommandDictionary, setCurrentCommandDictionary] = useState<
-    MotorCommandsDictionary
-  >(MotorCommands[0])
+    MotorCommandsDictionary|null
+  >(null)
+
+  useEffect(()=>{
+    MotorCommands.current = [
+      CommandsProtocoolChapter,
+      ...RawMotorCommands,
+    ] as MotorCommandsDictionary[]
+
+    setCurrentCommandDictionary(MotorCommands.current[0])
+  }, [])
 
   useEffect(() => {
-    setCurrentCommandDictionary(MotorCommands[currentChapter - 1])
+    setCurrentCommandDictionary(MotorCommands.current[currentChapter - 1])
   }, [currentChapter])
 
   useEffect(() => {
@@ -28,7 +40,7 @@ const Tutorial: NextPageWithLayout = () => {
       const { chapterID } = router.query
 
       const chapter = parseInt(chapterID as string)
-      if (chapter != 0 && chapter <= MotorCommands.length) {
+      if (chapter != 0 && chapter <= MotorCommands.current.length) {
         setCurrentChapter(chapter)
       } else {
         router.push('/404')
@@ -42,10 +54,18 @@ const Tutorial: NextPageWithLayout = () => {
       <Head>
         <title>{`Chapter ${currentChapter ? currentChapter : ''}`}</title>
       </Head>
-      <div className="flex animate__animated animate__fadeIn h-full w-full">
-        <Chapters {...{ currentChapter, setCurrentChapter }} />
-        <Main {...{ currentChapter, currentCommandDictionary }} />
-      </div>
+      {currentCommandDictionary != null ? (
+        <div className="flex animate__animated animate__fadeIn h-full w-full">
+          <Chapters {...{ currentChapter, setCurrentChapter, MotorCommands}} />
+          <Main
+            {...({
+              currentChapter,
+              currentCommandDictionary,
+              MotorCommands
+            } as MainWindowProps)}
+          />
+        </div>
+      ) : null}
     </>
   )
 }

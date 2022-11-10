@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useContext } from 'react'
 import { GlobalContext } from '../pages/_app'
 import { animated, useSpring, config } from '@react-spring/web'
+import {ResetCmd, DisableCmd, EnableCmd} from './modalComponents'
 
 interface CommandWindowProps extends MainWindowProps {
   sendDataToSerialPort: Function
@@ -17,67 +18,20 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
   const commandsWithShortcuts = [0, 1, 27]
   const globalContext = useContext(GlobalContext)
   const iconSize = 25
-  const descriptionObjResetCmd = (
-    <ul className="">
-      <li>
-        <kbd className="kbd text-neutral-content">ctrl</kbd>+
-        <kbd className="kbd text-neutral-content">r</kbd>
-        <p className="inline"> to reset the current selected axis</p>
-      </li>
-      <li>
-        <kbd className="kbd text-neutral-content">ctrl</kbd>+
-        <kbd className="kbd text-neutral-content">R</kbd>
-        <p className="inline"> to reset all axes</p>
-      </li>
-    </ul>
-  )
-  const descriptionObjEnableCmd = (
-    <ul className="">
-      <li>
-        <kbd className="kbd text-neutral-content">ctrl</kbd>+
-        <kbd className="kbd text-neutral-content">e</kbd>
-        <p className="inline">
-          {' '}
-          to enable MOSFETs for the current selected axis
-        </p>
-      </li>
-      <li>
-        <kbd className="kbd text-neutral-content">ctrl</kbd>+
-        <kbd className="kbd text-neutral-content">E</kbd>
-        <p className="inline"> to enable MOSFETs on all axes</p>
-      </li>
-    </ul>
-  )
-  const descriptionObjDisableCmd = (
-    <ul className="">
-      <li>
-        <kbd className="kbd text-neutral-content">ctrl</kbd>+
-        <kbd className="kbd text-neutral-content">d</kbd>
-        <p className="inline">
-          {' '}
-          to disable MOSFETs for the current selected axis
-        </p>
-      </li>
-      <li>
-        <kbd className="kbd text-neutral-content">ctrl</kbd>+
-        <kbd className="kbd text-neutral-content">D</kbd>
-        <p className="inline"> to disable MOSFETs on all axes</p>
-      </li>
-    </ul>
-  )
+
   const shortcuts = (currentCommand: number) => {
     let title = 'This command supports shortcuts'
     let descriptionObj = <></>
 
     switch (currentCommand) {
       case 27:
-        descriptionObj = descriptionObjResetCmd
+        descriptionObj = ResetCmd
         break
       case 0:
-        descriptionObj = descriptionObjDisableCmd
+        descriptionObj = DisableCmd
         break
       case 1:
-        descriptionObj = descriptionObjEnableCmd
+        descriptionObj = EnableCmd
         break
       default:
         title =
@@ -232,6 +186,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
     return (
       <animated.div style={fade} className={`overflow-auto relative`}>
         <CommandsProtocol
+          MotorCommands={props.MotorCommands}
           currentCommandDictionary={props.currentCommandDictionary}
           currentChapter={props.currentChapter}
         />

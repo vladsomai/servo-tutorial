@@ -1,16 +1,16 @@
-import { useEffect, useState, useRef, useCallback, ReactElement } from 'react'
+import {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  ReactElement,
+  MutableRefObject,
+} from 'react'
 import React from 'react'
 import Log from './log-window'
 import Command from './command-window'
-import {
-  Uint8ArrayToString,
-  stringToUint8Array,
-  sleep,
-} from '../servo-engine/utils'
-import {
-  MotorCommands,
-  MotorCommandsDictionary,
-} from '../servo-engine/motor-commands'
+import { Uint8ArrayToString, stringToUint8Array } from '../servo-engine/utils'
+import { MotorCommandsDictionary } from '../servo-engine/motor-commands'
 import { LogType } from '../components/log-window'
 import { MotorAxes } from '../servo-engine/motor-axes'
 import SelectAxis from './selectAxis'
@@ -53,6 +53,7 @@ import { Command254 } from './ImplementedCommands/254'
 export type MainWindowProps = {
   currentChapter: number
   currentCommandDictionary: MotorCommandsDictionary
+  MotorCommands: MutableRefObject<MotorCommandsDictionary[]>
 }
 
 const Main = (props: MainWindowProps) => {
@@ -60,13 +61,11 @@ const Main = (props: MainWindowProps) => {
   const reader = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null)
   const [logs, setLogs] = useState<LogType[]>([])
   const logsRef = useRef<LogType[]>([])
-  const currentCommandRecvLength = useRef<number>(0)
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [axisSelectionValue, setAxisSelectionValue] = useState<string>(
     'All axes',
   )
   const timerHandle = useRef<NodeJS.Timeout>()
-  const receivedPartial = useRef<boolean>(false)
   const partialData = useRef<string>('')
 
   //State is lifted up from command 29 to save the state between chapter change
@@ -87,6 +86,7 @@ const Main = (props: MainWindowProps) => {
   }
 
   const clearLogWindow = () => {
+    partialData.current = ''
     lineNumber.current = 0
     logsRef.current = []
     setLogs([])
@@ -178,14 +178,6 @@ const Main = (props: MainWindowProps) => {
           data = dataToSend
         }
 
-        /* we will need to find current command receive
-           length so we can wait for whole receive message later
-        */
-        MotorCommands.forEach((element) => {
-          if (data[1] == element.CommandEnum) {
-            currentCommandRecvLength.current = element.ReceiveLength
-          }
-        })
         await writer.write(data)
 
         let hexString = Uint8ArrayToString(data)
@@ -195,7 +187,14 @@ const Main = (props: MainWindowProps) => {
 
         if (enableTimoutLogging) {
           timerHandle.current = setTimeout(() => {
-            LogAction('The command timed out.')
+            if (partialData.current.length == 0) {
+              LogAction('The command timed out.')
+            } else {
+              //the command responded but it was incomplete
+              LogAction('The message received is incomplete.')
+              LogAction('Received incomplete message: 0x' + partialData.current)
+              partialData.current = ''
+            }
           }, 1000)
         }
 
@@ -212,6 +211,7 @@ const Main = (props: MainWindowProps) => {
   )
 
   const readDataFromSerialPortUntilClosed = async () => {
+    let receiveLength = 0
     if (portSer && portSer.current) {
       if (portSer.current.readable) {
         reader.current = await portSer.current.readable.getReader()
@@ -226,23 +226,29 @@ const Main = (props: MainWindowProps) => {
                   reader.current.releaseLock()
                   break
                 } else {
-                  clearTimeout(timerHandle.current)
                   const receivedBytes = Uint8ArrayToString(value)
-                  if (
-                    receivedBytes.length <
-                    currentCommandRecvLength.current * 2
-                  ) {
-                    if (receivedPartial.current) {
-                      LogAction(
-                        'Received: 0x' + partialData.current + receivedBytes,
-                      )
-                      receivedPartial.current = false
-                    } else {
-                      partialData.current = receivedBytes
-                      receivedPartial.current = true
+
+                  partialData.current += receivedBytes
+
+                  if (partialData.current.length >= 6) {
+                    //we received more than 3 bytes so we know the length
+
+                    receiveLength = stringToUint8Array(
+                      partialData.current.slice(4, 6),
+                    )[0]
+
+                    if (receiveLength == 0) {
+                      LogAction('Received: 0x' + partialData.current)
+                      clearTimeout(timerHandle.current)
+                      partialData.current = ''
+                    } else if (
+                      partialData.current.length / 2 ==
+                      receiveLength + 3
+                    ) {
+                      LogAction('Received: 0x' + partialData.current)
+                      partialData.current = ''
+                      clearTimeout(timerHandle.current)
                     }
-                  } else {
-                    LogAction('Received: 0x' + receivedBytes)
                   }
                 }
               }
@@ -272,7 +278,7 @@ const Main = (props: MainWindowProps) => {
     const onKeyDown = (e: KeyboardEvent) => {
       /**System Reset shortcut */
       if (e.key == 'r' && e.ctrlKey) {
-        e.preventDefault();
+        e.preventDefault()
         const initialRawBytes = new Uint8Array(3)
         //get value of axis
         let axisCode = 0
@@ -284,10 +290,10 @@ const Main = (props: MainWindowProps) => {
 
         sendDataToSerialPort(initialRawBytes, true, false)
       } else if (e.key == 'R' && e.ctrlKey) {
-        e.preventDefault();
+        e.preventDefault()
         sendDataToSerialPort('FF1B00', true, false)
       } else if (e.key == 'e' && e.ctrlKey) {
-        e.preventDefault();
+        e.preventDefault()
         /**Enable MOSFETS sortcut */
         const initialRawBytes = new Uint8Array(3)
 
@@ -301,10 +307,10 @@ const Main = (props: MainWindowProps) => {
 
         sendDataToSerialPort(initialRawBytes, true, true)
       } else if (e.key == 'E' && e.ctrlKey) {
-        e.preventDefault();
+        e.preventDefault()
         sendDataToSerialPort('FF0100', true, true)
       } else if (e.key == 'd' && e.ctrlKey) {
-        e.preventDefault();
+        e.preventDefault()
         /**Disable MOSFETS shortcut */
         const initialRawBytes = new Uint8Array(3)
 
@@ -318,7 +324,7 @@ const Main = (props: MainWindowProps) => {
 
         sendDataToSerialPort(initialRawBytes, true, true)
       } else if (e.key == 'D' && e.ctrlKey) {
-        e.preventDefault();
+        e.preventDefault()
         sendDataToSerialPort('FF0000', true, true)
       }
     }
