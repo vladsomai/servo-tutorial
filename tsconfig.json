@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES5",
+    "downlevelIteration": true,
+    "importHelpers": true,
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
     ],
     "allowJs": true,
     "skipLibCheck": true,
@@ -22,7 +24,7 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
   ],
   "exclude": [
     "node_modules"

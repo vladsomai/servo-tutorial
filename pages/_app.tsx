@@ -1,6 +1,6 @@
 import '../styles/output.css'
 import type { AppProps } from 'next/app'
-import { ReactElement, ReactFragment, ReactNode, useState } from 'react'
+import { ReactElement, ReactNode, useState } from 'react'
 import type { NextPage } from 'next'
 import { createContext } from 'react'
 

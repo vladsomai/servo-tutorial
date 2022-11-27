@@ -65,6 +65,7 @@ const Tutorial: NextPageWithLayout = () => {
             } as MainWindowProps)}
           />
         </div>
+        
       ) : null}
     </>
   )

@@ -10,11 +10,10 @@ import React from 'react'
 import Log from './log-window'
 import Command from './command-window'
 import { Uint8ArrayToString, stringToUint8Array } from '../servo-engine/utils'
-import { MotorCommandsDictionary } from '../servo-engine/motor-commands'
+import { InputOutputObjects, MotorCommandsDictionary } from '../servo-engine/motor-commands'
 import { LogType } from '../components/log-window'
 import { MotorAxes } from '../servo-engine/motor-axes'
 import SelectAxis from './selectAxis'
-import { CommandPayload } from './log-line-servo-command'
 import { Command1 } from './ImplementedCommands/0_1'
 import { Command2 } from './ImplementedCommands/2'
 import { Command3 } from './ImplementedCommands/3'
@@ -389,10 +388,6 @@ const Main = (props: MainWindowProps) => {
   }
 
   let currentCommandLayout: ReactElement = <></>
-  let currentCommandPayload: CommandPayload = {
-    SendingPayload: [],
-    ReceivingPayload: [],
-  }
   if (
     props.currentCommandDictionary.CommandEnum == 0 ||
     props.currentCommandDictionary.CommandEnum == 1
@@ -415,14 +410,7 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 2) {
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Position bytes',
-      NoOfBytes: 4,
-    })
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Time bytes',
-      NoOfBytes: 4,
-    })
+    const currentInputObj = props.currentCommandDictionary.Input as InputOutputObjects[];
     currentCommandLayout = (
       <>
         <Command2
@@ -441,10 +429,6 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   } else if (props.currentCommandDictionary.CommandEnum == 3) {
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Max velocity',
-      NoOfBytes: 4,
-    })
     currentCommandLayout = (
       <>
         <Command3
@@ -463,14 +447,6 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   } else if (props.currentCommandDictionary.CommandEnum == 4) {
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Position bytes',
-      NoOfBytes: 4,
-    })
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Time bytes',
-      NoOfBytes: 4,
-    })
     currentCommandLayout = (
       <>
         <Command4
@@ -489,10 +465,6 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   } else if (props.currentCommandDictionary.CommandEnum == 5) {
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Max acceleration bytes',
-      NoOfBytes: 4,
-    })
     currentCommandLayout = (
       <>
         <Command5
@@ -563,10 +535,6 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 9) {
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Current absolute time',
-      NoOfBytes: 6,
-    })
     currentCommandLayout = (
       <Command9
         {...props}
@@ -583,20 +551,6 @@ const Main = (props: MainWindowProps) => {
       </Command9>
     )
   } else if (props.currentCommandDictionary.CommandEnum == 10) {
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Absolute time bytes',
-      NoOfBytes: 6,
-    })
-
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Error difference',
-      NoOfBytes: 4,
-    })
-
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'RCC-ICSCR register',
-      NoOfBytes: 2,
-    })
     currentCommandLayout = (
       <>
         <Command10
@@ -617,10 +571,6 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   } else if (props.currentCommandDictionary.CommandEnum == 11) {
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Queue size',
-      NoOfBytes: 1,
-    })
     currentCommandLayout = (
       <Command11
         {...props}
@@ -669,14 +619,6 @@ const Main = (props: MainWindowProps) => {
       </Command13>
     )
   else if (props.currentCommandDictionary.CommandEnum == 14) {
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Position bytes',
-      NoOfBytes: 4,
-    })
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Time bytes',
-      NoOfBytes: 4,
-    })
     currentCommandLayout = (
       <Command14
         {...props}
@@ -693,10 +635,6 @@ const Main = (props: MainWindowProps) => {
       </Command14>
     )
   } else if (props.currentCommandDictionary.CommandEnum == 15) {
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Current position bytes',
-      NoOfBytes: 4,
-    })
     currentCommandLayout = (
       <Command15
         {...props}
@@ -713,14 +651,6 @@ const Main = (props: MainWindowProps) => {
       </Command15>
     )
   } else if (props.currentCommandDictionary.CommandEnum == 16) {
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Status',
-      NoOfBytes: 1,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Fatal error code',
-      NoOfBytes: 1,
-    })
     currentCommandLayout = (
       <Command16
         {...props}
@@ -753,10 +683,6 @@ const Main = (props: MainWindowProps) => {
       </Command17>
     )
   else if (props.currentCommandDictionary.CommandEnum == 18) {
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Update frequency',
-      NoOfBytes: 4,
-    })
     currentCommandLayout = (
       <Command18
         {...props}
@@ -773,14 +699,6 @@ const Main = (props: MainWindowProps) => {
       </Command18>
     )
   } else if (props.currentCommandDictionary.CommandEnum == 19) {
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Acceleration bytes',
-      NoOfBytes: 4,
-    })
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Time bytes',
-      NoOfBytes: 4,
-    })
     currentCommandLayout = (
       <Command19
         {...props}
@@ -797,18 +715,6 @@ const Main = (props: MainWindowProps) => {
       </Command19>
     )
   } else if (props.currentCommandDictionary.CommandEnum == 20) {
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Unique ID bytes',
-      NoOfBytes: 8,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Alias byte',
-      NoOfBytes: 1,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'CRC32 bytes',
-      NoOfBytes: 4,
-    })
     currentCommandLayout = (
       <Command20
         {...props}
@@ -825,14 +731,6 @@ const Main = (props: MainWindowProps) => {
       </Command20>
     )
   } else if (props.currentCommandDictionary.CommandEnum == 21) {
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Unique ID',
-      NoOfBytes: 8,
-    })
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Alias',
-      NoOfBytes: 1,
-    })
     currentCommandLayout = (
       <Command21
         {...props}
@@ -849,30 +747,6 @@ const Main = (props: MainWindowProps) => {
       </Command21>
     )
   } else if (props.currentCommandDictionary.CommandEnum == 22) {
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Product code',
-      NoOfBytes: 1,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'FW compatibility code',
-      NoOfBytes: 1,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'HW version',
-      NoOfBytes: 3,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Serial Number',
-      NoOfBytes: 4,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Unique ID',
-      NoOfBytes: 8,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Not used',
-      NoOfBytes: 4,
-    })
     currentCommandLayout = (
       <Command22
         {...props}
@@ -906,10 +780,6 @@ const Main = (props: MainWindowProps) => {
       </Command23>
     )
   else if (props.currentCommandDictionary.CommandEnum == 24) {
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Convert to ASCII string',
-      NoOfBytes: 11,
-    })
     currentCommandLayout = (
       <Command24
         {...props}
@@ -926,22 +796,6 @@ const Main = (props: MainWindowProps) => {
       </Command24>
     )
   } else if (props.currentCommandDictionary.CommandEnum == 25) {
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Dev no.',
-      NoOfBytes: 1,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Patch version',
-      NoOfBytes: 1,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Minor version',
-      NoOfBytes: 1,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Major version',
-      NoOfBytes: 1,
-    })
     currentCommandLayout = (
       <Command25
         {...props}
@@ -958,14 +812,6 @@ const Main = (props: MainWindowProps) => {
       </Command25>
     )
   } else if (props.currentCommandDictionary.CommandEnum == 26) {
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Velocity bytes',
-      NoOfBytes: 4,
-    })
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Time bytes',
-      NoOfBytes: 4,
-    })
     currentCommandLayout = (
       <Command26
         {...props}
@@ -1014,29 +860,6 @@ const Main = (props: MainWindowProps) => {
       </Command28>
     )
   else if (props.currentCommandDictionary.CommandEnum == 29) {
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Number of movement commands',
-      NoOfBytes: 1,
-    })
-
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Movement types',
-      NoOfBytes: 4,
-    })
-
-    for (let i = 0; i < MoveCommands.length; i++) {
-      currentCommandPayload.SendingPayload.push({
-        Description: `${MoveCommands[i].MovementType.Name} for command ${
-          i + 1
-        }`,
-        NoOfBytes: 4,
-      })
-      currentCommandPayload.SendingPayload.push({
-        Description: `Time for command ${i + 1}`,
-        NoOfBytes: 4,
-      })
-    }
-
     currentCommandLayout = (
       <Command29
         {...props}
@@ -1055,15 +878,6 @@ const Main = (props: MainWindowProps) => {
       </Command29>
     )
   } else if (props.currentCommandDictionary.CommandEnum == 30) {
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Lower limit',
-      NoOfBytes: 4,
-    })
-
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Upper limit',
-      NoOfBytes: 4,
-    })
     currentCommandLayout = (
       <Command30
         {...props}
@@ -1096,10 +910,6 @@ const Main = (props: MainWindowProps) => {
       </Command31>
     )
   else if (props.currentCommandDictionary.CommandEnum == 32) {
-    currentCommandPayload.SendingPayload.push({
-      Description: 'Gathering',
-      NoOfBytes: 1,
-    })
     currentCommandLayout = (
       <Command32
         {...props}
@@ -1116,46 +926,6 @@ const Main = (props: MainWindowProps) => {
       </Command32>
     )
   } else if (props.currentCommandDictionary.CommandEnum == 33) {
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Max val. HS1',
-      NoOfBytes: 2,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Max val. HS2',
-      NoOfBytes: 2,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Max val. HS3',
-      NoOfBytes: 2,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Min val. HS1',
-      NoOfBytes: 2,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Min val. HS2',
-      NoOfBytes: 2,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Min val. HS3',
-      NoOfBytes: 2,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Sum val. HS1',
-      NoOfBytes: 8,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Sum val. HS2',
-      NoOfBytes: 8,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'Sum val. HS3',
-      NoOfBytes: 8,
-    })
-    currentCommandPayload.ReceivingPayload.push({
-      Description: 'No. of measurements HS123',
-      NoOfBytes: 4,
-    })
     currentCommandLayout = (
       <Command33
         {...props}
@@ -1206,7 +976,6 @@ const Main = (props: MainWindowProps) => {
             logs={logs}
             mainWindow={props}
             clearLogWindow={clearLogWindow}
-            CommandPayload={currentCommandPayload}
           />
         )}
       </div>

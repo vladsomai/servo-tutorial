@@ -3,26 +3,14 @@ import { ReactElement, ReactNode, useEffect, useState } from 'react'
 import type { NextPageWithLayout } from './_app'
 import { useContext } from 'react'
 import { GlobalContext } from '../pages/_app'
+import {Tooltip, Button} from 'flowbite-react'
 
 const Test: NextPageWithLayout = () => {
-  const value = useContext(GlobalContext)
-  const [val, setVal] = useState(0)
-
   return (
     <>
-      <button
-        className="btn btn-error"
-        onClick={() => {
-          setVal((prev) => (prev += 1))
-          value.modal.setTitle(val.toString())
-        }}
-      >
-        SetTitle
-      </button>
-      {/* The button to open modal */}
-      <label htmlFor="my-modal-4" className="btn modal-button">
-        open modal
-      </label>
+      <Tooltip content="Tooltip content">
+        <Button>Default tooltip</Button>
+      </Tooltip>
     </>
   )
 }

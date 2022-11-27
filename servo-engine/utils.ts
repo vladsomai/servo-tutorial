@@ -211,6 +211,7 @@ export const Uint8ArrayToString = (data: Uint8Array | undefined): string => {
         return ""
 }
 
+
 //#region Position
 export const RotationsToMicrosteps = (rotations: number): number => {
     return rotations * 645120;
@@ -339,6 +340,138 @@ export const hexStringToASCII = (_input: string): string => {
         ret += String.fromCharCode(strToNumberArr[i]);
     }
 
-    ret = "To ASCII: " + ret;
     return ret
+}
+
+
+export const types = new Map<string, number>([
+    ["i8", 1],
+    ["u8", 1],
+    ["i16", 2],
+    ["u16", 2],
+    ["i24", 3],
+    ["u24", 3],
+    ["i32", 4],
+    ["u32", 4],
+    ["i48", 6],
+    ["u48", 6],
+    ["i64", 8],
+    ["u64", 8],
+    ["string8", 1],
+    ["u24_version_number", 3],
+    ["u32_version_number", 4],
+    ["u64_unique_id", 8],
+    ["u8_alias", 1],
+    ["crc32", 4],
+    ["buf10", 10],
+    ["list_2d", 0],
+    ["string_null_term", 0],
+    ["unknown_data", 0],
+    ["success_response", 0],
+]);
+
+//temporary solution, ask tom about creating a "type" attribute for each input/output object
+export const getNoOfBytesFromDescription = (typeWithDescription: string): number => {
+    const indexOfColumn = typeWithDescription.indexOf(":");
+    const typeStr = typeWithDescription.slice(0, indexOfColumn)
+    let noOfBytes = types.get(typeStr);
+
+    if (noOfBytes === undefined) {
+        noOfBytes = 0;
+    }
+    return noOfBytes;
+}
+
+export const getNoOfBytesFromType = () => {
+
+}
+
+
+/**
+ * Returns a string with the hexString converted to the format 
+ * @param format format string
+ * @param hexString hex number as string to be converted to the specified format
+ */
+export const getDisplayFormat = (format: string, hexString: string) => {
+
+    let res = '';
+    let convertedTo = " Result converted to ";
+
+    switch (format) {
+        case '%c':
+            convertedTo += "char: "
+            res = '\'' + hexStringToASCII(
+                hexString
+            ) + '\''
+            break
+        case '%s':
+            convertedTo += "string: "
+            res = '\'' + hexStringToASCII(
+                hexString
+            ) + '\''
+            break
+        case '%d':
+            convertedTo += "decimal: "
+            res = hexStringToInt32(
+                hexString, false
+            ).toString()
+            break
+        case '%u':
+            convertedTo += "unsigned decimal: "
+            res = hexStringToInt32(
+                hexString, true
+            ).toString()
+            break
+        default:
+            res = '0'
+            break
+    }
+
+    if (res == '0') {
+        return ''
+    }
+    return convertedTo + res;
+}
+
+/**
+ * Returns a uint32_t e.g. 1935360 
+ * @param _value the hex string value to be converted to uint32_t e.g. "00881D00"
+ */
+export const hexStringToInt32 = (_value: string, isUnsigned: boolean): bigint | number => {
+    const message = _value;
+
+    if (message.length % 2 !== 0) {
+        return 0
+    }
+    let isBigInt = false;
+    let bytes = stringToUint8Array(message);
+    if (bytes.length > 4) {
+        isBigInt = true;
+    }
+
+    if (bytes.length <= 8) {
+        const newbyte = new Uint8Array(8 - bytes.length).fill(0);
+        bytes = new Uint8Array([...bytes, ...newbyte])
+    }
+
+    let dataview = new DataView(bytes.buffer);
+
+    if (isUnsigned) {
+        if (isBigInt) {
+            return dataview.getBigUint64(0, true);
+        }
+        else {
+            return dataview.getUint32(0, true);
+        }
+    }
+    else {
+        if (isBigInt) {
+            return dataview.getBigInt64(0, true);
+        }
+        else {
+
+            return dataview.getInt32(0, true);
+        }
+    }
+
 }

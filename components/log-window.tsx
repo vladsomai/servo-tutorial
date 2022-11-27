@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import LogLineServoCommand, { CommandPayload } from './log-line-servo-command'
+import LogLineServoCommand from './log-line-servo-command'
 import { MainWindowProps } from './main-window'
 
 export type LogType = {
@@ -12,14 +12,15 @@ const Log = (props: {
   logs: LogType[]
   mainWindow: MainWindowProps
   clearLogWindow: Function
-  CommandPayload: CommandPayload
 }) => {
   const logWindow = useRef<HTMLDivElement | null>(null)
+  const currentCommand = useRef<number>(0)
 
   useEffect(() => {
-    if (logWindow && logWindow.current)
+    if (logWindow && logWindow.current) {
       logWindow.current.scrollTop =
         logWindow.current.scrollHeight - logWindow.current.clientHeight
+    }
   }, [props.logs])
 
   return (
@@ -55,7 +56,7 @@ const Log = (props: {
                   <LogLineServoCommand
                     {...props.mainWindow}
                     {...log}
-                    {...props.CommandPayload}
+                    currentCommand={currentCommand}
                   />
                 </div>
               )

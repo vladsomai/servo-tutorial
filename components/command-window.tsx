@@ -5,7 +5,8 @@ import Image from 'next/image'
 import { useContext } from 'react'
 import { GlobalContext } from '../pages/_app'
 import { animated, useSpring, config } from '@react-spring/web'
-import {ResetCmd, DisableCmd, EnableCmd} from './modalComponents'
+import { ResetCmd, DisableCmd, EnableCmd } from './modalComponents'
+import { InputOutputObjects } from '../servo-engine/motor-commands'
 
 interface CommandWindowProps extends MainWindowProps {
   sendDataToSerialPort: Function
@@ -130,15 +131,15 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
                     <p>{props.currentCommandDictionary.Input}</p>
                   </li>
                 ) : (
-                  props.currentCommandDictionary.Input.map((item) => {
-                    return (
-                      <li
-                        key={props.currentCommandDictionary.Input.indexOf(item)}
-                      >
-                        <p>{item}</p>
-                      </li>
-                    )
-                  })
+                  props.currentCommandDictionary.Input.map(
+                    (item: InputOutputObjects, index) => {
+                      return (
+                        <li key={index}>
+                          <p>{item.Description}</p>
+                        </li>
+                      )
+                    },
+                  )
                 )}
               </ol>
             </article>
@@ -150,30 +151,25 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
                     <p>{props.currentCommandDictionary.Output}</p>
                   </li>
                 ) : (
-                  props.currentCommandDictionary.Output.map((item) => {
-                    //for command 16
-                    if (item.startsWith('Bit'))
-                      return (
-                        <p
-                          key={props.currentCommandDictionary.Output.indexOf(
-                            item,
-                          )}
-                          className="ml-10"
-                        >
-                          {item}
-                        </p>
-                      )
-                    else
-                      return (
-                        <li
-                          key={props.currentCommandDictionary.Output.indexOf(
-                            item,
-                          )}
-                        >
-                          <p>{item}</p>
-                        </li>
-                      )
-                  })
+                  props.currentCommandDictionary.Output.map(
+                    (item: InputOutputObjects, index) => {
+                      if (props.currentCommandDictionary.CommandEnum === 16) {
+                        if (item.Description.includes('Bit')) {
+                          return <p className="ml-10">{item.Description}</p>
+                        } else
+                          return (
+                            <li key={index}>
+                              <p>{item.Description}</p>
+                            </li>
+                          )
+                      } else
+                        return (
+                          <li key={index}>
+                            <p>{item.Description}</p>
+                          </li>
+                        )
+                    },
+                  )
                 )}
               </ol>
             </article>

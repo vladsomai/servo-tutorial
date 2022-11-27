@@ -1,7 +1,14 @@
-/** @type {import('tailwindcss').Config} */
+/**
+ * @type {import('tailwindcss').Config} 
+ * @type {import('@types/tailwindcss/tailwind-config').TailwindConfig}
+*/
 module.exports = {
     content: [
-        "./pages/*.tsx", "./pages/tutorial/*.tsx", "./components/*.tsx", "./components/ImplementedCommands/*.tsx"
+        "./pages/*.tsx",
+        "./pages/tutorial/*.tsx",
+        "./components/*.tsx",
+        "./components/ImplementedCommands/*.tsx",
+        "./node_modules/flowbite-react/**/*.js",
     ],
     theme: {
         container: {

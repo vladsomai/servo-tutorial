@@ -1,5 +1,4 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
-import Modal from '../components/modal'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: any) {
@@ -20,7 +19,6 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Mukta&family=Open+Sans&display=swap"
             rel="stylesheet"
           ></link>
-
         </Head>
         <body>
           <Main />
