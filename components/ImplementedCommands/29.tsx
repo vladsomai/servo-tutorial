@@ -18,13 +18,11 @@ import {
   maximumPositiveAcceleration,
   RPMSquared_ToInternalAcceleration,
   InternalAccelerationToCommAcceleration,
+  ErrorTypes,
 } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 import Image from 'next/image'
-import {
-  animated,
-  useTransition,
-} from 'react-spring'
+import { animated, useTransition } from 'react-spring'
 
 export interface MultiMoveChapterProps extends ChaptersPropsType {
   MoveCommands: MoveCommand[]
@@ -73,7 +71,10 @@ export const Command29 = (props: MultiMoveChapterProps) => {
 
   const addMoveCommand = () => {
     if (props.MoveCommands.length > 31) {
-      props.LogAction('Maximum number of commands reached: 32.')
+      props.LogAction(
+        ErrorTypes.NO_ERR,
+        'Maximum number of commands reached: 32.',
+      )
       return
     }
 
@@ -134,7 +135,8 @@ export const Command29 = (props: MultiMoveChapterProps) => {
       } else if (inputBoxValue > maximumPositiveTime) {
         //max reached
         props.LogAction(
-          `WARNING: Maximum value for time is ${maximumPositiveTime}, consider using a smaller value!`,
+          ErrorTypes.ERR1001,
+          `Maximum value for time is ${maximumPositiveTime}, consider using a smaller value!`,
         )
         currentInputBox.value = maximumPositiveTime.toString()
       }
@@ -164,7 +166,8 @@ export const Command29 = (props: MultiMoveChapterProps) => {
         if (inputBoxValue < maximumNegativeVelocity) {
           //max negative reached
           props.LogAction(
-            `WARNING: Maximum value for negative velocity is ${maximumNegativeVelocity}, consider using a larger value!`,
+            ErrorTypes.ERR1001,
+            `Maximum value for negative velocity is ${maximumNegativeVelocity}, consider using a larger value!`,
           )
           currentInputBox.value = Number(maximumNegativeVelocity).toString()
         }
@@ -173,7 +176,8 @@ export const Command29 = (props: MultiMoveChapterProps) => {
       else if (inputBoxValue >= maximumPositiveVelocity) {
         //max positive reached
         props.LogAction(
-          `WARNING: Maximum value for positive velocity is ${maximumPositiveVelocity}, consider using a smaller value!`,
+          ErrorTypes.ERR1001,
+          `Maximum value for positive velocity is ${maximumPositiveVelocity}, consider using a smaller value!`,
         )
         currentInputBox.value = Number(maximumPositiveVelocity).toString()
       }
@@ -183,7 +187,8 @@ export const Command29 = (props: MultiMoveChapterProps) => {
         if (inputBoxValue < maximumNegativeAcceleration) {
           //max negative reached
           props.LogAction(
-            `WARNING: Maximum value for negative acceleration is ${maximumNegativeAcceleration}, consider using a larger value!`,
+            ErrorTypes.ERR1001,
+            `Maximum value for negative acceleration is ${maximumNegativeAcceleration}, consider using a larger value!`,
           )
           currentInputBox.value = Number(maximumNegativeAcceleration).toString()
         }
@@ -192,7 +197,8 @@ export const Command29 = (props: MultiMoveChapterProps) => {
       else if (inputBoxValue >= maximumPositiveAcceleration) {
         //max positive reached
         props.LogAction(
-          `WARNING: Maximum value for positive acceleration is ${maximumPositiveAcceleration}, consider using a smaller value!`,
+          ErrorTypes.ERR1001,
+          `Maximum value for positive acceleration is ${maximumPositiveAcceleration}, consider using a smaller value!`,
         )
         currentInputBox.value = Number(maximumPositiveAcceleration).toString()
       }
@@ -212,9 +218,8 @@ export const Command29 = (props: MultiMoveChapterProps) => {
     const selectedAxis = props.getAxisSelection()
     if (selectedAxis == '') return
 
-    if(props.MoveCommands.length == 0)
-    {
-      props.LogAction("Please add at least one command!")
+    if (props.MoveCommands.length == 0) {
+      props.LogAction(ErrorTypes.NO_ERR, 'Please add at least one command!')
       return
     }
 
@@ -227,18 +232,25 @@ export const Command29 = (props: MultiMoveChapterProps) => {
         acceleretionOrVelocityInputBox.current[i]?.value == '' ||
         timeInputBox.current[i]?.value == ''
       ) {
-        props.LogAction(`Please enter both inputs on command ${i + 1}.`)
+        props.LogAction(
+          ErrorTypes.NO_ERR,
+          `Please enter both inputs on command ${i + 1}.`,
+        )
         return
       }
       const timeValue = parseFloat(timeInputBox.current[i]?.value as string)
       if (timeValue < 0) {
-        props.LogAction(`Time cannot be negative on command ${i + 1}!`)
+        props.LogAction(
+          ErrorTypes.ERR1002,
+          `Time cannot be negative on command ${i + 1}!`,
+        )
         return
       }
 
       if (timeValue < minimumPositiveTime) {
         props.LogAction(
-          `WARNING: Time value is considered 0 when it is below ${minimumPositiveTime}, consider using a larger value.`,
+          ErrorTypes.ERR1002,
+          `Time value is considered 0 when it is below ${minimumPositiveTime}, consider using a larger value.`,
         )
       }
       timestepsHexa.push(convertTime(timeValue))

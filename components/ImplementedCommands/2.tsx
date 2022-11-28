@@ -9,6 +9,7 @@ import {
   minimumPositivePosition,
   minimumPositiveTime,
   maximumPositiveTime,
+  ErrorTypes,
 } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 
@@ -30,7 +31,8 @@ export const Command2 = (props: ChaptersPropsType) => {
       } else if (inputBoxValue > maximumPositiveTime) {
         //max reached
         props.LogAction(
-          `WARNING: Maximum value for time is ${maximumPositiveTime}, consider using a smaller value!`,
+          ErrorTypes.ERR1001,
+          `Maximum value for time is ${maximumPositiveTime}, consider using a smaller value!`,
         )
         setTimeValue(maximumPositiveTime)
         timeInputBox.current.value = maximumPositiveTime.toString()
@@ -84,7 +86,8 @@ export const Command2 = (props: ChaptersPropsType) => {
           } else if (inputBoxValue < maximumNegativePosition) {
             //max negative reached
             props.LogAction(
-              `WARNING: Maximum rotation value for negative position is ${maximumNegativePosition}, consider using a larger value!`,
+              ErrorTypes.ERR1001,
+              `Maximum rotation value for negative position is ${maximumNegativePosition}, consider using a larger value!`,
             )
             setPositionValue(maximumNegativePosition)
             positionInputBox.current.value = maximumNegativePosition.toString()
@@ -98,7 +101,8 @@ export const Command2 = (props: ChaptersPropsType) => {
         } else if (inputBoxValue > maximumPositivePosition) {
           //max positive reached
           props.LogAction(
-            `WARNING: Maximum rotation value for positive position is ${maximumPositivePosition}, consider using a smaller value!`,
+            ErrorTypes.ERR1001,
+            `Maximum rotation value for positive position is ${maximumPositivePosition}, consider using a smaller value!`,
           )
           setPositionValue(maximumPositivePosition)
           positionInputBox.current.value = maximumPositivePosition.toString()
@@ -146,30 +150,33 @@ export const Command2 = (props: ChaptersPropsType) => {
         positionInputBox.current.value == '' ||
         timeInputBox.current.value == ''
       ) {
-        props.LogAction('Please enter both inputs.')
+        props.LogAction(ErrorTypes.NO_ERR, 'Please enter both inputs.')
         return
       }
 
       if (parseFloat(timeInputBox.current.value) < 0) {
-        props.LogAction('Time cannot be negative!')
+        props.LogAction(ErrorTypes.NO_ERR, 'Time cannot be negative!')
         return
       }
 
       if (timeValue < minimumPositiveTime) {
         props.LogAction(
-          `WARNING: Time value is considered 0 when it is below ${minimumPositiveTime}, consider using a larger value.`,
+          ErrorTypes.ERR1002,
+          `Time value is considered 0 when it is below ${minimumPositiveTime}, consider using a larger value.`,
         )
       }
 
       if (positionValue < 0) {
         if (positionValue > minimumNegativePosition) {
           props.LogAction(
-            `WARNING: Minimum value for negative position is ${minimumNegativePosition} (one microstep), consider using a smaller value.`,
+            ErrorTypes.ERR1002,
+            `Minimum value for negative position is ${minimumNegativePosition} (one microstep), consider using a smaller value.`,
           )
         }
       } else if (positionValue < minimumPositivePosition) {
         props.LogAction(
-          `WARNING: Minimum value for positive position is ${minimumPositivePosition} (one microstep), consider using a larger value.`,
+          ErrorTypes.ERR1002,
+          `Minimum value for positive position is ${minimumPositivePosition} (one microstep), consider using a larger value.`,
         )
       }
 

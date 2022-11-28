@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { ChaptersPropsType } from './0_1'
-import { Uint8ArrayToString } from '../../servo-engine/utils'
+import { ErrorTypes, Uint8ArrayToString } from '../../servo-engine/utils'
 
 export const Command28 = (props: ChaptersPropsType) => {
   const maxCurrentInputBox = useRef<HTMLInputElement | null>(null)
@@ -20,7 +20,7 @@ export const Command28 = (props: ChaptersPropsType) => {
       const regenCurrentStr = regenerationInputBox.current.value
 
       if (maxCurrentStr == '' || regenCurrentStr == '') {
-        props.LogAction('Please enter both inputs.')
+        props.LogAction(ErrorTypes.NO_ERR, 'Please enter both inputs.')
         return
       }
 
@@ -48,7 +48,7 @@ export const Command28 = (props: ChaptersPropsType) => {
   return (
     <>
       <div className="w-full text-center mb-5">
-      <div className="flex flex-col xl:flex-row justify-center items-center">
+        <div className="flex flex-col xl:flex-row justify-center items-center">
           <div className="m-2">{props.children}</div>
           <input
             ref={maxCurrentInputBox}

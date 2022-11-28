@@ -11,6 +11,7 @@ import {
   RPMSquared_ToInternalAcceleration,
   Uint8ArrayToString,
   minimumPositiveTime,
+  ErrorTypes,
 } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 
@@ -32,7 +33,8 @@ export const Command19 = (props: ChaptersPropsType) => {
       } else if (inputBoxValue > maximumPositiveTime) {
         //max reached
         props.LogAction(
-          `WARNING: Maximum value for time is ${maximumPositiveTime}, consider using a smaller value!`,
+          ErrorTypes.ERR1001,
+          `Maximum value for time is ${maximumPositiveTime}, consider using a smaller value!`,
         )
         setTimeValue(maximumPositiveTime)
         timeInputBox.current.value = maximumPositiveTime.toString()
@@ -87,7 +89,8 @@ export const Command19 = (props: ChaptersPropsType) => {
           } else if (inputBoxValue < maximumNegativeAcceleration) {
             //max negative reached
             props.LogAction(
-              `WARNING: Maximum value for negative acceleration is ${maximumNegativeAcceleration}, consider using a larger value!`,
+              ErrorTypes.ERR1001,
+              `Maximum value for negative acceleration is ${maximumNegativeAcceleration}, consider using a larger value!`,
             )
             setAccelerationRPM(maximumNegativeAcceleration)
             AccelerationInputBox.current.value = maximumNegativeAcceleration.toString()
@@ -101,7 +104,8 @@ export const Command19 = (props: ChaptersPropsType) => {
         } else if (inputBoxValue >= maximumPositiveAcceleration) {
           //max positive reached
           props.LogAction(
-            `WARNING: Maximum value for positive acceleration is ${maximumPositiveAcceleration}, consider using a smaller value!`,
+            ErrorTypes.ERR1001,
+            `Maximum value for positive acceleration is ${maximumPositiveAcceleration}, consider using a smaller value!`,
           )
           setAccelerationRPM(maximumPositiveAcceleration)
           AccelerationInputBox.current.value = maximumPositiveAcceleration.toString()
@@ -157,30 +161,33 @@ export const Command19 = (props: ChaptersPropsType) => {
         AccelerationInputBox.current.value == '' ||
         timeInputBox.current.value == ''
       ) {
-        props.LogAction('Please enter both inputs.')
+        props.LogAction(ErrorTypes.NO_ERR, 'Please enter both inputs.')
         return
       }
 
       if (parseFloat(timeInputBox.current.value) < 0) {
-        props.LogAction('Time cannot be negative!')
+        props.LogAction(ErrorTypes.NO_ERR, 'Time cannot be negative!')
         return
       }
 
       if (timeValue < minimumPositiveTime) {
         props.LogAction(
-          `WARNING: Time value is considered 0 when it is below ${minimumPositiveTime}, consider using a larger value.`,
+          ErrorTypes.ERR1002,
+          `Time value is considered 0 when it is below ${minimumPositiveTime}, consider using a larger value.`,
         )
       }
 
       if (AccelerationRPM < 0) {
         if (AccelerationRPM > minimumNegativeAcceleration) {
           props.LogAction(
-            `WARNING: Minimum value for negative acceleration is ${minimumNegativeAcceleration}, consider using a smaller value.`,
+            ErrorTypes.ERR1002,
+            `Minimum value for negative acceleration is ${minimumNegativeAcceleration}, consider using a smaller value.`,
           )
         }
       } else if (AccelerationRPM < minimumPositiveAcceleration) {
         props.LogAction(
-          `WARNING: Minimum value for positive acceleration is ${minimumPositiveAcceleration}, consider using a larger value.`,
+          ErrorTypes.ERR1002,
+          `Minimum value for positive acceleration is ${minimumPositiveAcceleration}, consider using a larger value.`,
         )
       }
 

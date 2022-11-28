@@ -1,6 +1,7 @@
 import { ReactElement, useEffect, useRef, useState } from 'react'
 import { MotorAxes, MotorAxisType } from '../../servo-engine/motor-axes'
 import {
+  ErrorTypes,
   InternalVelocityToCommVelocity,
   maximumNegativeVelocity,
   maximumPositiveVelocity,
@@ -33,7 +34,8 @@ export const Command3 = (props: ChaptersPropsType) => {
           } else if (inputBoxValue < maximumNegativeVelocity) {
             //max negative reached
             props.LogAction(
-              `WARNING: Maximum value for negative velocity is ${maximumNegativeVelocity}, consider using a larger value!`,
+              ErrorTypes.ERR1001,
+              `Maximum value for negative velocity is ${maximumNegativeVelocity}, consider using a larger value!`,
             )
             setVelocityRPM(maximumNegativeVelocity)
             velocityInputBox.current.value = maximumNegativeVelocity.toString()
@@ -47,7 +49,8 @@ export const Command3 = (props: ChaptersPropsType) => {
         } else if (inputBoxValue >= maximumPositiveVelocity) {
           //max positive reached
           props.LogAction(
-            `WARNING: Maximum value for positive velocity is ${maximumPositiveVelocity}, consider using a smaller value!`,
+            ErrorTypes.ERR1001,
+            `Maximum value for positive velocity is ${maximumPositiveVelocity}, consider using a smaller value!`,
           )
           setVelocityRPM(maximumPositiveVelocity)
           velocityInputBox.current.value = maximumPositiveVelocity.toString()
@@ -91,19 +94,21 @@ export const Command3 = (props: ChaptersPropsType) => {
       if (selectedAxis == '') return
 
       if (velocityInputBox.current.value == '') {
-        props.LogAction('Please enter velocity.')
+        props.LogAction(ErrorTypes.NO_ERR, 'Please enter velocity.')
         return
       }
 
       if (velocityRPM < 0) {
         if (velocityRPM > minimumNegativeVelocity) {
           props.LogAction(
-            `WARNING: Minimum value for negative velocity is ${minimumNegativeVelocity}, consider using a smaller value.`,
+            ErrorTypes.ERR1002,
+            `Minimum value for negative velocity is ${minimumNegativeVelocity}, consider using a smaller value.`,
           )
         }
       } else if (velocityRPM < minimumPositiveVelocity) {
         props.LogAction(
-          `WARNING: Minimum value for positive velocity is ${minimumPositiveVelocity}, consider using a larger value.`,
+          ErrorTypes.ERR1002,
+          `Minimum value for positive velocity is ${minimumPositiveVelocity}, consider using a larger value.`,
         )
       }
 

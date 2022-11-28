@@ -295,7 +295,7 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
           </div>
         ) : (
           <>
-            <p className="inline-block">{props.log}</p>
+            <p className="inline">{props.log}</p>
             {componentIsATroubleshoot && (
               <>
                 <label

@@ -10,6 +10,7 @@ import {
   Uint8ArrayToString,
   maximumPositiveTime,
   minimumPositiveTime,
+  ErrorTypes,
 } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 
@@ -31,7 +32,8 @@ export const Command26 = (props: ChaptersPropsType) => {
       } else if (inputBoxValue > maximumPositiveTime) {
         //max reached
         props.LogAction(
-          `WARNING: Maximum value for time is ${maximumPositiveTime}, consider using a smaller value!`,
+          ErrorTypes.ERR1001,
+          `Maximum value for time is ${maximumPositiveTime}, consider using a smaller value!`,
         )
         setTimeValue(maximumPositiveTime)
         timeInputBox.current.value = maximumPositiveTime.toString()
@@ -84,7 +86,8 @@ export const Command26 = (props: ChaptersPropsType) => {
           } else if (inputBoxValue < maximumNegativeVelocity) {
             //max negative reached
             props.LogAction(
-              `WARNING: Maximum value for negative velocity is ${maximumNegativeVelocity}, consider using a larger value!`,
+              ErrorTypes.ERR1001,
+              `Maximum value for negative velocity is ${maximumNegativeVelocity}, consider using a larger value!`,
             )
             setVelocityRPM(maximumNegativeVelocity)
             velocityInputBox.current.value = maximumNegativeVelocity.toString()
@@ -98,7 +101,8 @@ export const Command26 = (props: ChaptersPropsType) => {
         } else if (inputBoxValue >= maximumPositiveVelocity) {
           //max positive reached
           props.LogAction(
-            `WARNING: Maximum value for positive velocity is ${maximumPositiveVelocity}, consider using a smaller value!`,
+            ErrorTypes.ERR1001,
+            `Maximum value for positive velocity is ${maximumPositiveVelocity}, consider using a smaller value!`,
           )
           setVelocityRPM(maximumPositiveVelocity)
           velocityInputBox.current.value = maximumPositiveVelocity.toString()
@@ -150,30 +154,33 @@ export const Command26 = (props: ChaptersPropsType) => {
         velocityInputBox.current.value == '' ||
         timeInputBox.current.value == ''
       ) {
-        props.LogAction('Please enter both inputs.')
+        props.LogAction(ErrorTypes.NO_ERR, 'Please enter both inputs.')
         return
       }
 
       if (parseFloat(timeInputBox.current.value) < 0) {
-        props.LogAction('Time cannot be negative!')
+        props.LogAction(ErrorTypes.NO_ERR, 'Time cannot be negative!')
         return
       }
 
       if (timeValue < minimumPositiveTime) {
         props.LogAction(
-          `WARNING: Time value is considered 0 when it is below ${minimumPositiveTime}, consider using a larger value.`,
+          ErrorTypes.ERR1002,
+          `Time value is considered 0 when it is below ${minimumPositiveTime}, consider using a larger value.`,
         )
       }
 
       if (velocityRPM < 0) {
         if (velocityRPM > minimumNegativeVelocity) {
           props.LogAction(
-            `WARNING: Minimum value for negative velocity is ${minimumNegativeVelocity}, consider using a smaller value.`,
+            ErrorTypes.ERR1002,
+            `Minimum value for negative velocity is ${minimumNegativeVelocity}, consider using a smaller value.`,
           )
         }
       } else if (velocityRPM < minimumPositiveVelocity) {
         props.LogAction(
-          `WARNING: Minimum value for positive velocity is ${minimumPositiveVelocity}, consider using a larger value.`,
+          ErrorTypes.ERR1002,
+          `Minimum value for positive velocity is ${minimumPositiveVelocity}, consider using a larger value.`,
         )
       }
 
@@ -187,7 +194,7 @@ export const Command26 = (props: ChaptersPropsType) => {
   return (
     <>
       <div className="w-full text-center mb-5">
-      <div className="flex flex-col xl:flex-row justify-center items-center">
+        <div className="flex flex-col xl:flex-row justify-center items-center">
           <div className="m-2">{props.children}</div>
           <div
             className="tooltip tooltip-ghost"

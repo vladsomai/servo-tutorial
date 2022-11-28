@@ -1,8 +1,6 @@
-import { MainWindowProps } from '../main-window'
-import { ReactElement, useRef } from 'react'
-import { MotorAxes, MotorAxisType } from '../../servo-engine/motor-axes'
+import { useRef } from 'react'
 import { ChaptersPropsType } from './0_1'
-import { Uint8ArrayToString } from '../../servo-engine/utils'
+import { ErrorTypes, Uint8ArrayToString } from '../../servo-engine/utils'
 
 export const Command32 = (props: ChaptersPropsType) => {
   const selectPayloadInputBox = useRef<HTMLSelectElement | null>(null)
@@ -21,6 +19,7 @@ export const Command32 = (props: ChaptersPropsType) => {
 
       if (!availableDataToCapture.current.includes(inputSelection)) {
         props.LogAction(
+          ErrorTypes.NO_ERR,
           'Please select one of the available options.',
         )
         return
@@ -40,7 +39,7 @@ export const Command32 = (props: ChaptersPropsType) => {
   return (
     <>
       <div className="w-full text-center mb-5">
-      <div className="flex flex-col xl:flex-row justify-center items-center">
+        <div className="flex flex-col xl:flex-row justify-center items-center">
           <div className="m-2">{props.children}</div>
           <select
             ref={selectPayloadInputBox}
@@ -54,12 +53,12 @@ export const Command32 = (props: ChaptersPropsType) => {
           </select>
         </div>
 
-          <button
-            className="btn btn-primary btn-sm mt-2"
-            onClick={capture_hall_sensor}
-          >
-            execute
-          </button>
+        <button
+          className="btn btn-primary btn-sm mt-2"
+          onClick={capture_hall_sensor}
+        >
+          execute
+        </button>
       </div>
     </>
   )

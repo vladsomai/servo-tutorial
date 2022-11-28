@@ -9,8 +9,15 @@ import {
 import React from 'react'
 import Log from './log-window'
 import Command from './command-window'
-import { Uint8ArrayToString, stringToUint8Array } from '../servo-engine/utils'
-import { InputOutputObjects, MotorCommandsDictionary } from '../servo-engine/motor-commands'
+import {
+  Uint8ArrayToString,
+  stringToUint8Array,
+  ErrorTypes,
+} from '../servo-engine/utils'
+import {
+  InputOutputObjects,
+  MotorCommandsDictionary,
+} from '../servo-engine/motor-commands'
 import { LogType } from '../components/log-window'
 import { MotorAxes } from '../servo-engine/motor-axes'
 import SelectAxis from './selectAxis'
@@ -74,7 +81,7 @@ const Main = (props: MainWindowProps) => {
   const setMaster_time_startWrapper = (time: number) =>
     setMaster_time_start(time)
   const lineNumber = useRef<number>(0)
-  const LogAction = (log: string): void => {
+  const LogAction = (errorType: string, log: string): void => {
     lineNumber.current++
 
     logsRef.current = [
@@ -95,6 +102,7 @@ const Main = (props: MainWindowProps) => {
     try {
       if (portSer.current) {
         LogAction(
+          ErrorTypes.NO_ERR,
           'You are trying to open a new serial port, we will close the current one for you.',
         )
         disconnectFromSerialPort()
@@ -103,10 +111,13 @@ const Main = (props: MainWindowProps) => {
       await portSer.current.open({ baudRate: BaudRate })
       readDataFromSerialPortUntilClosed()
       setIsConnected(true)
-      LogAction('Connected with baudrate ' + BaudRate.toString() + '!')
+      LogAction(
+        ErrorTypes.NO_ERR,
+        'Connected with baudrate ' + BaudRate.toString() + '!',
+      )
     } catch (err) {
       if (err instanceof Error) {
-        LogAction(err!.message)
+        LogAction(ErrorTypes.ERR1999, err!.message)
         return
       } else {
         console.log(err)
@@ -121,7 +132,7 @@ const Main = (props: MainWindowProps) => {
         reader.current?.cancel()
       } catch (err) {
         if (err instanceof Error) {
-          LogAction(err!.message)
+          LogAction(ErrorTypes.ERR1999, err!.message)
           return
         } else {
           console.log(err)
@@ -159,6 +170,7 @@ const Main = (props: MainWindowProps) => {
     ) => {
       if (dataToSend.length === 0) {
         LogAction(
+          ErrorTypes.NO_ERR,
           'We know you are impatient dear scholar, but you must enter at least one byte!',
         )
         return
@@ -170,7 +182,7 @@ const Main = (props: MainWindowProps) => {
         if (typeof dataToSend == 'string') {
           data = stringToUint8Array(dataToSend.toUpperCase())
           if (data.length == 0) {
-            LogAction('Your message has an invalid length!')
+            LogAction(ErrorTypes.ERR1005, 'Your message has an invalid length!')
             return
           }
         } else {
@@ -181,29 +193,38 @@ const Main = (props: MainWindowProps) => {
 
         let hexString = Uint8ArrayToString(data)
         if (enableSentLogging) {
-          LogAction('Sent: 0x' + hexString.toUpperCase())
+          LogAction(ErrorTypes.NO_ERR, 'Sent: 0x' + hexString.toUpperCase())
         }
 
         if (enableTimoutLogging) {
           timerHandle.current = setTimeout(() => {
             if (partialData.current.length == 0) {
-              LogAction('The command timed out.')
+              LogAction(ErrorTypes.ERR1003, 'The command timed out.')
             } else {
               //the command responded but it was incomplete
-              LogAction('The message received is incomplete.')
-              LogAction('Received incomplete message: 0x' + partialData.current)
+              LogAction(
+                ErrorTypes.ERR1004,
+                'The message received is incomplete.',
+              )
+              LogAction(
+                ErrorTypes.ERR1004,
+                'Received incomplete message: 0x' + partialData.current,
+              )
               partialData.current = ''
             }
           }, 1000)
         }
 
         if (enableSentLogging && !enableTimoutLogging) {
-          LogAction('Command sent sucessfully!')
+          LogAction(ErrorTypes.NO_ERR, 'Command sent sucessfully!')
         }
 
         writer.releaseLock()
       } else {
-        LogAction('Sending data is not possible, you must connect first!')
+        LogAction(
+          ErrorTypes.NO_ERR,
+          'Sending data is not possible, you must connect first!',
+        )
       }
     },
     [],
@@ -221,7 +242,7 @@ const Main = (props: MainWindowProps) => {
               if (portSer.current != null && portSer.current.readable) {
                 const { value, done } = await reader.current.read()
                 if (done) {
-                  LogAction('Reader is now closed!')
+                  LogAction(ErrorTypes.NO_ERR, 'Reader is now closed!')
                   reader.current.releaseLock()
                   break
                 } else {
@@ -237,14 +258,20 @@ const Main = (props: MainWindowProps) => {
                     )[0]
 
                     if (receiveLength == 0) {
-                      LogAction('Received: 0x' + partialData.current)
+                      LogAction(
+                        ErrorTypes.NO_ERR,
+                        'Received: 0x' + partialData.current,
+                      )
                       clearTimeout(timerHandle.current)
                       partialData.current = ''
                     } else if (
                       partialData.current.length / 2 ==
                       receiveLength + 3
                     ) {
-                      LogAction('Received: 0x' + partialData.current)
+                      LogAction(
+                        ErrorTypes.NO_ERR,
+                        'Received: 0x' + partialData.current,
+                      )
                       partialData.current = ''
                       clearTimeout(timerHandle.current)
                     }
@@ -254,7 +281,7 @@ const Main = (props: MainWindowProps) => {
             }
           } catch (err) {
             if (err instanceof Error) {
-              LogAction(err!.message)
+              LogAction(ErrorTypes.ERR1999, err!.message)
               reader.current.releaseLock()
               return
             }
@@ -262,11 +289,14 @@ const Main = (props: MainWindowProps) => {
             console.log(err)
             return
           } finally {
-            LogAction('Waiting for the serial port to disconnect..')
+            LogAction(
+              ErrorTypes.NO_ERR,
+              'Waiting for the serial port to disconnect..',
+            )
             await portSer.current.close()
             setIsConnected(false)
             portSer.current = null
-            LogAction('Disconnected!')
+            LogAction(ErrorTypes.NO_ERR, 'Disconnected!')
           }
         }
       }
@@ -410,7 +440,8 @@ const Main = (props: MainWindowProps) => {
       </>
     )
   else if (props.currentCommandDictionary.CommandEnum == 2) {
-    const currentInputObj = props.currentCommandDictionary.Input as InputOutputObjects[];
+    const currentInputObj = props.currentCommandDictionary
+      .Input as InputOutputObjects[]
     currentCommandLayout = (
       <>
         <Command2
@@ -972,11 +1003,7 @@ const Main = (props: MainWindowProps) => {
         </Command>
 
         {props.currentCommandDictionary.CommandEnum === 100 ? null : (
-          <Log
-            logs={logs}
-            mainWindow={props}
-            clearLogWindow={clearLogWindow}
-          />
+          <Log logs={logs} mainWindow={props} clearLogWindow={clearLogWindow} />
         )}
       </div>
     </>

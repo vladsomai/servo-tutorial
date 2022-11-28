@@ -1,6 +1,7 @@
 import { ReactElement, useEffect, useRef, useState } from 'react'
 import { MotorAxes, MotorAxisType } from '../../servo-engine/motor-axes'
 import {
+  ErrorTypes,
   InternalAccelerationToCommAcceleration,
   maximumNegativeAcceleration,
   maximumPositiveAcceleration,
@@ -35,7 +36,8 @@ export const Command5 = (props: ChaptersPropsType) => {
           } else if (inputBoxValue < maximumNegativeAcceleration) {
             //max negative reached
             props.LogAction(
-              `WARNING: Maximum value for negative acceleration is ${maximumNegativeAcceleration}, consider using a larger value!`,
+              ErrorTypes.ERR1001,
+              `Maximum value for negative acceleration is ${maximumNegativeAcceleration}, consider using a larger value!`,
             )
             setAccelerationRPM(maximumNegativeAcceleration)
             AccelerationInputBox.current.value = maximumNegativeAcceleration.toString()
@@ -49,7 +51,8 @@ export const Command5 = (props: ChaptersPropsType) => {
         } else if (inputBoxValue >= maximumPositiveAcceleration) {
           //max positive reached
           props.LogAction(
-            `WARNING: Maximum value for positive acceleration is ${maximumPositiveAcceleration}, consider using a smaller value!`,
+            ErrorTypes.ERR1001,
+            `Maximum value for positive acceleration is ${maximumPositiveAcceleration}, consider using a smaller value!`,
           )
           setAccelerationRPM(maximumPositiveAcceleration)
           AccelerationInputBox.current.value = maximumPositiveAcceleration.toString()
@@ -97,19 +100,21 @@ export const Command5 = (props: ChaptersPropsType) => {
       if (selectedAxis == '') return
 
       if (AccelerationInputBox.current.value == '') {
-        props.LogAction('Please enter acceleration.')
+        props.LogAction(ErrorTypes.NO_ERR, 'Please enter acceleration.')
         return
       }
 
       if (AccelerationRPM < 0) {
         if (AccelerationRPM > minimumNegativeAcceleration) {
           props.LogAction(
-            `WARNING: Minimum value for negative acceleration is ${minimumNegativeAcceleration}, consider using a smaller value.`,
+            ErrorTypes.ERR1002,
+            `Minimum value for negative acceleration is ${minimumNegativeAcceleration}, consider using a smaller value.`,
           )
         }
       } else if (AccelerationRPM < minimumPositiveAcceleration) {
         props.LogAction(
-          `WARNING: Minimum value for positive acceleration is ${minimumPositiveAcceleration}, consider using a larger value.`,
+          ErrorTypes.ERR1002,
+          `Minimum value for positive acceleration is ${minimumPositiveAcceleration}, consider using a larger value.`,
         )
       }
 

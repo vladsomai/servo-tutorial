@@ -1,5 +1,5 @@
 import { SyntheticEvent, useRef } from 'react'
-import { crc32, sleep } from '../../servo-engine/utils'
+import { crc32, ErrorTypes, sleep } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 import Image from 'next/image'
 
@@ -55,6 +55,7 @@ export const Command23 = (props: FirmwareCmdProps) => {
       //Do not exceed max firmware size
       if (dataWithoutHeader.length > FIRMWARE_BYTES_MAX_SIZE) {
         props.LogAction(
+          ErrorTypes.ERR1006,
           `Firmware file exceeds maximum firmware size! Max firmware size: ${FIRMWARE_BYTES_MAX_SIZE}`,
         )
         return
@@ -111,7 +112,7 @@ export const Command23 = (props: FirmwareCmdProps) => {
       )
       //#endregion FINAL_FIRMWARE_CODE
 
-      props.LogAction('Firmware successfully loaded!')
+      props.LogAction(ErrorTypes.NO_ERR, 'Firmware successfully loaded!')
     }
 
     file.readAsArrayBuffer(inp.files![0])
@@ -122,12 +123,15 @@ export const Command23 = (props: FirmwareCmdProps) => {
     if (selectedAxis == '') return
 
     if (firmwareCode == null || firmwareCode.current == null) {
-      props.LogAction('Please upload a firmware file!')
+      props.LogAction(ErrorTypes.NO_ERR, 'Please upload a firmware file!')
       return
     }
 
     if (!props.isConnected) {
-      props.LogAction('Sending data is not possible, you must connect first!')
+      props.LogAction(
+        ErrorTypes.NO_ERR,
+        'Sending data is not possible, you must connect first!',
+      )
       return
     }
 
@@ -174,6 +178,7 @@ export const Command23 = (props: FirmwareCmdProps) => {
     const execute_programming = async () => {
       if (firmwareCode == null || firmwareCode.current == null) {
         props.LogAction(
+          ErrorTypes.ERR1007,
           'The firmware file is not available, please try refreshing the page and upload the firmware again.',
         )
         return
@@ -209,7 +214,7 @@ export const Command23 = (props: FirmwareCmdProps) => {
     }
     //#endregion execute_programming
 
-    props.LogAction('Firmware upgrade in progress...')
+    props.LogAction(ErrorTypes.NO_ERR, 'Firmware upgrade in progress...')
 
     //System reset
     await props.sendDataToSerialPort('FF1B00', false, false)
@@ -221,7 +226,7 @@ export const Command23 = (props: FirmwareCmdProps) => {
     //System reset
     await props.sendDataToSerialPort('FF1B00', false, false)
 
-    props.LogAction('Firmware upgrade finished succesfully!')
+    props.LogAction(ErrorTypes.NO_ERR, 'Firmware upgrade finished succesfully!')
   }
 
   return (

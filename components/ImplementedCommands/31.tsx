@@ -1,7 +1,6 @@
-import { MainWindowProps } from '../main-window'
-import { ReactElement, useRef } from 'react'
-import { MotorAxes, MotorAxisType } from '../../servo-engine/motor-axes'
+import { useRef } from 'react'
 import { ChaptersPropsType } from './0_1'
+import { ErrorTypes } from '../../servo-engine/utils'
 
 export const Command31 = (props: ChaptersPropsType) => {
   const textPayloadInputBox = useRef<HTMLInputElement | null>(null)
@@ -13,7 +12,10 @@ export const Command31 = (props: ChaptersPropsType) => {
 
       const textPayload: string = textPayloadInputBox.current.value
       if (textPayload.length != 10) {
-        props.LogAction('Your payload must be exactly 10 characters!')
+        props.LogAction(
+          ErrorTypes.NO_ERR,
+          'Your payload must be exactly 10 characters!',
+        )
         return
       }
 

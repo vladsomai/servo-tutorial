@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Char, stringToUint8Array } from '../../servo-engine/utils'
+import { Char, ErrorTypes, stringToUint8Array } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 
 export const Command21 = (props: ChaptersPropsType) => {
@@ -17,7 +17,10 @@ export const Command21 = (props: ChaptersPropsType) => {
       uniqueIdInputBox
     ) {
       if (aliasInputBox.current.value == 'R') {
-        props.LogAction('R is a reserved alias, please use something else.')
+        props.LogAction(
+          ErrorTypes.NO_ERR,
+          'R is a reserved alias, please use something else.',
+        )
         return
       }
 
@@ -29,18 +32,25 @@ export const Command21 = (props: ChaptersPropsType) => {
           aliasInputBox.current.value == 'Z'
         )
       ) {
-        props.LogAction('Currently only E, X, Y, Z aliases are supported!')
+        props.LogAction(
+          ErrorTypes.NO_ERR,
+          'Currently only E, X, Y, Z aliases are supported!',
+        )
         return
       }
 
       //this will never be hit since we check the axis above
       if (aliasInputBox.current.value.length > 1) {
-        props.LogAction('The alias must be only one character!')
+        props.LogAction(
+          ErrorTypes.NO_ERR,
+          'The alias must be only one character!',
+        )
         return
       }
 
       if (uniqueIdInputBox.current.value.length != 16) {
         props.LogAction(
+          ErrorTypes.NO_ERR,
           "The unique id must be exactly 8 bytes! e.g. '7C661210B2026558'",
         )
         return

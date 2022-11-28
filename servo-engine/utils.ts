@@ -475,3 +475,24 @@ export const hexStringToInt32 = (_value: string, isUnsigned: boolean): bigint | 
     }
 
 }
+
+export const ErrorTypes = {
+    /**No error */
+    "NO_ERR": "No error",
+    /**Maximum value exceeded error */
+    "ERR1001": "Maximum value",
+    /**Minumum value exceeded error */
+    "ERR1002": "Minimum value",
+    /**Command time out */
+    "ERR1003": "Command time out",
+    /**Incomplete message received */
+    "ERR1004": "Incomplete message received",
+    /**Message has an invalid length */
+    "ERR1005": "Message has an invalid length",
+    /**Firmware file exceeded maximum size */
+    "ERR1006": "Firmware file exceeded maximum size",
+    /**Firmware file is not avaialble */
+    "ERR1007": "Firmware file is not avaialble",
+    /**Unknown error */
+    "ERR1999": "Unknown error",
+}
