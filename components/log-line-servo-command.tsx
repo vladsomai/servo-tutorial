@@ -144,7 +144,6 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
 
               let currentPayloadDescription = output.Description
 
-              
               NoOfBytes = getNoOfBytesFromDescription(output.Description)
               if (NoOfBytes == 0) {
                 //try getting the no of bytes from the receive length
@@ -161,6 +160,10 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
               currentPayloadDescription += getDisplayFormat(
                 output.TooltipDisplayFormat as string,
                 currentParameter,
+                props.currentCommand.current == 22 ||
+                  props.currentCommand.current == 25
+                  ? output.Description
+                  : '',
               )
 
               receivingPayload.push({
@@ -279,10 +282,10 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
                 <Tooltip
                   content={byte.Description}
                   placement="top"
-                  className=' w-auto max-w-md bg-[#3abff8] text-slate-800 font-extrabold border-opacity-0 '
+                  className=" w-auto max-w-md bg-[#3abff8] text-slate-800 font-extrabold border-opacity-0 "
                   animation="duration-500"
                   role="tooltip"
-                  style='auto'
+                  style="auto"
                 >
                   <p
                     className={`inline break-all cursor-pointer ${byte.Color}`}

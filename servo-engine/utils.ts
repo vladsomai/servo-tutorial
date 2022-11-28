@@ -340,7 +340,7 @@ export const hexStringToASCII = (_input: string): string => {
         ret += String.fromCharCode(strToNumberArr[i]);
     }
 
-    return ret
+    return ret.trim()
 }
 
 
@@ -357,7 +357,7 @@ export const types = new Map<string, number>([
     ["u48", 6],
     ["i64", 8],
     ["u64", 8],
-    ["string8", 1],
+    ["string8", 8],
     ["u24_version_number", 3],
     ["u32_version_number", 4],
     ["u64_unique_id", 8],
@@ -392,7 +392,16 @@ export const getNoOfBytesFromType = () => {
  * @param format format string
  * @param hexString hex number as string to be converted to the specified format
  */
-export const getDisplayFormat = (format: string, hexString: string) => {
+export const getDisplayFormat = (format: string, hexString: string, typeWithDescription: string = "") => {
+
+    if (typeWithDescription.length) {
+        // version_number
+        const indexOfColumn = typeWithDescription.indexOf(":");
+        const typeStr = typeWithDescription.slice(0, indexOfColumn)
+        if (typeStr.includes("version_number")) {
+            format = '%uvn'
+        }
+    }
 
     let res = '';
     let convertedTo = " Result converted to ";
@@ -421,6 +430,12 @@ export const getDisplayFormat = (format: string, hexString: string) => {
             res = hexStringToInt32(
                 hexString, true
             ).toString()
+            break
+        case '%uvn':
+            convertedTo += "version number: "
+            res = getVersionNumber(
+                hexString
+            )
             break
         default:
             res = '0'
@@ -495,4 +510,16 @@ export const ErrorTypes = {
     "ERR1007": "Firmware file is not avaialble",
     /**Unknown error */
     "ERR1999": "Unknown error",
+}
+
+const getVersionNumber = (hexString: string): string => {
+    let bytes = stringToUint8Array(hexString);
+
+    let res=''
+
+    for(let i=bytes.length-1;i>=0;i--)
+    {
+        res+=bytes[i].toString()+'.'
+    }
+    return res.substring(0, res.lastIndexOf('.'))
 }
