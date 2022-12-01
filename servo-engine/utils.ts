@@ -437,6 +437,10 @@ export const getDisplayFormat = (format: string, hexString: string, typeWithDesc
                 hexString
             )
             break
+        case '%x':
+            convertedTo += "hexadecimal with little endian format: "
+            res = hexString
+            break
         default:
             res = '0'
             break
@@ -515,11 +519,20 @@ export const ErrorTypes = {
 const getVersionNumber = (hexString: string): string => {
     let bytes = stringToUint8Array(hexString);
 
-    let res=''
+    let res = ''
 
-    for(let i=bytes.length-1;i>=0;i--)
-    {
-        res+=bytes[i].toString()+'.'
+    for (let i = bytes.length - 1; i >= 0; i--) {
+        res += bytes[i].toString() + '.'
     }
     return res.substring(0, res.lastIndexOf('.'))
 }
+
+export const littleEndianToBigEndian = (hexString: string): string => {
+    let res = ''
+    for (let i = hexString.length; i >= 0; i -= 2) {
+        res += hexString.substring(i, i+2)
+
+    }
+    return res
+}
+

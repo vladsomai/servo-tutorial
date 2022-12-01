@@ -77,13 +77,13 @@ export const Command21 = (props: ChaptersPropsType) => {
             ref={uniqueIdInputBox}
             type="text"
             placeholder="Unique ID in hexadecimal"
-            className="input input-bordered max-w-xs input-sm m-2"
+            className="input input-bordered w-full max-w-[60%] 2xl:max-w-[50%] input-sm m-2"
           />
           <input
             ref={aliasInputBox}
             type="text"
             placeholder="Alias"
-            className="input input-bordered max-w-xs input-sm m-2"
+            className="input input-bordered w-[25%] 2xl:max-w-[17%] input-sm m-2"
           />
         </div>
         <button

@@ -22,14 +22,14 @@ const Chapters = (props: ChaptersProps) => {
 
   return (
     <>
-      <div className="grid w-[15%] xl:w-[12%] 2xl:w-[10%] h-full card bg-base-300 rounded-box place-items-center overflow-auto mr-2">
+      <div className="grid w-[20%] xl:w-[15%] 2xl:w-[12%] h-full card bg-base-300 rounded-box place-items-center overflow-auto mr-2">
         <div className="flex flex-col w-full border-opacity-50 my-5">
           <div className="flex flex-col items-center">
             {chapters.map((i) => {
               return (
                 <Link key={i} href={`/tutorial/${i}`}>
                   <a
-                    className={`btn btn-xs sm:btn-sm md:btn-sm lg:btn-md mb-1 animate__animated animate__fadeIn ${
+                    className={`btn btn-xs sm:btn-sm mb-3 animate__animated animate__fadeIn w-full ${
                       props.currentChapter === i
                         ? ' btn-primary '
                         : ' btn-ghost '
@@ -38,7 +38,7 @@ const Chapters = (props: ChaptersProps) => {
                       props.setCurrentChapter(i)
                     }}
                   >
-                    CHAPTER {i}
+                    {props.MotorCommands.current[i-1]?.CommandString}
                   </a>
                 </Link>
               )

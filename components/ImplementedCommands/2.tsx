@@ -10,6 +10,7 @@ import {
   minimumPositiveTime,
   maximumPositiveTime,
   ErrorTypes,
+  littleEndianToBigEndian,
 } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 
@@ -243,7 +244,20 @@ export const Command2 = (props: ChaptersPropsType) => {
               <br></br>
               {`Input: ${microsteps.toString()} Microsteps`}
               <br></br>
-              {`Output: 0x${microstepsHexa}`}
+              Output:
+              <ul>
+                <li>
+                  <p className=" my-0">
+                    Little endian format(transmit order): {`0x${microstepsHexa}`}
+                  </p>
+                </li>
+                
+                <li>
+                  <p className="my-0">
+                    Big endian format: {`0x${littleEndianToBigEndian(microstepsHexa)}`}
+                  </p>
+                </li>
+              </ul>
             </li>{' '}
           </div>
           <div className="px-5">
@@ -263,7 +277,20 @@ export const Command2 = (props: ChaptersPropsType) => {
               <br></br>
               {`Input: ${timesteps.toString()} Timesteps`}
               <br></br>
-              {`Output: 0x${timestepsHexa}`}
+              Output:
+              <ul>
+                <li>
+                  <p className=" my-0">
+                    Little endian format(transmit order): {`0x${timestepsHexa}`}
+                  </p>
+                </li>
+                
+                <li>
+                  <p className="my-0">
+                    Big endian format: {`0x${littleEndianToBigEndian(timestepsHexa)}`}
+                  </p>
+                </li>
+              </ul>
             </li>
           </div>
         </ol>

@@ -240,7 +240,7 @@
     "Output": [
       {
         "Description": "u64_unique_id: A unique ID (unique among all devices manufactured). The response is sent after a random delay of between 0 and 1 seconds.",
-        "TooltipDisplayFormat": "%u"
+        "TooltipDisplayFormat": "%x"
       },
       {
         "Description": "u8_alias: The alias of the device that has this unique ID.",
@@ -259,7 +259,7 @@
     "Input": [
       {
         "Description": "u64_unique_id: Unique ID of the target device.",
-        "TooltipDisplayFormat": "%u"
+        "TooltipDisplayFormat": "%x"
       },
       {
         "Description": "u8_alias: The alias (short one byte ID) such as X, Y, Z, E, etc. Cannot be R because this is reserved for a response message.",
@@ -292,7 +292,7 @@
       },
       {
         "Description": "u64_unique_id: The unique ID for the product.",
-        "TooltipDisplayFormat": "%u"
+        "TooltipDisplayFormat": "%x"
       },
       {
         "Description": "u32: Not currently used.",

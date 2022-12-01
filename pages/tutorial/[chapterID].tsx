@@ -17,7 +17,7 @@ const Tutorial: NextPageWithLayout = () => {
   const MotorCommands = useRef<
     MotorCommandsDictionary[] 
   >([])
-  const [currentChapter, setCurrentChapter] = useState(1)
+  const [currentChapter, setCurrentChapter] = useState(0)
   const [currentCommandDictionary, setCurrentCommandDictionary] = useState<
     MotorCommandsDictionary|null
   >(null)
