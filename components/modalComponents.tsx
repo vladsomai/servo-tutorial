@@ -66,7 +66,7 @@ export const troubleshootConnection = (
 export const troubleshootIncompleteResponse = (
   <>
     <article className="mb-5 prose prose-lg max-w-full spacin tracking-wide">
-      <p>This ussually happens when the command is not fully supported.</p>
+      <p>This usually happens when the command is not fully supported.</p>
       <p>You can try solving the issue using one of the following steps:</p>
       <ol className="">
         <li>Resetting the motor with the system reset command</li>

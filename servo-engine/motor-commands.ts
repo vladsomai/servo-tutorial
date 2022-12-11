@@ -6,6 +6,11 @@ export type MotorCommandsDictionary = {
     Output: InputOutputObjects[] | string, //Text for the output of each command
 }
 
+export type ErrorCodes = {
+    ErrorCode: number,
+    Description: string
+}
+
 export interface InputOutputObjects {
     Description: string
     TooltipDisplayFormat?: string

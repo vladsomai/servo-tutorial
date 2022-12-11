@@ -155,7 +155,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
                     (item: InputOutputObjects, index) => {
                       if (props.currentCommandDictionary.CommandEnum === 16) {
                         if (item.Description.includes('Bit')) {
-                          return <p className="ml-10">{item.Description}</p>
+                          return <p key={index} className="ml-10">{item.Description}</p>
                         } else
                           return (
                             <li key={index}>

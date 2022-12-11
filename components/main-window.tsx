@@ -86,7 +86,12 @@ const Main = (props: MainWindowProps) => {
 
     logsRef.current = [
       ...logsRef.current,
-      { lineNumber: lineNumber.current, date: new Date(), log: log },
+      {
+        lineNumber: lineNumber.current,
+        date: new Date(),
+        log: log,
+        logError: errorType,
+      },
     ]
     setLogs(logsRef.current)
   }
@@ -196,6 +201,10 @@ const Main = (props: MainWindowProps) => {
           LogAction(ErrorTypes.NO_ERR, 'Sent: 0x' + hexString.toUpperCase())
         }
 
+        if (hexString.slice(0, 2) == 'FF') {
+          enableTimoutLogging = false
+        }
+
         if (enableTimoutLogging) {
           timerHandle.current = setTimeout(() => {
             if (partialData.current.length == 0) {
@@ -216,7 +225,7 @@ const Main = (props: MainWindowProps) => {
         }
 
         if (enableSentLogging && !enableTimoutLogging) {
-          LogAction(ErrorTypes.NO_ERR, 'Command sent sucessfully!')
+          LogAction(ErrorTypes.NO_ERR, 'No response is expected!')
         }
 
         writer.releaseLock()

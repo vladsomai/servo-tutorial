@@ -6,6 +6,7 @@ export type LogType = {
   lineNumber: number
   date: Date
   log: string
+  logError: string
 }
 
 const Log = (props: {

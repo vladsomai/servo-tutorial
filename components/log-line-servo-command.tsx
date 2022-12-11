@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, MutableRefObject } from 'react'
 import {
+  ErrorTypes,
   getDisplayFormat,
   getNoOfBytesFromDescription,
   stringToUint8Array,
@@ -12,7 +13,9 @@ import {
   troubleshootConnection,
   troubleshootIncompleteResponse,
 } from './modalComponents'
+import errorCodes from '../public/status_error_codes.json' assert {type: 'json'};
 import { Tooltip } from 'flowbite-react'
+import TooltipDescription from './tooltipDescription'
 
 export interface LogLineServoCommandType extends LogType, MainWindowProps {
   currentCommand: MutableRefObject<number>
@@ -21,11 +24,11 @@ export interface LogLineServoCommandType extends LogType, MainWindowProps {
 export interface CommandBytesType {
   Value: string
   Color: string
-  Description: string
+  Description: JSX.Element
 }
 
 export interface CommandParameter {
-  Description: string
+  Description: JSX.Element
   NoOfBytes: number
 }
 
@@ -33,6 +36,7 @@ enum TroubleshootType {
   connection,
   incompleteMessage,
 }
+
 
 const LogLineServoCommand = (props: LogLineServoCommandType) => {
   const globalContext = useContext(GlobalContext)
@@ -77,14 +81,21 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
   const [componentIsACommand, setComponentIsACommand] = useState<boolean>(false)
   const [componentIsATroubleshoot, setComponentIsATroubleshoot] = useState<
     boolean
+  >(false)  
+  const [maxOrMinReached, setMaxOrMinReached] = useState<
+    boolean
   >(false)
 
   const commandBytes = useRef<CommandBytesType[]>([])
   const stringTo0x = useRef('')
+  const uniqueId = useRef(0)
+  const getStatusAtFatalErrorCode = useRef(false)
+
 
   useEffect(() => {
     setComponentIsACommand(false)
     setComponentIsATroubleshoot(false)
+    setMaxOrMinReached(false)
     const isSendCommand = props.log.includes('Sent') ? true : false
     const isReceiveCommand = props.log.includes('Received') ? true : false
     let sendingPayload: CommandParameter[] = []
@@ -112,7 +123,7 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
         if (command.CommandEnum == props.currentCommand.current) {
           if (isSendCommand && typeof command.Input != 'string') {
             for (const input of command.Input) {
-              let currentPayloadDescription = input.Description
+              let currentPayloadDescription = [input.Description]
 
               NoOfBytes = getNoOfBytesFromDescription(input.Description)
               if (NoOfBytes == 0) {
@@ -127,13 +138,15 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
               )
               currentParameterStart = currentParameterEnd
 
-              currentPayloadDescription += getDisplayFormat(
+              currentPayloadDescription.push(getDisplayFormat(
                 input.TooltipDisplayFormat as string,
                 currentParameter,
-              )
+              ))
+
+              const tooltipDescription = <TooltipDescription Description={currentPayloadDescription}/>
 
               sendingPayload.push({
-                Description: currentPayloadDescription,
+                Description: tooltipDescription,
                 NoOfBytes: NoOfBytes,
               })
             }
@@ -142,7 +155,7 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
               //for command 16
               if (output.Description.includes('Bit')) continue
 
-              let currentPayloadDescription = output.Description
+              let currentPayloadDescription = [output.Description]
 
               NoOfBytes = getNoOfBytesFromDescription(output.Description)
               if (NoOfBytes == 0) {
@@ -157,17 +170,44 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
               )
               currentParameterStart = currentParameterEnd
 
-              currentPayloadDescription += getDisplayFormat(
-                output.TooltipDisplayFormat as string,
-                currentParameter,
+              if (
                 props.currentCommand.current == 22 ||
-                  props.currentCommand.current == 25
-                  ? output.Description
-                  : '',
-              )
+                props.currentCommand.current == 25
+              ) {
+                //this is used to separate the version number bytes by a dot
+                currentPayloadDescription.push(getDisplayFormat(
+                  output.TooltipDisplayFormat as string,
+                  currentParameter,
+                  output.Description,
+                ))
+              } else {
+                currentPayloadDescription.push(getDisplayFormat(
+                  output.TooltipDisplayFormat as string,
+                  currentParameter,
+                ))
+              }
+
+              if (props.currentCommand.current == 16) {
+                if (getStatusAtFatalErrorCode.current) {
+                  //for cmd 16 we must take the second parameter and check the fatal error code that needs to be displayed
+                  const currentErrorCode =  parseInt(currentParameter,16)
+                  for(let errorCode of errorCodes)
+                  {
+                    if(currentErrorCode==errorCode.ErrorCode)
+                    {
+                      currentPayloadDescription.push(" Error code description: "+ errorCode.Description)
+                    }
+                  }
+
+                }
+
+                getStatusAtFatalErrorCode.current = true
+              }
+
+              const tooltipDescription = <TooltipDescription Description={currentPayloadDescription}/>
 
               receivingPayload.push({
-                Description: currentPayloadDescription,
+                Description: tooltipDescription,
                 NoOfBytes: NoOfBytes,
               })
             }
@@ -180,24 +220,24 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
           commandBytes.current.push({
             Value: rawCommand.slice(0, 2),
             Description: isSendCommand
-              ? byteDescriptionSend[0]
-              : byteDescriptionReceived[0],
+              ? <TooltipDescription Description={[byteDescriptionSend[0]]}/>
+              : <TooltipDescription Description={[ byteDescriptionReceived[0]]}/>,
             Color: byteColor[0],
           })
         } else if (i == 2) {
           commandBytes.current.push({
             Value: rawCommand.slice(2, 4),
             Description: isSendCommand
-              ? byteDescriptionSend[1]
-              : byteDescriptionReceived[1],
+              ?<TooltipDescription Description={[ byteDescriptionSend[1]]}/>
+              :<TooltipDescription Description={[ byteDescriptionReceived[1]]}/>,
             Color: byteColor[1],
           })
         } else if (i == 4) {
           commandBytes.current.push({
             Value: rawCommand.slice(4, 6),
             Description: isSendCommand
-              ? byteDescriptionSend[2]
-              : byteDescriptionReceived[2],
+              ? <TooltipDescription Description={[byteDescriptionSend[2]]}/>
+              : <TooltipDescription Description={[byteDescriptionReceived[2]]}/>,
             Color: byteColor[2],
           })
         } else {
@@ -206,7 +246,7 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
               //in case we do not define sending payload in the main-window just print the payload
               commandBytes.current.push({
                 Value: rawCommand.slice(6, rawCommand.length),
-                Description: byteDescriptionSend[3], //inline "if" is not needed here
+                Description:<TooltipDescription Description={[ byteDescriptionSend[3]]}/>, //inline "if" is not needed here
                 Color: byteColor[3],
               })
             } else {
@@ -243,12 +283,16 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
           break
         }
       }
-    } else if (props.log.includes('timed out')) {
+    } else if (props.logError == ErrorTypes.ERR1003) {
       setComponentIsATroubleshoot(true)
       troubleshootType.current = TroubleshootType.connection
-    } else if (props.log.includes('incomplete')) {
+    } else if (props.logError == ErrorTypes.ERR1004) {
       setComponentIsATroubleshoot(true)
       troubleshootType.current = TroubleshootType.incompleteMessage
+    }
+    else if( props.logError == ErrorTypes.ERR1001 || props.logError == ErrorTypes.ERR1002)
+    {
+      setMaxOrMinReached(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.log])
@@ -274,30 +318,46 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
         {componentIsACommand ? (
           <div className="inline">
             <p className="inline-block">{stringTo0x.current + '0x'}</p>
-            {commandBytes.current.map((byte) => (
+            {commandBytes.current.map((byte) =>
+            {
+
+            uniqueId.current++
+            return (
               <div
-                className="inline-block ml-1 break-words "
-                key={commandBytes.current.indexOf(byte)}
+              className="inline-block ml-1 break-words "
+              key={commandBytes.current.indexOf(byte)}
               >
                 <Tooltip
-                  content={byte.Description}
+                  content= {byte.Description}
                   placement="top"
                   className=" w-auto max-w-md bg-[#3abff8] text-slate-800 font-extrabold border-opacity-0 "
                   animation="duration-500"
                   role="tooltip"
-                  style="auto"
-                >
-                  <p
-                    className={`inline break-all cursor-pointer ${byte.Color}`}
+                  style="light"
                   >
-                    {byte.Value}
+                  <p
+                  className={`inline break-all cursor-pointer ${byte.Color}`}
+                  >
+                  {byte.Value}
                   </p>
                 </Tooltip>
               </div>
-            ))}
+            )
+          }
+
+            )}
           </div>
         ) : (
           <>
+            {maxOrMinReached && (
+              <>
+                <label
+                  className="inline-block text-yellow-300 mr-2"
+                >
+                  Warning: 
+                </label>
+              </>
+            )}
             <p className="inline">{props.log}</p>
             {componentIsATroubleshoot && (
               <>
@@ -317,3 +377,5 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
   )
 }
 export default LogLineServoCommand
+
+

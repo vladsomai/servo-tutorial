@@ -248,13 +248,14 @@ export const Command2 = (props: ChaptersPropsType) => {
               <ul>
                 <li>
                   <p className=" my-0">
-                    Little endian format(transmit order): {`0x${microstepsHexa}`}
+                    Transmit order: {`0x${microstepsHexa}`}
                   </p>
                 </li>
-                
+
                 <li>
                   <p className="my-0">
-                    Big endian format: {`0x${littleEndianToBigEndian(microstepsHexa)}`}
+                    Hexadecimal:{' '}
+                    {`0x${littleEndianToBigEndian(microstepsHexa)}`}
                   </p>
                 </li>
               </ul>
@@ -281,13 +282,13 @@ export const Command2 = (props: ChaptersPropsType) => {
               <ul>
                 <li>
                   <p className=" my-0">
-                    Little endian format(transmit order): {`0x${timestepsHexa}`}
+                    Transmit order: {`0x${timestepsHexa}`}
                   </p>
                 </li>
-                
+
                 <li>
                   <p className="my-0">
-                    Big endian format: {`0x${littleEndianToBigEndian(timestepsHexa)}`}
+                    Hexadecimal: {`0x${littleEndianToBigEndian(timestepsHexa)}`}
                   </p>
                 </li>
               </ul>

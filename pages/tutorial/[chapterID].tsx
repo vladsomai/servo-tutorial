@@ -11,7 +11,7 @@ import {
 import RawMotorCommands from '../../public/motor_commands.json' assert {type: 'json'};
 import { useRouter } from 'next/router'
 
-const Tutorial: NextPageWithLayout = () => {
+const Tutorial = () => {
   const router = useRouter()
 
   const MotorCommands = useRef<

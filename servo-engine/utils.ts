@@ -438,8 +438,8 @@ export const getDisplayFormat = (format: string, hexString: string, typeWithDesc
             )
             break
         case '%x':
-            convertedTo += "hexadecimal with little endian format: "
-            res = hexString
+            convertedTo += "hexadecimal: "
+            res = '0x'+littleEndianToBigEndian(hexString)
             break
         default:
             res = '0'
@@ -530,9 +530,30 @@ const getVersionNumber = (hexString: string): string => {
 export const littleEndianToBigEndian = (hexString: string): string => {
     let res = ''
     for (let i = hexString.length; i >= 0; i -= 2) {
-        res += hexString.substring(i, i+2)
+        res += hexString.substring(i, i + 2)
 
     }
     return res
 }
 
+export const genuid = () => {
+    const s4 = () => {
+      return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1)
+    }
+    return (
+      s4() +
+      s4() +
+      '-' +
+      s4() +
+      '-' +
+      s4() +
+      '-' +
+      s4() +
+      '-' +
+      s4() +
+      s4() +
+      s4()
+    )
+  }

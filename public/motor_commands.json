@@ -164,7 +164,7 @@
     "Input": "None",
     "Output": [
       {
-        "Description": "u8: A series of flags which are 1 bit each. These are: ",
+        "Description": "u8: A series of flags which are 1 bit each",
         "TooltipDisplayFormat": "%u"
       },
       {
