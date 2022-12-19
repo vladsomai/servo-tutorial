@@ -5,6 +5,7 @@ import {
   useCallback,
   ReactElement,
   MutableRefObject,
+  useMemo,
 } from 'react'
 import React from 'react'
 import Log from './log-window'
@@ -13,6 +14,7 @@ import {
   Uint8ArrayToString,
   stringToUint8Array,
   ErrorTypes,
+  getCurrentBrowser,
 } from '../servo-engine/utils'
 import {
   InputOutputObjects,
@@ -71,6 +73,9 @@ const Main = (props: MainWindowProps) => {
   const [axisSelectionValue, setAxisSelectionValue] = useState<string>(
     'All axes',
   )
+  const [axisCode, setAxisCode] = useState<number>(255)
+  const axisCodeRef = useRef<number>(255)
+
   const timerHandle = useRef<NodeJS.Timeout>()
   const partialData = useRef<string>('')
 
@@ -81,6 +86,7 @@ const Main = (props: MainWindowProps) => {
   const setMaster_time_startWrapper = (time: number) =>
     setMaster_time_start(time)
   const lineNumber = useRef<number>(0)
+
   const LogAction = (errorType: string, log: string): void => {
     lineNumber.current++
 
@@ -93,6 +99,7 @@ const Main = (props: MainWindowProps) => {
         logError: errorType,
       },
     ]
+
     setLogs(logsRef.current)
   }
 
@@ -104,6 +111,17 @@ const Main = (props: MainWindowProps) => {
   }
 
   const connectToSerialPort = async (BaudRate: number = 230400) => {
+    const currentBrowser = getCurrentBrowser()
+    if (currentBrowser != 'Chrome') {
+      if (currentBrowser != 'Edge') {
+        LogAction(
+          ErrorTypes.NO_ERR,
+          'Only Chrome and Edge browser are supported!',
+        )
+        return
+      }
+    }
+
     try {
       if (portSer.current) {
         LogAction(
@@ -147,12 +165,13 @@ const Main = (props: MainWindowProps) => {
     }
   }, [])
 
-  const axisRef = useRef<string>(
-    MotorAxes.find((item) => item.AxisName === 'All axes')?.AxisName as string,
-  )
-
   useEffect(() => {
-    axisRef.current = axisSelectionValue
+    for (const motorAxis of MotorAxes) {
+      if (motorAxis.AxisName == axisSelectionValue) {
+        axisCodeRef.current = motorAxis.AxisCode
+        setAxisCode(motorAxis.AxisCode)
+      }
+    }
   }, [axisSelectionValue])
 
   useEffect(() => {
@@ -318,13 +337,8 @@ const Main = (props: MainWindowProps) => {
       if (e.key == 'r' && e.ctrlKey) {
         e.preventDefault()
         const initialRawBytes = new Uint8Array(3)
-        //get value of axis
-        let axisCode = 0
-        for (const motorAxis of MotorAxes) {
-          if (motorAxis.AxisName == axisRef.current)
-            axisCode = motorAxis.AxisCode
-        }
-        initialRawBytes.set([axisCode, 27, 0])
+
+        initialRawBytes.set([axisCodeRef.current, 27, 0])
 
         sendDataToSerialPort(initialRawBytes, true, false)
       } else if (e.key == 'R' && e.ctrlKey) {
@@ -335,13 +349,7 @@ const Main = (props: MainWindowProps) => {
         /**Enable MOSFETS sortcut */
         const initialRawBytes = new Uint8Array(3)
 
-        //get value of axis
-        let axisCode = 0
-        for (const motorAxis of MotorAxes) {
-          if (motorAxis.AxisName == axisRef.current)
-            axisCode = motorAxis.AxisCode
-        }
-        initialRawBytes.set([axisCode, 1, 0])
+        initialRawBytes.set([axisCodeRef.current, 1, 0])
 
         sendDataToSerialPort(initialRawBytes, true, true)
       } else if (e.key == 'E' && e.ctrlKey) {
@@ -352,13 +360,7 @@ const Main = (props: MainWindowProps) => {
         /**Disable MOSFETS shortcut */
         const initialRawBytes = new Uint8Array(3)
 
-        //get value of axis
-        let axisCode = 0
-        for (const motorAxis of MotorAxes) {
-          if (motorAxis.AxisName == axisRef.current)
-            axisCode = motorAxis.AxisCode
-        }
-        initialRawBytes.set([axisCode, 0, 0])
+        initialRawBytes.set([axisCodeRef.current, 0, 0])
 
         sendDataToSerialPort(initialRawBytes, true, true)
       } else if (e.key == 'D' && e.ctrlKey) {
@@ -393,11 +395,6 @@ const Main = (props: MainWindowProps) => {
       axisSize + commandSize + lengthByteSize,
     )
 
-    //get value of axis
-    let axisCode = 0
-    for (const motorAxis of MotorAxes) {
-      if (motorAxis.AxisName == _axis) axisCode = motorAxis.AxisCode
-    }
     initialRawBytes.set([axisCode])
 
     //get value of command_id
@@ -1012,7 +1009,17 @@ const Main = (props: MainWindowProps) => {
         </Command>
 
         {props.currentCommandDictionary.CommandEnum === 100 ? null : (
-          <Log logs={logs} mainWindow={props} clearLogWindow={clearLogWindow} />
+          <Log
+            logs={logs}
+            mainWindow={props}
+            clearLogWindow={clearLogWindow}
+            sendDataToSerialPort={sendDataToSerialPort}
+            connectToSerialPort={connectToSerialPort}
+            disconnectFromSerialPort={disconnectFromSerialPort}
+            isConnected={isConnected}
+            getAxisCode={axisCode}
+            constructCommand={constructCommand}
+          />
         )}
       </div>
     </>

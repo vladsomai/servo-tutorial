@@ -2,13 +2,12 @@ import { ChaptersPropsType } from './0_1'
 import Image from 'next/image'
 
 export const Command27 = (props: ChaptersPropsType) => {
-  const iconSize = 25
   const execute_command = () => {
     const selectedAxis = props.getAxisSelection()
     if (selectedAxis == '') return
 
     const rawData = props.constructCommand(selectedAxis, '')
-    props.sendDataToSerialPort(rawData)
+    props.sendDataToSerialPort(rawData,true, false)
   }
   return (
     <>

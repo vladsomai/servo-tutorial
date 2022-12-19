@@ -1,6 +1,5 @@
 import Head from 'next/head'
 import { ReactElement, useEffect, useRef, useState } from 'react'
-import type { NextPageWithLayout } from '../_app'
 import Layout from '../../components/layout'
 import 'animate.css'
 import Chapters from '../../components/chapter-window'
@@ -17,7 +16,6 @@ const Tutorial = () => {
   const MotorCommands = useRef<
     MotorCommandsDictionary[] 
   >([])
-  const [currentChapter, setCurrentChapter] = useState(0)
   const [currentCommandDictionary, setCurrentCommandDictionary] = useState<
     MotorCommandsDictionary|null
   >(null)
@@ -28,38 +26,42 @@ const Tutorial = () => {
       ...RawMotorCommands,
     ] as MotorCommandsDictionary[]
 
-    setCurrentCommandDictionary(MotorCommands.current[0])
   }, [])
 
   useEffect(() => {
-    setCurrentCommandDictionary(MotorCommands.current[currentChapter - 1])
-  }, [currentChapter])
-
-  useEffect(() => {
     if (router.isReady) {
-      const { chapterID } = router.query
-
-      const chapter = parseInt(chapterID as string)
-      if (chapter != 0 && chapter <= MotorCommands.current.length) {
-        setCurrentChapter(chapter)
-      } else {
-        router.push('/404')
-        setCurrentChapter(1)
+      const commandIdStr  = router.query.chapterID
+      
+      const CommandID = parseInt(commandIdStr as string)
+      
+      let commandFound=false
+     
+      for(const command of MotorCommands.current)
+      {
+        if(CommandID==command.CommandEnum)
+        {
+          setCurrentCommandDictionary(command)
+          commandFound=true
+        }
       }
+      
+      if (!commandFound) {
+        router.push('/404')
+      }
+
     }
   }, [router])
 
   return (
     <>
       <Head>
-        <title>{`Chapter ${currentChapter ? currentChapter : ''}`}</title>
+        <title>{currentCommandDictionary?.CommandEnum == 100? 'Commands protocol':`Command ${currentCommandDictionary?.CommandEnum}`}</title>
       </Head>
       {currentCommandDictionary != null ? (
         <div className="flex animate__animated animate__fadeIn h-full w-full">
-          <Chapters {...{ currentChapter, setCurrentChapter, MotorCommands}} />
+          <Chapters {...{MotorCommands,currentCommandDictionary,setCurrentCommandDictionary}} />
           <Main
             {...({
-              currentChapter,
               currentCommandDictionary,
               MotorCommands
             } as MainWindowProps)}

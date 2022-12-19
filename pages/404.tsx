@@ -4,6 +4,7 @@ import Layout from '../components/layout'
 import type { ReactElement, ReactNode } from 'react'
 import type { NextPageWithLayout } from './_app'
 import 'animate.css'
+import Link from 'next/link'
 
 const Home: NextPageWithLayout = () => {
   const MainPicHeight = 350
@@ -26,6 +27,11 @@ const Home: NextPageWithLayout = () => {
           ></Image>
         </div>
         <h1 className="text-6xl text-center m-12 "> Page not found!</h1>
+        <Link href={`/tutorial/100`}>
+          <a className="btn btn-primary btn-xl w-56 mx-auto">
+            Get back on track
+          </a>
+        </Link>
       </div>
     </>
   )

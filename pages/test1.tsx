@@ -1,15 +1,15 @@
 import Layout from '../components/layout'
 import { ReactElement, useEffect, useState } from 'react'
 import type { NextPageWithLayout } from './_app'
+import { getCurrentBrowser } from '../servo-engine/utils'
 
 const Test: NextPageWithLayout = () => {
-  const [popovers, setPopovers] = useState<number[]>([1, 2, 3])
-
+  useEffect(() => {
+    console.log(getCurrentBrowser())
+  }, [])
   return (
     <>
-      <div className="flex justify-center items-center h-full">
-
-      </div>
+      <div className="flex justify-center items-center h-full"></div>
     </>
   )
 }

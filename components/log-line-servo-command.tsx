@@ -159,7 +159,7 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
 
               NoOfBytes = getNoOfBytesFromDescription(output.Description)
               if (NoOfBytes == 0) {
-                //try getting the no of bytes from the receive length
+                //try getting the no of bytes from the receive length if the number is not specified in the JSON
                 NoOfBytes = receiveLength
               }
 
@@ -181,6 +181,7 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
                   output.Description,
                 ))
               } else {
+
                 currentPayloadDescription.push(getDisplayFormat(
                   output.TooltipDisplayFormat as string,
                   currentParameter,
@@ -331,7 +332,7 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
                   content= {byte.Description}
                   placement="top"
                   className=" w-auto max-w-md bg-[#3abff8] text-slate-800 font-extrabold border-opacity-0 "
-                  animation="duration-500"
+                  animation="duration-150"
                   role="tooltip"
                   style="light"
                   >

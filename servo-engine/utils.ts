@@ -431,6 +431,12 @@ export const getDisplayFormat = (format: string, hexString: string, typeWithDesc
                 hexString, true
             ).toString()
             break
+        case '%b':
+            const number = hexStringToInt32(hexString, true);
+            const binaryStr = dec2bin(number as number)
+            convertedTo += "binary: "
+            res = binaryStr
+            break
         case '%uvn':
             convertedTo += "version number: "
             res = getVersionNumber(
@@ -439,7 +445,7 @@ export const getDisplayFormat = (format: string, hexString: string, typeWithDesc
             break
         case '%x':
             convertedTo += "hexadecimal: "
-            res = '0x'+littleEndianToBigEndian(hexString)
+            res = '0x' + littleEndianToBigEndian(hexString)
             break
         default:
             res = '0'
@@ -450,6 +456,10 @@ export const getDisplayFormat = (format: string, hexString: string, typeWithDesc
         return ''
     }
     return convertedTo + res;
+}
+
+function dec2bin(dec: number) {
+    return (dec >>> 0).toString(2);
 }
 
 /**
@@ -538,22 +548,47 @@ export const littleEndianToBigEndian = (hexString: string): string => {
 
 export const genuid = () => {
     const s4 = () => {
-      return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1)
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1)
     }
     return (
-      s4() +
-      s4() +
-      '-' +
-      s4() +
-      '-' +
-      s4() +
-      '-' +
-      s4() +
-      '-' +
-      s4() +
-      s4() +
-      s4()
+        s4() +
+        s4() +
+        '-' +
+        s4() +
+        '-' +
+        s4() +
+        '-' +
+        s4() +
+        '-' +
+        s4() +
+        s4() +
+        s4()
     )
-  }
+}
+
+export const getCurrentBrowser = (): 'Opera' | 'Edge' | 'Chrome' | 'Safari' | 'Firefox' | 'IE' | 'unknown' => {
+    if (
+        (navigator.userAgent.indexOf('Opera') ||
+            navigator.userAgent.indexOf('OPR')) != -1
+    ) {
+        return 'Opera'
+    } else if (navigator.userAgent.indexOf('Edg') != -1) {
+        return 'Edge'
+    } else if (navigator.userAgent.indexOf('Chrome') != -1) {
+        return 'Chrome'
+    } else if (navigator.userAgent.indexOf('Safari') != -1) {
+        return 'Safari'
+    } else if (navigator.userAgent.indexOf('Firefox') != -1) {
+        return 'Firefox'
+    } else if (
+        navigator.userAgent.indexOf('MSIE') != -1 ||
+        !!document.DOCUMENT_NODE == true
+    ) {
+        //IF IE > 10
+        return 'IE'
+    } else {
+        return 'unknown'
+    }
+}

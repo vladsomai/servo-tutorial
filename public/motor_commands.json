@@ -165,7 +165,7 @@
     "Output": [
       {
         "Description": "u8: A series of flags which are 1 bit each",
-        "TooltipDisplayFormat": "%u"
+        "TooltipDisplayFormat": "%b"
       },
       {
         "Description": "Bit 0: In the bootloader (if this flag is set then the other flags below will all be 0)"
@@ -381,7 +381,7 @@
       },
       {
         "Description": "u32: Each bit specifies if the move is a (bit = 0) MOVE_WITH_ACCELERATION_COMMAND or a (bit = 1) MOVE_WITH_VELOCITY_COMMAND.",
-        "TooltipDisplayFormat": "%u"
+        "TooltipDisplayFormat": "%b"
       },
       {
         "Description": "list_2d: A 2D list in Python format (list of lists). Each item in the list is of type [i32, u32] representing a series of move commands. Each move command specifies the acceleration to move at or the velocity to instantly change to (according to the bits above) and the number of time steps over which this command is to be executed. For example: '[[100, 30000], [-200, 60000]]'. There is a limit of 32 move commands that can be listed in this one multi-move command. Each of the moves takes up one queue spot, so make sure there is enough space in the queue to store all of the commands.",

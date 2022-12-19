@@ -8,7 +8,7 @@ import { animated, useSpring, config } from '@react-spring/web'
 import { ResetCmd, DisableCmd, EnableCmd } from './modalComponents'
 import { InputOutputObjects } from '../servo-engine/motor-commands'
 
-interface CommandWindowProps extends MainWindowProps {
+export interface CommandWindowProps extends MainWindowProps {
   sendDataToSerialPort: Function
   connectToSerialPort: Function
   disconnectFromSerialPort: Function
@@ -59,7 +59,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
   if (props.currentCommandDictionary.CommandEnum !== 100)
     return (
       <div className={`overflow-auto relative px-5 w-6/12`}>
-        <div className="absolute top-4 right-2">
+        {/* <div className="absolute top-4 right-2">
           {props.isConnected ? (
             <button
               className="btn btn-success btn-sm h-[2.3rem] text-md btn-primary hover:opacity-90 border-0 flex flex-col normal-case"
@@ -83,7 +83,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
               <span className="text-[10px] normal-case">Press to connect</span>
             </button>
           )}
-        </div>
+        </div> */}
         {commandsWithShortcuts.includes(
           props.currentCommandDictionary.CommandEnum,
         ) ? (
@@ -114,11 +114,6 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
             <p className="text-center mb-5 text-2xl">
               <strong>{props.currentCommandDictionary.CommandString}</strong>
             </p>{' '}
-            <p className="text-center mb-5 text-xl">
-              <strong>
-                Command {props.currentCommandDictionary.CommandEnum}
-              </strong>
-            </p>
             <p className="mb-2">
               <b>Description:&nbsp;</b>{' '}
               {props.currentCommandDictionary.Description}
@@ -155,7 +150,11 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
                     (item: InputOutputObjects, index) => {
                       if (props.currentCommandDictionary.CommandEnum === 16) {
                         if (item.Description.includes('Bit')) {
-                          return <p key={index} className="ml-10">{item.Description}</p>
+                          return (
+                            <p key={index} className="ml-10">
+                              {item.Description}
+                            </p>
+                          )
                         } else
                           return (
                             <li key={index}>

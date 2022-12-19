@@ -35,24 +35,3 @@ const SelectAxis = (props: SelectAxisPropsType) => {
 
 SelectAxis.displayName = 'SelectAxis'
 export default SelectAxis
-
-// const SelectAxis = forwardRef<HTMLSelectElement | null, SelectAxisPropsType>(
-//   (props: SelectAxisPropsType, ref) => {
-//     const test = (e:SyntheticEvent)=>{
-//       console.log(e)
-//       // setAxisSelectionValue()
-//     }
-//     return (
-//       <select
-//         ref={ref}
-//         className="select select-bordered select-sm w-full max-w-xs mr-8"
-//         defaultValue={props.axisSelectionValue}
-//         onChange={test}
-//       >
-//         {MotorAxes.map((axis: MotorAxisType) => (
-//           <option key={axis.AxisCode}>{axis.AxisName}</option>
-//         ))}
-//       </select>
-//     )
-//   },
-// )
