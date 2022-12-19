@@ -25,7 +25,6 @@ const Tutorial = () => {
       CommandsProtocoolChapter,
       ...RawMotorCommands,
     ] as MotorCommandsDictionary[]
-
   }, [])
 
   useEffect(() => {

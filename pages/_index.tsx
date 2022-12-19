@@ -1,17 +1,23 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import Layout from '../components/layout'
-import { ReactElement, ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import type { NextPageWithLayout } from './_app'
 import 'animate.css'
+import { useRouter } from 'next/router'
 
 const Home: NextPageWithLayout = () => {
   const [MainPicHeight, setMainPicHeight] = useState(50)
   const MainPicAspectRation = 1.37
-
+  const router = useRouter()
   useEffect(() => {
     setMainPicHeight(window.innerWidth/5)
   }, [])
+
+  useEffect(()=>{
+    router.push('/tutorial/100')
+
+  },[router])
 
   return (
     <>
