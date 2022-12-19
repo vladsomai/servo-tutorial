@@ -33,12 +33,12 @@ const Chapters = (props: ChaptersProps) => {
 
   return (
     <>
-      <div className="w-[20%] xl:w-[17%] 2xl:w-[15%] h-full bg-base-300 rounded-box overflow-auto mr-2 px-1 flex flex-col">
+      <div className="h-full bg-base-300 rounded-box overflow-auto mr-2 px-1 flex flex-col">
         <input
           ref={searchInputBox}
           type="text"
           placeholder="Search for a command"
-          className="input input-bordered max-w-xs input-sm my-3 mx-auto"
+          className="input input-bordered input-sm my-3 mx-auto"
           onChange={handleSearch}
         />
         <div className="flex flex-col w-full border-opacity-50">

@@ -44,19 +44,12 @@ const Log = (props: {
     }
   }, [props.logs])
 
-  // useMemo(() => {
-  //   if (logWindow && logWindow.current) {
-  //     logWindow.current.scrollTop =
-  //       logWindow.current.scrollHeight - logWindow.current.clientHeight
-  //   }
-  // }, [props.logs])
-
   return (
     <>
       <div className="rounded-box px-2 py-2 h-full w-6/12 flex flex-col justify-center content-center overflow-auto ">
         <div className=" relative h-16 w-full rounded-t-box rounded-b-none py-5 bg-slate-700 ">
           <div className="w-full flex items-end justify-center absolute bottom-0">
-            <div className="w-full xl:flex justify-around items-end hidden">
+            <div className="w-full flex items-end justify-around">
               {props.isConnected ? (
                 <button
                   className="z-10 btn btn-success rounded-b-none btn-sm h-[2.3rem] text-md btn-primary hover:opacity-90 border-0 flex flex-col normal-case"
@@ -82,30 +75,21 @@ const Log = (props: {
                   </span>
                 </button>
               )}
-              {/* </div> */}
-              {/* <div className="w-3/12">
               <button
-                className="btn rounded-b-none border-0 bg-slate-800 tracking-widest z-10"
-                onClick={() => props.clearLogWindow()}
-              >
-                {'Connect'}
-              </button>
-            </div> */}
-              <button
-                className="btn btn-xs rounded-b-none border-0 bg-slate-800 tracking-widest z-10"
+                className="btn btn-xs rounded-b-none border-0 bg-slate-800 tracking-widest z-10 hidden xl:block"
                 onClick={() => disable_enable_MOSFETS(false)}
               >
                 {'Disable FETS'}
               </button>
 
               <button
-                className="btn btn-xs rounded-b-none border-0 bg-slate-800 tracking-widest z-10"
+                className="btn btn-xs rounded-b-none border-0 bg-slate-800 tracking-widest z-10 hidden xl:block"
                 onClick={() => disable_enable_MOSFETS(true)}
               >
                 {'Enable FETS'}
               </button>
               <button
-                className="btn btn-xs rounded-b-none border-0 bg-slate-800 tracking-widest z-10"
+                className="btn btn-xs rounded-b-none border-0 bg-slate-800 tracking-widest z-10 hidden xl:block"
                 onClick={() => getStatus()}
               >
                 {'Get status'}

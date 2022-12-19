@@ -116,7 +116,7 @@ const Main = (props: MainWindowProps) => {
       if (currentBrowser != 'Edge') {
         LogAction(
           ErrorTypes.NO_ERR,
-          'Only Chrome and Edge browser are supported!',
+          'Only Chrome and Edge browsers are supported!',
         )
         return
       }
