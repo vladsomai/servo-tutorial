@@ -33,7 +33,7 @@ const Chapters = (props: ChaptersProps) => {
 
   return (
     <>
-      <div className="h-full bg-base-300 rounded-box overflow-auto mr-2 px-1 flex flex-col">
+      <div className="h-full bg-base-300 rounded-box  mr-2 px-1 flex flex-col">
         <input
           ref={searchInputBox}
           type="text"
@@ -41,7 +41,7 @@ const Chapters = (props: ChaptersProps) => {
           className="input input-bordered input-sm my-3 mx-auto"
           onChange={handleSearch}
         />
-        <div className="flex flex-col w-full border-opacity-50">
+        <div className="flex flex-col w-full border-opacity-50 overflow-auto">
           <div className="flex flex-col items-center">
             {displaiedCommands.map((cmd) => {
               return (
