@@ -55,11 +55,8 @@ export const troubleshootConnection = (
         <li>You selected the correct axis.</li>
         <li>The motor is powered on.</li>
         <li>The motor is connected to the USB port.</li>
+        <li>Make sure the green led on the device is flashing. If the red LED is flashing then you should reset the device.</li>
       </ol>
-      <p>
-        In case none of the above solve the issue, please contact your
-        administrator.
-      </p>
     </article>
   </>
 )
@@ -73,10 +70,6 @@ export const troubleshootIncompleteResponse = (
         <li>Clear the log window</li>
         <li>Refresh the page</li>
       </ol>
-      <p>
-        In case none of the above solve the issue, please contact your
-        administrator.
-      </p>
     </article>
   </>
 )
