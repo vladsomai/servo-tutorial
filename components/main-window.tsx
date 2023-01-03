@@ -57,6 +57,7 @@ import { Command31 } from './ImplementedCommands/31'
 import { Command32 } from './ImplementedCommands/32'
 import { Command33 } from './ImplementedCommands/33'
 import { Command254 } from './ImplementedCommands/254'
+import { useRouter } from 'next/router'
 
 export type MainWindowProps = {
   currentChapter: number
@@ -65,6 +66,8 @@ export type MainWindowProps = {
 }
 
 const Main = (props: MainWindowProps) => {
+  const router = useRouter()
+  const disconnectTimeout = useRef<NodeJS.Timeout>()
   const portSer = useRef<SerialPort | null>(null)
   const reader = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null)
   const [logs, setLogs] = useState<LogType[]>([])
@@ -129,6 +132,7 @@ const Main = (props: MainWindowProps) => {
           'You are trying to open a new serial port, we will close the current one for you.',
         )
         disconnectFromSerialPort()
+        portSer.current = null
       }
       portSer.current = await navigator.serial.requestPort()
       await portSer.current.open({ baudRate: BaudRate })
@@ -139,6 +143,7 @@ const Main = (props: MainWindowProps) => {
         'Connected with baudrate ' + BaudRate.toString() + '!',
       )
     } catch (err) {
+      portSer.current = null
       if (err instanceof Error) {
         LogAction(ErrorTypes.ERR1999, err!.message)
         return
@@ -152,6 +157,9 @@ const Main = (props: MainWindowProps) => {
   const disconnectFromSerialPort = useCallback(async () => {
     if (portSer && portSer.current) {
       try {
+        disconnectTimeout.current = setTimeout(() => {
+          router.reload()
+        }, 2000)
         reader.current?.cancel()
       } catch (err) {
         if (err instanceof Error) {
@@ -272,6 +280,7 @@ const Main = (props: MainWindowProps) => {
                 if (done) {
                   LogAction(ErrorTypes.NO_ERR, 'Reader is now closed!')
                   reader.current.releaseLock()
+                  reader.current = null
                   break
                 } else {
                   const receivedBytes = Uint8ArrayToString(value)
@@ -310,10 +319,13 @@ const Main = (props: MainWindowProps) => {
           } catch (err) {
             if (err instanceof Error) {
               LogAction(ErrorTypes.ERR1999, err!.message)
-              reader.current.releaseLock()
+              reader.current?.releaseLock()
+              reader.current = null
+
               return
             }
-            reader.current.releaseLock()
+            reader.current?.releaseLock()
+            reader.current = null
             console.log(err)
             return
           } finally {
@@ -322,8 +334,9 @@ const Main = (props: MainWindowProps) => {
               'Waiting for the serial port to disconnect..',
             )
             await portSer.current.close()
-            setIsConnected(false)
+            clearTimeout(disconnectTimeout.current)
             portSer.current = null
+            setIsConnected(false)
             LogAction(ErrorTypes.NO_ERR, 'Disconnected!')
           }
         }

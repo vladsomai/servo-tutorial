@@ -54,43 +54,18 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
       to: { opacity: 1 },
       config: config.molasses,
     })
-  }, [props.currentChapter, api])
+  }, [props.currentCommandDictionary, api])
 
   if (props.currentCommandDictionary.CommandEnum !== 100)
     return (
-      <div className={`overflow-auto relative px-5 w-6/12`}>
-        {/* <div className="absolute top-4 right-2">
-          {props.isConnected ? (
-            <button
-              className="btn btn-success btn-sm h-[2.3rem] text-md btn-primary hover:opacity-90 border-0 flex flex-col normal-case"
-              onClick={() => {
-                props.disconnectFromSerialPort()
-              }}
-            >
-              Connected
-              <span className="text-[10px] normal-case">
-                Press to disconnect
-              </span>
-            </button>
-          ) : (
-            <button
-              className="btn btn-error btn-sm h-[2.3rem] text-md hover:opacity-90 flex flex-col normal-case"
-              onClick={() => {
-                props.connectToSerialPort()
-              }}
-            >
-              Disconnected
-              <span className="text-[10px] normal-case">Press to connect</span>
-            </button>
-          )}
-        </div> */}
+      <animated.div
+        style={fade}
+        className={`overflow-auto relative px-5 w-6/12`}
+      >
         {commandsWithShortcuts.includes(
           props.currentCommandDictionary.CommandEnum,
         ) ? (
-          <animated.div
-            style={fade}
-            className="bg-primary rounded-full absolute top-4 left-4 pt-2 px-2 m-0"
-          >
+          <div className="bg-primary rounded-full absolute top-4 left-4 pt-2 px-2 m-0">
             <label
               className="inline link"
               onClick={() => {
@@ -107,9 +82,9 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
                 priority
               ></Image>
             </label>
-          </animated.div>
+          </div>
         ) : null}
-        <animated.div style={fade}>
+        <div>
           <div className="mb-5 mt-16">
             <p className="text-center mb-5 text-2xl">
               <strong>{props.currentCommandDictionary.CommandString}</strong>
@@ -174,8 +149,8 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
             </article>
           </div>
           {props.children}
-        </animated.div>
-      </div>
+        </div>
+      </animated.div>
     )
   else
     return (
