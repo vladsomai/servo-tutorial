@@ -70,6 +70,7 @@ const code = `#include <stdio.h>
 
 #ifdef _WIN32
   #include<windows.h>
+  #pragma warning(disable:4996)
 #else
   //MAC or Linux
   #include<unistd.h>
@@ -109,7 +110,7 @@ int main()
     size_t writtenBytes = fwrite(cmd, sizeof(uint8_t), sizeof(cmd), portHandle);
     fflush(portHandle);
 
-    printf("Wrote %d bytes.\\n", writtenBytes);
+    printf("Wrote %lu bytes.\\n", writtenBytes);
   }
 
   //Wait 1000ms for the MCU to reset
@@ -123,7 +124,7 @@ int main()
   size_t writtenBytes = fwrite(cmd, sizeof(uint8_t), sizeof(cmd), portHandle);
   fflush(portHandle);
   
-  printf("\\nWrote %d bytes.", writtenBytes);
+  printf("\\nWrote %lu bytes.", writtenBytes);
 
   //default initialize to 0, buffer must have 3 bytes for cmd 0
   uint8_t buffer[] = { 0,0,0 };
