@@ -1,4 +1,5 @@
-import { ReactElement, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useContext } from 'react'
+import { GlobalContext } from '../../pages/_app'
 import {
   RotationsToMicrosteps,
   SecondToTimesteps,
@@ -8,10 +9,12 @@ import {
   minimumNegativePosition,
   minimumPositivePosition,
   ErrorTypes,
+  transfNumberToUint8Arr,
 } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 
 export const Command30 = (props: ChaptersPropsType) => {
+  const value = useContext(GlobalContext)
   const upperLimitInputBox = useRef<HTMLInputElement | null>(null)
   const lowerLimitInputBox = useRef<HTMLInputElement | null>(null)
 
@@ -19,6 +22,11 @@ export const Command30 = (props: ChaptersPropsType) => {
   const [upperValue, setUpperValue] = useState<number>(0)
   const [upperMicrosteps, setUpperMicrosteps] = useState<number>(0)
   const [upperMicrostepsHexaValue, setUpperMicrostepsHexaValue] = useState<
+    string
+  >('00000000')
+  const [lowerValue, setLowerValue] = useState<number>(0)
+  const [lowerMicrosteps, setLowerMicrosteps] = useState<number>(0)
+  const [lowerMicrostepsHexaValue, setLowerMicrostepsHexaValue] = useState<
     string
   >('00000000')
 
@@ -63,6 +71,13 @@ export const Command30 = (props: ChaptersPropsType) => {
     }
   }
 
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      return () => setBytes('')
+    },
+    [value.codeExamplePayload.setBytes],
+  )
+
   useEffect(() => {
     setUpperMicrosteps(RotationsToMicrosteps(upperValue))
   }, [upperValue])
@@ -70,29 +85,20 @@ export const Command30 = (props: ChaptersPropsType) => {
   useEffect(() => {
     if (upperMicrosteps == 0) {
       setUpperMicrostepsHexaValue('00000000')
+      value.codeExamplePayload.setBytes(lowerMicrostepsHexaValue + '00000000')
     } else {
-      let rawPayload_ArrayBufferForTime = new ArrayBuffer(4)
-      const viewTime = new DataView(rawPayload_ArrayBufferForTime)
-
-      viewTime.setUint32(0, upperMicrosteps, true)
-
-      let rawTimePayload = new Uint8Array(4)
-      rawTimePayload.set([viewTime.getUint8(0)], 0)
-      rawTimePayload.set([viewTime.getUint8(1)], 1)
-      rawTimePayload.set([viewTime.getUint8(2)], 2)
-      rawTimePayload.set([viewTime.getUint8(3)], 3)
-
-      setUpperMicrostepsHexaValue(Uint8ArrayToString(rawTimePayload))
+      const strUpperMicrosteps = Uint8ArrayToString(
+        transfNumberToUint8Arr(upperMicrosteps, 4),
+      )
+      setUpperMicrostepsHexaValue(strUpperMicrosteps)
+      value.codeExamplePayload.setBytes(
+        lowerMicrostepsHexaValue + strUpperMicrosteps,
+      )
     }
-  }, [upperMicrosteps])
+  }, [upperMicrosteps, lowerMicrostepsHexaValue, value.codeExamplePayload])
   //#endregion UPPER_LIMIT_CONVERSION
 
   //#region LOWER_LIMIT_CONVERSION
-  const [lowerValue, setLowerValue] = useState<number>(0)
-  const [lowerMicrosteps, setLowerMicrosteps] = useState<number>(0)
-  const [lowerMicrostepsHexaValue, setLowerMicrostepsHexaValue] = useState<
-    string
-  >('00000000')
 
   const onLowerLimitInputBoxChange = () => {
     if (lowerLimitInputBox && lowerLimitInputBox.current) {
@@ -142,20 +148,17 @@ export const Command30 = (props: ChaptersPropsType) => {
   useEffect(() => {
     if (lowerMicrosteps == 0) {
       setLowerMicrostepsHexaValue('00000000')
+      value.codeExamplePayload.setBytes('00000000' + upperMicrostepsHexaValue)
     } else {
-      let rawPayload_ArrayBufferForPosition = new ArrayBuffer(4)
-      const viewPosition = new DataView(rawPayload_ArrayBufferForPosition)
-      viewPosition.setUint32(0, lowerMicrosteps, true)
-
-      let rawPositionPayload = new Uint8Array(4)
-      rawPositionPayload.set([viewPosition.getUint8(0)], 0)
-      rawPositionPayload.set([viewPosition.getUint8(1)], 1)
-      rawPositionPayload.set([viewPosition.getUint8(2)], 2)
-      rawPositionPayload.set([viewPosition.getUint8(3)], 3)
-
-      setLowerMicrostepsHexaValue(Uint8ArrayToString(rawPositionPayload))
+      const strLowerMicrosteps = Uint8ArrayToString(
+        transfNumberToUint8Arr(lowerMicrosteps, 4),
+      )
+      setLowerMicrostepsHexaValue(strLowerMicrosteps)
+      value.codeExamplePayload.setBytes(
+        strLowerMicrosteps + upperMicrostepsHexaValue,
+      )
     }
-  }, [lowerMicrosteps])
+  }, [lowerMicrosteps, value.codeExamplePayload, upperMicrostepsHexaValue])
   //#endregion LOWER_LIMIT_CONVERSION
 
   const execute_command = () => {

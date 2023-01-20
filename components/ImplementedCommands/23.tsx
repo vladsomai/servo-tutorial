@@ -338,7 +338,7 @@ export const Command23 = (props: FirmwareCmdProps) => {
                 <td>Application area</td>
               </tr>
               <tr>
-                <th>1</th>
+                <th>3</th>
                 <td>0xF000</td>
                 <td>0xF7FF</td>
                 <td>2048</td>

@@ -1,12 +1,16 @@
-import { ReactElement, useEffect } from 'react'
+import { ReactElement, useEffect, useMemo, useState } from 'react'
 import { MainWindowProps } from './main-window'
 import CommandsProtocol from './ImplementedCommands/commands-protocol'
 import Image from 'next/image'
 import { useContext } from 'react'
 import { GlobalContext } from '../pages/_app'
-import { animated, useSpring, config } from '@react-spring/web'
+import { animated, useSpring, config, useTransition } from '@react-spring/web'
 import { ResetCmd, DisableCmd, EnableCmd } from './modalComponents'
-import { InputOutputObjects } from '../servo-engine/motor-commands'
+import {
+  InputOutputObjects,
+  MotorCommandsDictionary,
+} from '../servo-engine/motor-commands'
+import Code from './CodeHighlight'
 
 export interface CommandWindowProps extends MainWindowProps {
   sendDataToSerialPort: Function
@@ -14,6 +18,7 @@ export interface CommandWindowProps extends MainWindowProps {
   disconnectFromSerialPort: Function
   children: ReactElement
   isConnected: boolean
+  axisSelectionValue: string
 }
 const Command = (props: CommandWindowProps, children: ReactElement) => {
   const commandsWithShortcuts = [0, 1, 27]
@@ -42,24 +47,28 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
     globalContext.modal.setTitle(title)
     globalContext.modal.setDescription(descriptionObj)
   }
-  const [fade, api] = useSpring(() => ({
-    from: { opacity: 0 },
-    to: { opacity: 1 },
-    config: config.molasses,
-  }))
+
+  const [styleSpring, api] = useSpring(
+    () => ({
+      from: { opacity: 0 },
+      to: { opacity: 1 },
+      config: { duration: 1000 },
+    }),
+    [props.currentCommandDictionary.CommandEnum],
+  )
 
   useEffect(() => {
     api.start({
       from: { opacity: 0 },
       to: { opacity: 1 },
-      config: config.molasses,
+      config: { duration: 1000 },
     })
-  }, [props.currentCommandDictionary, api])
+  }, [props.currentCommandDictionary.CommandEnum, api])
 
   if (props.currentCommandDictionary.CommandEnum !== 100)
     return (
       <animated.div
-        style={fade}
+        style={styleSpring}
         className={`overflow-auto relative px-5 w-6/12`}
       >
         {commandsWithShortcuts.includes(
@@ -150,17 +159,21 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
           </div>
           {props.children}
         </div>
+        <Code
+          currentCommand={props.currentCommandDictionary.CommandEnum}
+          currentAxis={props.axisSelectionValue}
+        />
       </animated.div>
     )
   else
     return (
-      <animated.div style={fade} className={`overflow-auto relative`}>
+      <div className={`overflow-auto relative`}>
         <CommandsProtocol
           MotorCommands={props.MotorCommands}
           currentCommandDictionary={props.currentCommandDictionary}
           currentChapter={props.currentChapter}
         />
-      </animated.div>
+      </div>
     )
 }
 export default Command

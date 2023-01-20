@@ -1,5 +1,4 @@
 import { MutableRefObject, useEffect, useRef, useState } from 'react'
-import 'animate.css'
 import Link from 'next/link'
 import { MotorCommandsDictionary } from '../servo-engine/motor-commands'
 
@@ -50,10 +49,10 @@ const Chapters = (props: ChaptersProps) => {
                   href={`/tutorial/${cmd.CommandEnum}`}
                 >
                   <a
-                    className={`btn btn-xs mb-2 animate__animated animate__fadeIn w-full ${
+                    className={`btn btn-xs mb-2 w-full rounded-sm ${
                       props.currentCommandDictionary.CommandEnum ===
                       cmd.CommandEnum
-                        ? ' btn-primary '
+                        ? ' btn-outline btn-primary border-0 bg-slate-700'
                         : ' btn-ghost '
                     } `}
                     onClick={() => {

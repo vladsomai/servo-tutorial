@@ -1,4 +1,5 @@
-import { ReactElement, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useContext } from 'react'
+import { GlobalContext } from '../../pages/_app'
 import {
   RotationsToMicrosteps,
   SecondToTimesteps,
@@ -15,6 +16,8 @@ import {
 import { ChaptersPropsType } from './0_1'
 
 export const Command2 = (props: ChaptersPropsType) => {
+  const value = useContext(GlobalContext)
+
   const positionInputBox = useRef<HTMLInputElement | null>(null)
   const timeInputBox = useRef<HTMLInputElement | null>(null)
 
@@ -22,6 +25,10 @@ export const Command2 = (props: ChaptersPropsType) => {
   const [timeValue, setTimeValue] = useState<number>(0)
   const [timesteps, setTimestepsValue] = useState<number>(0)
   const [timestepsHexa, setTimestepsHexaValue] = useState<string>('00000000')
+
+  const [positionValue, setPositionValue] = useState<number>(0)
+  const [microsteps, setMicrostepsValue] = useState<number>(0)
+  const [microstepsHexa, setMicrostepsHexaValue] = useState<string>('00000000')
 
   const onTimeInputBoxChange = () => {
     if (timeInputBox && timeInputBox.current) {
@@ -43,35 +50,44 @@ export const Command2 = (props: ChaptersPropsType) => {
     }
   }
 
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      return () => setBytes('')
+    },
+    [value.codeExamplePayload.setBytes],
+  )
+
   useEffect(() => {
     setTimestepsValue(SecondToTimesteps(timeValue))
   }, [timeValue])
 
-  useEffect(() => {
-    if (timesteps == 0) {
-      setTimestepsHexaValue('00000000')
-    } else {
-      let rawPayload_ArrayBufferForTime = new ArrayBuffer(4)
-      const viewTime = new DataView(rawPayload_ArrayBufferForTime)
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      if (timesteps == 0) {
+        setTimestepsHexaValue('00000000')
+        setBytes(microstepsHexa + '00000000')
+      } else {
+        let rawPayload_ArrayBufferForTime = new ArrayBuffer(4)
+        const viewTime = new DataView(rawPayload_ArrayBufferForTime)
 
-      viewTime.setUint32(0, timesteps, true)
+        viewTime.setUint32(0, timesteps, true)
 
-      let rawTimePayload = new Uint8Array(4)
-      rawTimePayload.set([viewTime.getUint8(0)], 0)
-      rawTimePayload.set([viewTime.getUint8(1)], 1)
-      rawTimePayload.set([viewTime.getUint8(2)], 2)
-      rawTimePayload.set([viewTime.getUint8(3)], 3)
+        let rawTimePayload = new Uint8Array(4)
+        rawTimePayload.set([viewTime.getUint8(0)], 0)
+        rawTimePayload.set([viewTime.getUint8(1)], 1)
+        rawTimePayload.set([viewTime.getUint8(2)], 2)
+        rawTimePayload.set([viewTime.getUint8(3)], 3)
 
-      setTimestepsHexaValue(Uint8ArrayToString(rawTimePayload))
-    }
-  }, [timesteps])
+        const strTimesteps = Uint8ArrayToString(rawTimePayload)
+        setTimestepsHexaValue(strTimesteps)
+        setBytes(microstepsHexa + strTimesteps)
+      }
+    },
+    [timesteps, microstepsHexa, value.codeExamplePayload.setBytes],
+  )
   //#endregion TIME_CONVERSION
 
   //#region POSITION_CONVERSION
-
-  const [positionValue, setPositionValue] = useState<number>(0)
-  const [microsteps, setMicrostepsValue] = useState<number>(0)
-  const [microstepsHexa, setMicrostepsHexaValue] = useState<string>('00000000')
 
   const onPositionInputBoxChange = () => {
     if (positionInputBox && positionInputBox.current) {
@@ -118,23 +134,29 @@ export const Command2 = (props: ChaptersPropsType) => {
     setMicrostepsValue(RotationsToMicrosteps(positionValue))
   }, [positionValue])
 
-  useEffect(() => {
-    if (microsteps == 0) {
-      setMicrostepsHexaValue('00000000')
-    } else {
-      let rawPayload_ArrayBufferForPosition = new ArrayBuffer(4)
-      const viewPosition = new DataView(rawPayload_ArrayBufferForPosition)
-      viewPosition.setUint32(0, microsteps, true)
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      if (microsteps == 0) {
+        setMicrostepsHexaValue('00000000')
+        setBytes('00000000' + timestepsHexa)
+      } else {
+        let rawPayload_ArrayBufferForPosition = new ArrayBuffer(4)
+        const viewPosition = new DataView(rawPayload_ArrayBufferForPosition)
+        viewPosition.setUint32(0, microsteps, true)
 
-      let rawPositionPayload = new Uint8Array(4)
-      rawPositionPayload.set([viewPosition.getUint8(0)], 0)
-      rawPositionPayload.set([viewPosition.getUint8(1)], 1)
-      rawPositionPayload.set([viewPosition.getUint8(2)], 2)
-      rawPositionPayload.set([viewPosition.getUint8(3)], 3)
+        let rawPositionPayload = new Uint8Array(4)
+        rawPositionPayload.set([viewPosition.getUint8(0)], 0)
+        rawPositionPayload.set([viewPosition.getUint8(1)], 1)
+        rawPositionPayload.set([viewPosition.getUint8(2)], 2)
+        rawPositionPayload.set([viewPosition.getUint8(3)], 3)
 
-      setMicrostepsHexaValue(Uint8ArrayToString(rawPositionPayload))
-    }
-  }, [microsteps])
+        const strMicrosteps = Uint8ArrayToString(rawPositionPayload)
+        setMicrostepsHexaValue(strMicrosteps)
+        setBytes(strMicrosteps + timestepsHexa)
+      }
+    },
+    [microsteps, value.codeExamplePayload.setBytes, timestepsHexa],
+  )
   //#endregion POSITION_CONVERSION
 
   const trapezoid_move = () => {

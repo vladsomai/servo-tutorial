@@ -1,5 +1,7 @@
-import { ReactElement, useEffect, useRef, useState } from 'react'
-import { MotorAxes, MotorAxisType } from '../../servo-engine/motor-axes'
+import { useMemoOne } from '@react-spring/shared'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { GlobalContext } from '../../pages/_app'
+
 import {
   SecondToTimesteps,
   InternalAccelerationToCommAcceleration,
@@ -16,6 +18,8 @@ import {
 import { ChaptersPropsType } from './0_1'
 
 export const Command19 = (props: ChaptersPropsType) => {
+  const value = useContext(GlobalContext)
+
   const AccelerationInputBox = useRef<HTMLInputElement | null>(null)
   const timeInputBox = useRef<HTMLInputElement | null>(null)
 
@@ -23,6 +27,13 @@ export const Command19 = (props: ChaptersPropsType) => {
   const [timeValue, setTimeValue] = useState<number>(0)
   const [timesteps, setTimestepsValue] = useState<number>(0)
   const [timestepsHexa, setTimestepsHexaValue] = useState<string>('00000000')
+
+  const [AccelerationRPM, setAccelerationRPM] = useState<number>(0)
+  const [internalAcceleration, setInternalAcceleration] = useState<number>(0)
+  const [commAcceleration, setCommAcceleration] = useState<number>(0)
+  const [commAccelerationHexa, setCommAccelerationHexa] = useState<string>(
+    '00000000',
+  )
 
   const onTimeInputBoxChange = () => {
     if (timeInputBox && timeInputBox.current) {
@@ -44,37 +55,44 @@ export const Command19 = (props: ChaptersPropsType) => {
     }
   }
 
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      return () => setBytes('')
+    },
+    [value.codeExamplePayload.setBytes],
+  )
+
   useEffect(() => {
     setTimestepsValue(SecondToTimesteps(timeValue))
   }, [timeValue])
 
-  useEffect(() => {
-    if (timesteps == 0) {
-      setTimestepsHexaValue('00000000')
-    } else {
-      let rawPayload_ArrayBufferForTime = new ArrayBuffer(4)
-      const viewTime = new DataView(rawPayload_ArrayBufferForTime)
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      if (timesteps == 0) {
+        setTimestepsHexaValue('00000000')
+        setBytes(commAccelerationHexa + '00000000')
+      } else {
+        let rawPayload_ArrayBufferForTime = new ArrayBuffer(4)
+        const viewTime = new DataView(rawPayload_ArrayBufferForTime)
 
-      viewTime.setUint32(0, timesteps, true)
+        viewTime.setUint32(0, timesteps, true)
 
-      let rawTimePayload = new Uint8Array(4)
-      rawTimePayload.set([viewTime.getUint8(0)], 0)
-      rawTimePayload.set([viewTime.getUint8(1)], 1)
-      rawTimePayload.set([viewTime.getUint8(2)], 2)
-      rawTimePayload.set([viewTime.getUint8(3)], 3)
+        let rawTimePayload = new Uint8Array(4)
+        rawTimePayload.set([viewTime.getUint8(0)], 0)
+        rawTimePayload.set([viewTime.getUint8(1)], 1)
+        rawTimePayload.set([viewTime.getUint8(2)], 2)
+        rawTimePayload.set([viewTime.getUint8(3)], 3)
 
-      setTimestepsHexaValue(Uint8ArrayToString(rawTimePayload))
-    }
-  }, [timesteps])
+        const strTimesteps = Uint8ArrayToString(rawTimePayload)
+        setTimestepsHexaValue(strTimesteps)
+        setBytes(commAccelerationHexa + strTimesteps)
+      }
+    },
+    [timesteps, value.codeExamplePayload.setBytes, commAccelerationHexa],
+  )
   //#endregion TIME_CONVERSION
 
   //#region Acceleration_CONVERSION
-  const [AccelerationRPM, setAccelerationRPM] = useState<number>(0)
-  const [internalAcceleration, setInternalAcceleration] = useState<number>(0)
-  const [commAcceleration, setCommAcceleration] = useState<number>(0)
-  const [commAccelerationHexa, setCommAccelerationHexa] = useState<string>(
-    '00000000',
-  )
 
   const onAccelerationInputBoxChange = () => {
     if (AccelerationInputBox && AccelerationInputBox.current) {
@@ -126,25 +144,31 @@ export const Command19 = (props: ChaptersPropsType) => {
     )
   }, [internalAcceleration])
 
-  useEffect(() => {
-    if (commAcceleration == 0) {
-      setCommAccelerationHexa('00000000')
-    } else {
-      let rawPayload_ArrayBufferForAcceleration = new ArrayBuffer(4)
-      const viewAcceleration = new DataView(
-        rawPayload_ArrayBufferForAcceleration,
-      )
-      viewAcceleration.setUint32(0, commAcceleration, true)
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      if (commAcceleration == 0) {
+        setCommAccelerationHexa('00000000')
+        setBytes('00000000' + timestepsHexa)
+      } else {
+        let rawPayload_ArrayBufferForAcceleration = new ArrayBuffer(4)
+        const viewAcceleration = new DataView(
+          rawPayload_ArrayBufferForAcceleration,
+        )
+        viewAcceleration.setUint32(0, commAcceleration, true)
 
-      let rawAccelerationPayload = new Uint8Array(4)
-      rawAccelerationPayload.set([viewAcceleration.getUint8(0)], 0)
-      rawAccelerationPayload.set([viewAcceleration.getUint8(1)], 1)
-      rawAccelerationPayload.set([viewAcceleration.getUint8(2)], 2)
-      rawAccelerationPayload.set([viewAcceleration.getUint8(3)], 3)
+        let rawAccelerationPayload = new Uint8Array(4)
+        rawAccelerationPayload.set([viewAcceleration.getUint8(0)], 0)
+        rawAccelerationPayload.set([viewAcceleration.getUint8(1)], 1)
+        rawAccelerationPayload.set([viewAcceleration.getUint8(2)], 2)
+        rawAccelerationPayload.set([viewAcceleration.getUint8(3)], 3)
 
-      setCommAccelerationHexa(Uint8ArrayToString(rawAccelerationPayload))
-    }
-  }, [commAcceleration])
+        const strComAcc = Uint8ArrayToString(rawAccelerationPayload)
+        setCommAccelerationHexa(strComAcc)
+        setBytes(strComAcc + timestepsHexa)
+      }
+    },
+    [commAcceleration, value.codeExamplePayload.setBytes, timestepsHexa],
+  )
   //#endregion Acceleration_CONVERSION
 
   const execute_command = () => {

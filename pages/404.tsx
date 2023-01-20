@@ -3,7 +3,6 @@ import Image from 'next/image'
 import Layout from '../components/layout'
 import type { ReactElement, ReactNode } from 'react'
 import type { NextPageWithLayout } from './_app'
-import 'animate.css'
 import Link from 'next/link'
 
 const Home: NextPageWithLayout = () => {
@@ -15,7 +14,7 @@ const Home: NextPageWithLayout = () => {
       <Head>
         <title>Home</title>
       </Head>
-      <div className="text-center animate__animated animate__fadeIn overflow-show-scroll h-[84vh] flex flex-col justify-center">
+      <div className="text-center overflow-show-scroll h-[84vh] flex flex-col justify-center">
         <div>
           <Image
             className="mask"

@@ -88,7 +88,6 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
 
   const commandBytes = useRef<CommandBytesType[]>([])
   const stringTo0x = useRef('')
-  const uniqueId = useRef(0)
   const getStatusAtFatalErrorCode = useRef(false)
 
 
@@ -300,7 +299,7 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
 
   return (
     <>
-      <div className="inline-block">
+      <div className="inline-block w-[94%]">
         <p className="inline-block mr-1">
           {('0' + props.date.getDate().toString()).slice(-2) +
             '/' +
@@ -321,8 +320,6 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
             <p className="inline-block">{stringTo0x.current + '0x'}</p>
             {commandBytes.current.map((byte) =>
             {
-
-            uniqueId.current++
             return (
               <div
               className="inline-block ml-1 break-words "
@@ -331,7 +328,7 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
                 <Tooltip
                   content= {byte.Description}
                   placement="top"
-                  className=" w-auto max-w-md bg-[#3abff8] text-slate-800 font-extrabold border-opacity-0 "
+                  className=" w-auto max-w-md text-slate-200 bg-gray-600 font-extrabold border-opacity-0 "
                   animation="duration-150"
                   role="tooltip"
                   style="light"

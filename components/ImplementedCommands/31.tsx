@@ -1,17 +1,57 @@
-import { useRef } from 'react'
+import { useContext, useRef, useEffect, useState, useCallback } from 'react'
 import { ChaptersPropsType } from './0_1'
 import { ErrorTypes } from '../../servo-engine/utils'
+import { GlobalContext } from '../../pages/_app'
 
 export const Command31 = (props: ChaptersPropsType) => {
   const textPayloadInputBox = useRef<HTMLInputElement | null>(null)
+  const value = useContext(GlobalContext)
+  const initialText = '0123456789'
+
+
+
+  const convertTextToASCII = (textPayload: string) => {
+    let payload = ''
+    for (let i = 0; i < textPayload.length; i++) {
+      payload += textPayload[i].charCodeAt(0).toString(16).toUpperCase()
+    }
+    return payload
+  }
+
+  const onPingBoxModified = useCallback(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      if (!textPayloadInputBox.current) return
+
+      const textPayload = textPayloadInputBox.current.value
+
+      let textCompleted = convertTextToASCII(textPayload).slice(0, 20)
+
+      for (let i = textCompleted.length; i < initialText.length * 2; i++) {
+        textCompleted += '0'
+      }
+      setBytes(textCompleted)
+    },
+    [value.codeExamplePayload.setBytes],
+  )
+
+  const handlePingbox = useCallback(() => {
+    onPingBoxModified()
+  }, [onPingBoxModified])
+
+  useEffect(
+    (setbytes = value.codeExamplePayload.setBytes) => {
+      handlePingbox()
+      return () => setbytes('')
+    },
+    [value.codeExamplePayload.setBytes, handlePingbox],
+  )
 
   const ping_command = () => {
     if (textPayloadInputBox && textPayloadInputBox.current) {
       const selectedAxis = props.getAxisSelection()
       if (selectedAxis == '') return
 
-      const textPayload: string = textPayloadInputBox.current.value
-      if (textPayload.length != 10) {
+      if (value.codeExamplePayload.Bytes.length / 2 != 10) {
         props.LogAction(
           ErrorTypes.NO_ERR,
           'Your payload must be exactly 10 characters!',
@@ -19,18 +59,14 @@ export const Command31 = (props: ChaptersPropsType) => {
         return
       }
 
-      let payload = ''
-      for (let i = 0; i < textPayload.length; i++) {
-        payload += textPayload[i].charCodeAt(0).toString(16)
-      }
-
       const rawData = props.constructCommand(
         selectedAxis,
-        payload.toUpperCase(),
+        value.codeExamplePayload.Bytes,
       )
       props.sendDataToSerialPort(rawData)
     }
   }
+
   return (
     <>
       <div className="w-full text-center mb-5">
@@ -41,7 +77,8 @@ export const Command31 = (props: ChaptersPropsType) => {
             type="text"
             placeholder="Enter text e.g. 0123456789"
             className="input input-bordered max-w-xs input-sm m-2"
-            defaultValue={'0123456789'}
+            defaultValue={initialText}
+            onChange={handlePingbox}
           />
         </div>
         <div

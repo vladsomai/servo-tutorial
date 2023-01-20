@@ -1,5 +1,5 @@
-import { ReactElement, useEffect, useRef, useState } from 'react'
-import { MotorAxes, MotorAxisType } from '../../servo-engine/motor-axes'
+import { useContext, useEffect, useRef, useState } from 'react'
+import { GlobalContext } from '../../pages/_app'
 import {
   ErrorTypes,
   InternalAccelerationToCommAcceleration,
@@ -13,6 +13,13 @@ import {
 import { ChaptersPropsType } from './0_1'
 
 export const Command5 = (props: ChaptersPropsType) => {
+  const value = useContext(GlobalContext)
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      return () => setBytes('')
+    },
+    [value.codeExamplePayload.setBytes],
+  )
   const AccelerationInputBox = useRef<HTMLInputElement | null>(null)
 
   //#region Acceleration_CONVERSION
@@ -76,6 +83,7 @@ export const Command5 = (props: ChaptersPropsType) => {
   useEffect(() => {
     if (commAcceleration == 0) {
       setCommAccelerationHexa('00000000')
+      value.codeExamplePayload.setBytes('00000000')
     } else {
       let rawPayload_ArrayBufferForAcceleration = new ArrayBuffer(4)
       const viewAcceleration = new DataView(
@@ -89,9 +97,11 @@ export const Command5 = (props: ChaptersPropsType) => {
       rawAccelerationPayload.set([viewAcceleration.getUint8(2)], 2)
       rawAccelerationPayload.set([viewAcceleration.getUint8(3)], 3)
 
-      setCommAccelerationHexa(Uint8ArrayToString(rawAccelerationPayload))
+      const strComAcc = Uint8ArrayToString(rawAccelerationPayload)
+      setCommAccelerationHexa(strComAcc)
+      value.codeExamplePayload.setBytes(strComAcc)
     }
-  }, [commAcceleration])
+  }, [commAcceleration, value.codeExamplePayload])
   //#endregion Acceleration_CONVERSION
 
   const execute_command = () => {

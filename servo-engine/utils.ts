@@ -1,3 +1,5 @@
+import { languages } from "prismjs";
+
 /*
 This Class will be used to register any values like 'F', Since TypeScript does not have a char type.
 toString(): will return the string representation of that char: e.g.:'A'
@@ -234,7 +236,16 @@ export const maximumPositiveTime = 137438.95344
 //#endregion Time
 
 //#region Velocity
-export const RPM_ToInternalVelocity = (rpm: number): number => {
+export const RPM_ToInternalVelocity = (_rpm: number | string): number => {
+    let rpm = 0
+
+    if (typeof _rpm == 'string') {
+        rpm = parseFloat(_rpm)
+    }
+    else {
+        rpm = _rpm
+    }
+
     return (rpm / 60) * (645120 / 31250) * (2 ** 32);
 }
 
@@ -372,8 +383,8 @@ export const types = new Map<string, number>([
 
 //temporary solution, ask tom about creating a "type" attribute for each input/output object
 export const getNoOfBytesFromDescription = (typeWithDescription: string): number => {
-    const indexOfColumn = typeWithDescription.indexOf(":");
-    const typeStr = typeWithDescription.slice(0, indexOfColumn)
+    const indexOfColon = typeWithDescription.indexOf(":");
+    const typeStr = typeWithDescription.slice(0, indexOfColon)
     let noOfBytes = types.get(typeStr);
 
     if (noOfBytes === undefined) {
@@ -504,6 +515,56 @@ export const hexStringToInt32 = (_value: string, isUnsigned: boolean): bigint | 
     }
 
 }
+export type ByteSizes = 1 | 2 | 4 | 8
+export const transfNumberToUint8Arr = (
+    intNum: bigint | number,
+    size: ByteSizes,
+    littleEndian = true
+): Uint8Array => {
+    let rawArrBuffer = new ArrayBuffer(size)
+    const view = new DataView(rawArrBuffer)
+
+    switch (size) {
+        case 1:
+            view.setUint8(0, Number(intNum))
+            break
+        case 2:
+            view.setUint16(0, Number(intNum), littleEndian)
+            break
+        case 4:
+            view.setUint32(0, Number(intNum), littleEndian)
+            break
+        case 8:
+            view.setBigUint64(0, BigInt(intNum), littleEndian)
+            break
+    }
+
+    let rawCurrent = new Uint8Array(size)
+
+    for (let i = 0; i < size; i++) {
+        rawCurrent.set([view.getUint8(i)], i)
+    }
+
+    return rawCurrent
+}
+
+
+export const tranfASCIIStringToUint8Arr = (str: string): Uint8Array => {
+    let rawArrBuffer = new ArrayBuffer(str.length)
+    const view = new DataView(rawArrBuffer)
+
+    for (let i = 0; i < str.length; i++) {
+        view.setUint8(i, str.charCodeAt(i))
+    }
+
+    let rawCurrent = new Uint8Array(str.length)
+
+    for (let i = 0; i < str.length; i++) {
+        rawCurrent.set([view.getUint8(i)], i)
+    }
+    console.log(Uint8ArrayToString(rawCurrent))
+    return rawCurrent
+}
 
 export const ErrorTypes = {
     /**No error */
@@ -591,4 +652,263 @@ export const getCurrentBrowser = (): 'Opera' | 'Edge' | 'Chrome' | 'Safari' | 'F
     } else {
         return 'unknown'
     }
+}
+
+const cCode =
+    `#define COM_PORT "COM8"
+#include <stdio.h>
+#include <string.h>
+#include <stdint.h>
+
+#ifdef _WIN32
+#include<windows.h>
+#pragma warning(disable:4996)
+#else
+//MAC or Linux
+#include<unistd.h>
+#endif
+
+FILE* OpenPort(const char* COMPort)
+{
+
+#ifdef _WIN32
+    char WIN_COM_PATH[50] = "\\\\\\\\.\\\\";
+    strcat(WIN_COM_PATH, COMPort);
+
+    FILE* portHandle = fopen(WIN_COM_PATH, "rb+");
+#else
+    //MAC or Linux
+    char COM_PATH[50] = "/dev/tty";
+    strcat(COM_PATH, COMPort);
+
+    FILE* portHandle = fopen(COM_PATH, "rb+");
+#endif
+
+    if (portHandle == NULL)
+    {
+        printf("Cannot open COM port.\\n");
+    }
+
+    return portHandle;
+}
+
+int main()
+{
+    FILE* portHandle = OpenPort(COM_PORT);
+
+    if (!portHandle)
+        return -1;
+
+    uint8_t cmd[] = { 255, 0, 0 };
+    size_t writtenBytes = fwrite(cmd, sizeof(uint8_t),
+                                 sizeof(cmd), portHandle);
+    fflush(portHandle);
+
+    printf("\\nWrote %lu bytes.", writtenBytes);
+
+    if (cmd[0] == 255)
+    {
+        printf("\\nNo response is expected.");
+    }
+    else
+    {
+        //default initialize to 0
+        uint8_t buffer[] = { 0, 0, 0};
+        size_t readBytes = fread(buffer, sizeof(uint8_t),
+            sizeof(buffer), portHandle);
+    
+        printf("\\nReceived: ");
+        for (int i = 0; i < sizeof(buffer); i++)
+        {
+            printf("0x%x ", buffer[i]);
+        }
+    }
+    
+    fclose(portHandle);
+}
+`
+
+const javascriptCode = `async (
+    dataToSend: string | Uint8Array,
+    enableSentLogging = true,
+    enableTimoutLogging = true,
+  ) => {
+    if (dataToSend.length === 0) {
+      LogAction(
+        ErrorTypes.NO_ERR,
+        'We know you are impatient dear scholar, but you must enter at least one byte!',
+      )
+      return
+    }
+    if (portSer && portSer.current && portSer.current.writable) {
+      const writer = portSer.current.writable.getWriter()
+
+      let data: Uint8Array = new Uint8Array([])
+      if (typeof dataToSend == 'string') {
+        data = stringToUint8Array(dataToSend.toUpperCase())
+        if (data.length == 0) {
+          LogAction(ErrorTypes.ERR1005, 'Your message has an invalid length!')
+          return
+        }
+      } else {
+        data = dataToSend
+      }
+
+      await writer.write(data)
+
+      let hexString = Uint8ArrayToString(data)
+      if (enableSentLogging) {
+        LogAction(ErrorTypes.NO_ERR, 'Sent: 0x' + hexString.toUpperCase())
+      }
+
+      if (hexString.slice(0, 2) == 'FF') {
+        enableTimoutLogging = false
+      }
+
+      if (enableTimoutLogging) {
+        timerHandle.current = setTimeout(() => {
+          if (partialData.current.length == 0) {
+            LogAction(ErrorTypes.ERR1003, 'The command timed out.')
+          } else {
+            //the command responded but it was incomplete
+            LogAction(
+              ErrorTypes.ERR1004,
+              'The message received is incomplete.',
+            )
+            LogAction(
+              ErrorTypes.ERR1004,
+              'Received incomplete message: 0x' + partialData.current,
+            )
+            partialData.current = ''
+          }
+        }, 1000)
+      }
+
+      if (enableSentLogging && !enableTimoutLogging) {
+        LogAction(ErrorTypes.NO_ERR, 'No response is expected!')
+      }
+
+      writer.releaseLock()
+    } else {
+      LogAction(
+        ErrorTypes.NO_ERR,
+        'Sending data is not possible, you must connect first!',
+      )
+    }
+  }`
+const pythonCode = `#!/usr/local/bin/python3
+
+import serial
+
+ser = serial.Serial('/dev/tty.SLAB_USBtoUART', 230400, timeout = 0.5)
+print(ser.name)         # check which port was really used
+ser.write(bytearray([ord('X'), 2, 4, 0, 8, 0, 0]))
+
+
+data = ser.read(1000)
+print("Received %d bytes" % (len(data)))
+print(data)
+
+for d in data:
+    print("0x%02X %d" % (d, d))
+
+ser.close()
+`
+
+export type languages = "python" | "c" | "javascript"
+
+export const SupportedCodeExamples = {
+    "Python": {
+        "prismLanguage": "python",
+        "code": pythonCode
+    },
+    "C": {
+        "prismLanguage": "c",
+        "code": cCode
+    },
+    "JavaScript": {
+        "prismLanguage": "javascript",
+        "code": javascriptCode
+    }
+}
+
+
+import RawMotorCommands from '../public/motor_commands.json' assert {type: 'json'};
+
+export const alterCodeSample = (_currentCommand: number, _currentAxis: string, currentCode: string, payload = ''): string => {
+
+    let sendLength = 0;
+    let rcvLength = 0;
+
+    RawMotorCommands.map((item) => {
+        if (item.CommandEnum == _currentCommand) {
+            for (const input of item.Input) {
+                if (typeof input == 'object') {
+                    sendLength += getNoOfBytesFromDescription(input.Description)
+                }
+            }
+            for (const output of item.Output) {
+                if (typeof output == 'object') {
+                    rcvLength += getNoOfBytesFromDescription(output.Description)
+                }
+            }
+        }
+    })
+
+    const currentAxisASCIICode = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(_currentAxis == 'All axes' ? 255 : _currentAxis.charCodeAt(0), 1));
+    const currentCommandInHex = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(_currentCommand, 1))
+    let alteredCodeSample = ''
+
+    if (currentCode == SupportedCodeExamples.C.prismLanguage) {
+        const cCodeCmdToken = 'uint8_t cmd'
+        const cCodeBufferToken = 'uint8_t buffer'
+
+        {
+            const indexOfCmd = SupportedCodeExamples.C.code.indexOf(cCodeCmdToken)
+            const indexOfComma = SupportedCodeExamples.C.code.substring(indexOfCmd).indexOf(';')
+            alteredCodeSample = SupportedCodeExamples.C.code.substring(0, indexOfCmd)
+
+            let params = ''
+            if (payload != '') {
+                sendLength = payload.length / 2
+
+                for (let i = 0; i < payload.length; i += 2) {
+                    params += ', 0x' + payload[i].toUpperCase() + payload[i + 1].toUpperCase()
+                }
+
+            } else {
+                //set all bytes to 0, we don't know any parameters
+                for (let i = 0; i < sendLength; i++) {
+                    params += ', 0'
+                }
+            }
+            const sendLengthInHex = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(sendLength, 1))
+
+            alteredCodeSample += `uint8_t cmd[] = { ${currentAxisASCIICode}, ${currentCommandInHex}, ${sendLengthInHex}${params} };`
+            alteredCodeSample += SupportedCodeExamples.C.code.substring(indexOfCmd + indexOfComma + 1)
+        }
+        {
+            const alteredCodeAfterSendCmd = alteredCodeSample
+            const indexOfBuffer = alteredCodeAfterSendCmd.indexOf(cCodeBufferToken)
+            const indexOfComma = alteredCodeAfterSendCmd.substring(indexOfBuffer).indexOf(';')
+            alteredCodeSample = alteredCodeAfterSendCmd.substring(0, indexOfBuffer)
+            let buffer = ''
+            for (let i = 0; i < rcvLength; i++) {
+                buffer += ', 0'
+            }
+            alteredCodeSample += `uint8_t buffer[] = { 0, 0, 0${buffer} };`
+            alteredCodeSample += alteredCodeAfterSendCmd.substring(indexOfBuffer + indexOfComma + 1)
+        }
+    }
+    else if (currentCode == SupportedCodeExamples.JavaScript.prismLanguage) {
+        const pythonCodeCmdToken = 'uint8_t cmd'
+
+
+    }
+    else if (currentCode == SupportedCodeExamples.Python.prismLanguage) {
+        const javascriptCodeCmdToken = 'uint8_t cmd'
+
+    }
+
+    return alteredCodeSample;
 }

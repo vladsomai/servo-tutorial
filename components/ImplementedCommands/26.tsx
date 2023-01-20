@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useContext } from 'react'
+import { GlobalContext } from '../../pages/_app'
 import {
   InternalVelocityToCommVelocity,
   SecondToTimesteps,
@@ -15,6 +16,8 @@ import {
 import { ChaptersPropsType } from './0_1'
 
 export const Command26 = (props: ChaptersPropsType) => {
+  const value = useContext(GlobalContext)
+
   const velocityInputBox = useRef<HTMLInputElement | null>(null)
   const timeInputBox = useRef<HTMLInputElement | null>(null)
 
@@ -22,6 +25,11 @@ export const Command26 = (props: ChaptersPropsType) => {
   const [timeValue, setTimeValue] = useState<number>(0)
   const [timesteps, setTimestepsValue] = useState<number>(0)
   const [timestepsHexa, setTimestepsHexaValue] = useState<string>('00000000')
+
+  const [velocityRPM, setVelocityRPM] = useState<number>(0)
+  const [internalVelocity, setInternalVelocity] = useState<number>(0)
+  const [commVelocity, setCommVelocity] = useState<number>(0)
+  const [commVelocityHexa, setCommVelocityHexa] = useState<string>('00000000')
 
   const onTimeInputBoxChange = () => {
     if (timeInputBox && timeInputBox.current) {
@@ -43,35 +51,44 @@ export const Command26 = (props: ChaptersPropsType) => {
     }
   }
 
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      return () => setBytes('')
+    },
+    [value.codeExamplePayload.setBytes],
+  )
+
   useEffect(() => {
     setTimestepsValue(SecondToTimesteps(timeValue))
   }, [timeValue])
 
-  useEffect(() => {
-    if (timesteps == 0) {
-      setTimestepsHexaValue('00000000')
-    } else {
-      let rawPayload_ArrayBufferForTime = new ArrayBuffer(4)
-      const viewTime = new DataView(rawPayload_ArrayBufferForTime)
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      if (timesteps == 0) {
+        setTimestepsHexaValue('00000000')
+        setBytes(commVelocityHexa + '00000000')
+      } else {
+        let rawPayload_ArrayBufferForTime = new ArrayBuffer(4)
+        const viewTime = new DataView(rawPayload_ArrayBufferForTime)
 
-      viewTime.setUint32(0, timesteps, true)
+        viewTime.setUint32(0, timesteps, true)
 
-      let rawTimePayload = new Uint8Array(4)
-      rawTimePayload.set([viewTime.getUint8(0)], 0)
-      rawTimePayload.set([viewTime.getUint8(1)], 1)
-      rawTimePayload.set([viewTime.getUint8(2)], 2)
-      rawTimePayload.set([viewTime.getUint8(3)], 3)
+        let rawTimePayload = new Uint8Array(4)
+        rawTimePayload.set([viewTime.getUint8(0)], 0)
+        rawTimePayload.set([viewTime.getUint8(1)], 1)
+        rawTimePayload.set([viewTime.getUint8(2)], 2)
+        rawTimePayload.set([viewTime.getUint8(3)], 3)
 
-      setTimestepsHexaValue(Uint8ArrayToString(rawTimePayload))
-    }
-  }, [timesteps])
+        const strTimesteps = Uint8ArrayToString(rawTimePayload)
+        setTimestepsHexaValue(strTimesteps)
+        setBytes(commVelocityHexa + strTimesteps)
+      }
+    },
+    [timesteps, value.codeExamplePayload.setBytes, commVelocityHexa],
+  )
   //#endregion TIME_CONVERSION
 
   //#region VELOCITY_CONVERSION
-  const [velocityRPM, setVelocityRPM] = useState<number>(0)
-  const [internalVelocity, setInternalVelocity] = useState<number>(0)
-  const [commVelocity, setCommVelocity] = useState<number>(0)
-  const [commVelocityHexa, setCommVelocityHexa] = useState<string>('00000000')
 
   const onVelocityInputBoxChange = () => {
     if (velocityInputBox && velocityInputBox.current) {
@@ -121,9 +138,10 @@ export const Command26 = (props: ChaptersPropsType) => {
     setCommVelocity(InternalVelocityToCommVelocity(internalVelocity))
   }, [internalVelocity])
 
-  useEffect(() => {
+  useEffect((setBytes=value.codeExamplePayload.setBytes) => {
     if (commVelocity == 0) {
       setCommVelocityHexa('00000000')
+      setBytes('00000000' + timestepsHexa)
     } else {
       let rawPayload_ArrayBufferForVelocity = new ArrayBuffer(4)
       const viewVelocity = new DataView(rawPayload_ArrayBufferForVelocity)
@@ -135,9 +153,11 @@ export const Command26 = (props: ChaptersPropsType) => {
       rawVelocityPayload.set([viewVelocity.getUint8(2)], 2)
       rawVelocityPayload.set([viewVelocity.getUint8(3)], 3)
 
-      setCommVelocityHexa(Uint8ArrayToString(rawVelocityPayload))
+      const strIntVelocity = Uint8ArrayToString(rawVelocityPayload)
+      setCommVelocityHexa(strIntVelocity)
+     setBytes(strIntVelocity + timestepsHexa)
     }
-  }, [commVelocity])
+  }, [commVelocity,timestepsHexa,value.codeExamplePayload.setBytes])
   //#endregion VELOCITY_CONVERSION
 
   const execute_command = () => {

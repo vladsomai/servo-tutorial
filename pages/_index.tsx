@@ -3,7 +3,6 @@ import Image from 'next/image'
 import Layout from '../components/layout'
 import { ReactElement, useEffect, useState } from 'react'
 import type { NextPageWithLayout } from './_app'
-import 'animate.css'
 import { useRouter } from 'next/router'
 
 const Home: NextPageWithLayout = () => {
@@ -24,7 +23,7 @@ const Home: NextPageWithLayout = () => {
       <Head>
         <title>Home</title>
       </Head>
-      <div className="text-center animate__animated animate__fadeIn h-[85vh]">
+      <div className="text-center h-[85vh]">
         <div className=" flex flex-col h-full">
           <h1 className="text-6xl xl:text-4xl my-10">Welcome Scholar!</h1>
           <p className="text-2xl xl:text-lg mb-5">
