@@ -318,15 +318,12 @@ const Main = (props: MainWindowProps) => {
           } catch (err) {
             if (err instanceof Error) {
               LogAction(ErrorTypes.ERR1999, err!.message)
-              reader.current?.releaseLock()
+              reader.current.releaseLock()
               reader.current = null
-
-              return
             }
-            reader.current?.releaseLock()
+            reader.current.releaseLock()
             reader.current = null
             console.log(err)
-            return
           } finally {
             LogAction(
               ErrorTypes.NO_ERR,
