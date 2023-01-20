@@ -55,7 +55,7 @@ export default function Code({ currentCommand, currentAxis }: CodeProps) {
         setCode(alteredCode)
         break
     }
-  }, [currentAxis, currentCommand])
+  }, [currentAxis, currentCommand, language, value.codeExamplePayload.Bytes])
 
   const showC = () => {
     setLanguage(SupportedCodeExamples.C.prismLanguage as languages)
