@@ -59,7 +59,7 @@ const Tutorial = () => {
         setTimeout(()=>{value.alert.setShow(false)},17200)
       }
     }
-  }, [router])
+  }, [router,value.alert])
 
   return (
     <>

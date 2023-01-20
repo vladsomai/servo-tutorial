@@ -24,6 +24,11 @@ export const Command30 = (props: ChaptersPropsType) => {
   const [upperMicrostepsHexaValue, setUpperMicrostepsHexaValue] = useState<
     string
   >('00000000')
+  const [lowerValue, setLowerValue] = useState<number>(0)
+  const [lowerMicrosteps, setLowerMicrosteps] = useState<number>(0)
+  const [lowerMicrostepsHexaValue, setLowerMicrostepsHexaValue] = useState<
+    string
+  >('00000000')
 
   const onUpperLimitInputBoxChange = () => {
     if (upperLimitInputBox && upperLimitInputBox.current) {
@@ -66,9 +71,12 @@ export const Command30 = (props: ChaptersPropsType) => {
     }
   }
 
-  useEffect(() => {
-    return () => value.codeExamplePayload.setBytes('')
-  }, [])
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      return () => setBytes('')
+    },
+    [value.codeExamplePayload.setBytes],
+  )
 
   useEffect(() => {
     setUpperMicrosteps(RotationsToMicrosteps(upperValue))
@@ -87,15 +95,10 @@ export const Command30 = (props: ChaptersPropsType) => {
         lowerMicrostepsHexaValue + strUpperMicrosteps,
       )
     }
-  }, [upperMicrosteps])
+  }, [upperMicrosteps, lowerMicrostepsHexaValue, value.codeExamplePayload])
   //#endregion UPPER_LIMIT_CONVERSION
 
   //#region LOWER_LIMIT_CONVERSION
-  const [lowerValue, setLowerValue] = useState<number>(0)
-  const [lowerMicrosteps, setLowerMicrosteps] = useState<number>(0)
-  const [lowerMicrostepsHexaValue, setLowerMicrostepsHexaValue] = useState<
-    string
-  >('00000000')
 
   const onLowerLimitInputBoxChange = () => {
     if (lowerLimitInputBox && lowerLimitInputBox.current) {
@@ -155,7 +158,7 @@ export const Command30 = (props: ChaptersPropsType) => {
         strLowerMicrosteps + upperMicrostepsHexaValue,
       )
     }
-  }, [lowerMicrosteps])
+  }, [lowerMicrosteps, value.codeExamplePayload, upperMicrostepsHexaValue])
   //#endregion LOWER_LIMIT_CONVERSION
 
   const execute_command = () => {

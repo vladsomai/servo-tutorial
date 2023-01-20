@@ -15,7 +15,12 @@ import { ChaptersPropsType } from './0_1'
 
 export const Command3 = (props: ChaptersPropsType) => {
   const value = useContext(GlobalContext)
-
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      return () => setBytes('')
+    },
+    [value.codeExamplePayload.setBytes],
+  )
   const velocityInputBox = useRef<HTMLInputElement | null>(null)
 
   //#region VELOCITY_CONVERSION

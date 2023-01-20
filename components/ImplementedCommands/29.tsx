@@ -58,23 +58,28 @@ export const Command29 = (props: MultiMoveChapterProps) => {
   const timestepsHexa = useRef<string[]>([])
   const movementComm = useRef<string[]>([])
 
-  useEffect(() => {
-    const arr = props.MoveCommands
+  useEffect(
+    (
+      setBytes = value.codeExamplePayload.setBytes,
+      arr = props.MoveCommands,
+    ) => {
+      let movementTypes = 0
+      arr.map((item) => {
+        if (item.MovementType.Name == 'Velocity') {
+          //set ith bit when using velocity movement
+          const mask = 1 << arr.indexOf(item)
+          movementTypes |= mask
+        }
+      })
+      u32BitMovementTypes.current = movementTypes
+      timestepsHexa.current = arr.map((item) => convertTime(item.TimeValue))
+      movementComm.current = arr.map((item) => convertAccOrVel(item))
 
-    let movementTypes = 0
-    arr.map((item) => {
-      if (item.MovementType.Name == 'Velocity') {
-        //set ith bit when using velocity movement
-        const mask = 1 << arr.indexOf(item)
-        movementTypes |= mask
-      }
-    })
-    u32BitMovementTypes.current = movementTypes
-    timestepsHexa.current = arr.map((item) => convertTime(item.TimeValue))
-    movementComm.current = arr.map((item) => convertAccOrVel(item))
+      return () => setBytes('')
+    },
+    [value.codeExamplePayload.setBytes, props.MoveCommands],
+  )
 
-    return () => value.codeExamplePayload.setBytes('')
-  }, [])
   //#region TRANSITION
   const transitionMulimoves = useTransition(props.MoveCommands, {
     from: { y: -100, opacity: 0 },
@@ -315,41 +320,43 @@ export const Command29 = (props: MultiMoveChapterProps) => {
     const arr = [...arr1, arr2, ...arr3]
 
     movementComm.current = arr.map((item) => convertAccOrVel(item))
-    
+
     props.setMoveCommands(arr)
   }
   //#endregion Acceleration_CONVERSION
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      const updateCommands = () => {
+        let list_2d = ''
+        for (let i = 0; i < props.MoveCommands.length; i++) {
+          list_2d += movementComm.current[i] + timestepsHexa.current[i]
+        }
 
-  const updateCommands = () => {
-    let list_2d = ''
-    for (let i = 0; i < props.MoveCommands.length; i++) {
-      list_2d += movementComm.current[i] + timestepsHexa.current[i]
-    }
+        //#region number of commands byte
+        /* Convert the u32 that holds all the movement bits*/
+        const rawNoCommandsByte = Uint8ArrayToString(
+          transfNumberToUint8Arr(props.MoveCommands.length, 1),
+        )
+        //#endregion number of commands byte
 
-    //#region number of commands byte
-    /* Convert the u32 that holds all the movement bits*/
-    const rawNoCommandsByte = Uint8ArrayToString(
-      transfNumberToUint8Arr(props.MoveCommands.length, 1),
-    )
-    //#endregion number of commands byte
+        //#region Movement bits
+        /* Convert the u32 that holds all the movement bits*/
+        const rawMovementBits = Uint8ArrayToString(
+          transfNumberToUint8Arr(
+            BigInt.asUintN(32, BigInt(u32BitMovementTypes.current)),
+            4,
+          ),
+        )
+        //#endregion Movement bits
 
-    //#region Movement bits
-    /* Convert the u32 that holds all the movement bits*/
-    const rawMovementBits = Uint8ArrayToString(
-      transfNumberToUint8Arr(
-        BigInt.asUintN(32, BigInt(u32BitMovementTypes.current)),
-        4,
-      ),
-    )
-    //#endregion Movement bits
+        const payload = rawNoCommandsByte + rawMovementBits + list_2d
+        setBytes(payload)
+      }
 
-    const payload = rawNoCommandsByte + rawMovementBits + list_2d
-    value.codeExamplePayload.setBytes(payload)
-  }
-
-  useEffect(() => {
-    updateCommands()
-  }, [props.MoveCommands])
+      updateCommands()
+    },
+    [props.MoveCommands, value.codeExamplePayload.setBytes],
+  )
 
   const execute_command = () => {
     const selectedAxis = props.getAxisSelection()

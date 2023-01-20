@@ -855,7 +855,8 @@ export const alterCodeSample = (_currentCommand: number, _currentAxis: string, c
         }
     })
 
-    const currentAxisASCIICode = _currentAxis == 'All axes' ? 255 : _currentAxis.charCodeAt(0);
+    const currentAxisASCIICode = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(_currentAxis == 'All axes' ? 255 : _currentAxis.charCodeAt(0), 1));
+    const currentCommandInHex = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(_currentCommand, 1))
     let alteredCodeSample = ''
 
     if (currentCode == SupportedCodeExamples.C.prismLanguage) {
@@ -881,7 +882,9 @@ export const alterCodeSample = (_currentCommand: number, _currentAxis: string, c
                     params += ', 0'
                 }
             }
-            alteredCodeSample += `uint8_t cmd[] = { ${currentAxisASCIICode}, ${_currentCommand}, ${sendLength}${params} };`
+            const sendLengthInHex = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(sendLength, 1))
+
+            alteredCodeSample += `uint8_t cmd[] = { ${currentAxisASCIICode}, ${currentCommandInHex}, ${sendLengthInHex}${params} };`
             alteredCodeSample += SupportedCodeExamples.C.code.substring(indexOfCmd + indexOfComma + 1)
         }
         {

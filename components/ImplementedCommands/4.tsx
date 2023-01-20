@@ -16,7 +16,12 @@ import { ChaptersPropsType } from './0_1'
 
 export const Command4 = (props: ChaptersPropsType) => {
   const value = useContext(GlobalContext)
-
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      return () => setBytes('')
+    },
+    [value.codeExamplePayload.setBytes],
+  )
   const positionInputBox = useRef<HTMLInputElement | null>(null)
   const timeInputBox = useRef<HTMLInputElement | null>(null)
 
@@ -24,6 +29,10 @@ export const Command4 = (props: ChaptersPropsType) => {
   const [timeValue, setTimeValue] = useState<number>(0)
   const [timesteps, setTimestepsValue] = useState<number>(0)
   const [timestepsHexa, setTimestepsHexaValue] = useState<string>('00000000')
+
+  const [positionValue, setPositionValue] = useState<number>(0)
+  const [microsteps, setMicrostepsValue] = useState<number>(0)
+  const [microstepsHexa, setMicrostepsHexaValue] = useState<string>('00000000')
 
   const onTimeInputBoxChange = () => {
     if (timeInputBox && timeInputBox.current) {
@@ -69,14 +78,10 @@ export const Command4 = (props: ChaptersPropsType) => {
       setTimestepsHexaValue(strTimesteps)
       value.codeExamplePayload.setBytes(microstepsHexa + strTimesteps)
     }
-  }, [timesteps])
+  }, [timesteps, microstepsHexa, value.codeExamplePayload])
   //#endregion TIME_CONVERSION
 
   //#region POSITION_CONVERSION
-
-  const [positionValue, setPositionValue] = useState<number>(0)
-  const [microsteps, setMicrostepsValue] = useState<number>(0)
-  const [microstepsHexa, setMicrostepsHexaValue] = useState<string>('00000000')
 
   const onPositionInputBoxChange = () => {
     if (positionInputBox && positionInputBox.current) {
@@ -127,7 +132,6 @@ export const Command4 = (props: ChaptersPropsType) => {
     if (microsteps == 0) {
       setMicrostepsHexaValue('00000000')
       value.codeExamplePayload.setBytes('00000000' + timestepsHexa)
-
     } else {
       let rawPayload_ArrayBufferForPosition = new ArrayBuffer(4)
       const viewPosition = new DataView(rawPayload_ArrayBufferForPosition)
@@ -143,7 +147,7 @@ export const Command4 = (props: ChaptersPropsType) => {
       setMicrostepsHexaValue(strMicrosteps)
       value.codeExamplePayload.setBytes(strMicrosteps + timestepsHexa)
     }
-  }, [microsteps])
+  }, [microsteps, timestepsHexa, value.codeExamplePayload])
   //#endregion POSITION_CONVERSION
 
   const trapezoid_move = () => {

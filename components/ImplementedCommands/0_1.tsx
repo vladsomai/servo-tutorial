@@ -1,5 +1,5 @@
 import { MainWindowProps } from '../main-window'
-import { ReactElement, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 
 export interface ChaptersPropsType extends MainWindowProps {
   sendDataToSerialPort: (

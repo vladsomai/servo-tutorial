@@ -1,4 +1,4 @@
-import { useContext, useRef, useEffect, useState } from 'react'
+import { useContext, useRef, useEffect, useState, useCallback } from 'react'
 import { ChaptersPropsType } from './0_1'
 import { ErrorTypes } from '../../servo-engine/utils'
 import { GlobalContext } from '../../pages/_app'
@@ -8,10 +8,7 @@ export const Command31 = (props: ChaptersPropsType) => {
   const value = useContext(GlobalContext)
   const initialText = '0123456789'
 
-  useEffect(() => {
-    handlePingbox()
-    return () => value.codeExamplePayload.setBytes('')
-  }, [])
+
 
   const convertTextToASCII = (textPayload: string) => {
     let payload = ''
@@ -20,18 +17,34 @@ export const Command31 = (props: ChaptersPropsType) => {
     }
     return payload
   }
-  const handlePingbox = () => {
-    if (!textPayloadInputBox.current) return
 
-    const textPayload = textPayloadInputBox.current.value
+  const onPingBoxModified = useCallback(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      if (!textPayloadInputBox.current) return
 
-    let textCompleted = convertTextToASCII(textPayload).slice(0, 20)
+      const textPayload = textPayloadInputBox.current.value
 
-    for (let i = textCompleted.length; i < initialText.length * 2; i++) {
-      textCompleted += '0'
-    }
-    value.codeExamplePayload.setBytes(textCompleted)
-  }
+      let textCompleted = convertTextToASCII(textPayload).slice(0, 20)
+
+      for (let i = textCompleted.length; i < initialText.length * 2; i++) {
+        textCompleted += '0'
+      }
+      setBytes(textCompleted)
+    },
+    [value.codeExamplePayload.setBytes],
+  )
+
+  const handlePingbox = useCallback(() => {
+    onPingBoxModified()
+  }, [onPingBoxModified])
+
+  useEffect(
+    (setbytes = value.codeExamplePayload.setBytes) => {
+      handlePingbox()
+      return () => setbytes('')
+    },
+    [value.codeExamplePayload.setBytes, handlePingbox],
+  )
 
   const ping_command = () => {
     if (textPayloadInputBox && textPayloadInputBox.current) {

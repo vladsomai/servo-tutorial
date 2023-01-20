@@ -16,19 +16,19 @@ export const Command28 = (props: ChaptersPropsType) => {
   const [maxCurrent, setMaxCurrent] = useState<Uint8Array>()
   const [regenCurrent, setRegenCurrent] = useState<Uint8Array>()
 
-  useEffect(() => {
+  useEffect((setBytes = value.codeExamplePayload.setBytes) => {
     const maxCurrentTemp = transfNumberToUint8Arr(150, 2)
     const regenCurrentTemp = transfNumberToUint8Arr(150, 2)
 
     setMaxCurrent(maxCurrentTemp)
     setRegenCurrent(regenCurrentTemp)
 
-    value.codeExamplePayload.setBytes(
+    setBytes(
       Uint8ArrayToString(maxCurrentTemp) + Uint8ArrayToString(regenCurrentTemp),
     )
 
-    return () => value.codeExamplePayload.setBytes('')
-  }, [])
+    return () => setBytes('')
+  }, [value.codeExamplePayload.setBytes])
 
   const execute_command = () => {
     const selectedAxis = props.getAxisSelection()

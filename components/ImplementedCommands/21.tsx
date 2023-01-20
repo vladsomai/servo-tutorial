@@ -6,10 +6,13 @@ import { GlobalContext } from '../../pages/_app'
 export const Command21 = (props: ChaptersPropsType) => {
   const value = useContext(GlobalContext)
 
-  useEffect(() => {
-    return () => value.codeExamplePayload.setBytes('')
-  }, [])
-  
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      return () => setBytes('')
+    },
+    [value.codeExamplePayload.setBytes],
+  )
+
   const [uniqueId, setUniqueId] = useState('0000000000000000')
   const [hexAlias, setHexAlias] = useState('00')
 

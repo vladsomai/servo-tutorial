@@ -14,7 +14,12 @@ import { ChaptersPropsType } from './0_1'
 
 export const Command5 = (props: ChaptersPropsType) => {
   const value = useContext(GlobalContext)
-
+  useEffect(
+    (setBytes = value.codeExamplePayload.setBytes) => {
+      return () => setBytes('')
+    },
+    [value.codeExamplePayload.setBytes],
+  )
   const AccelerationInputBox = useRef<HTMLInputElement | null>(null)
 
   //#region Acceleration_CONVERSION
@@ -95,9 +100,8 @@ export const Command5 = (props: ChaptersPropsType) => {
       const strComAcc = Uint8ArrayToString(rawAccelerationPayload)
       setCommAccelerationHexa(strComAcc)
       value.codeExamplePayload.setBytes(strComAcc)
-
     }
-  }, [commAcceleration])
+  }, [commAcceleration, value.codeExamplePayload])
   //#endregion Acceleration_CONVERSION
 
   const execute_command = () => {
