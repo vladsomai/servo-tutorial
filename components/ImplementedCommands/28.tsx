@@ -1,49 +1,87 @@
-import { useRef } from 'react'
+import { useRef, useContext, useState, useEffect } from 'react'
+import { GlobalContext } from '../../pages/_app'
 import { ChaptersPropsType } from './0_1'
-import { ErrorTypes, Uint8ArrayToString } from '../../servo-engine/utils'
+import {
+  ErrorTypes,
+  Uint8ArrayToString,
+  transfNumberToUint8Arr,
+} from '../../servo-engine/utils'
 
 export const Command28 = (props: ChaptersPropsType) => {
+  const value = useContext(GlobalContext)
+
   const maxCurrentInputBox = useRef<HTMLInputElement | null>(null)
   const regenerationInputBox = useRef<HTMLInputElement | null>(null)
 
+  const [maxCurrent, setMaxCurrent] = useState<Uint8Array>()
+  const [regenCurrent, setRegenCurrent] = useState<Uint8Array>()
+
+  useEffect(() => {
+    const maxCurrentTemp = transfNumberToUint8Arr(150, 2)
+    const regenCurrentTemp = transfNumberToUint8Arr(150, 2)
+
+    setMaxCurrent(maxCurrentTemp)
+    setRegenCurrent(regenCurrentTemp)
+
+    value.codeExamplePayload.setBytes(
+      Uint8ArrayToString(maxCurrentTemp) + Uint8ArrayToString(regenCurrentTemp),
+    )
+
+    return () => value.codeExamplePayload.setBytes('')
+  }, [])
+
   const execute_command = () => {
+    const selectedAxis = props.getAxisSelection()
+    if (selectedAxis == '') return
+
     if (
-      maxCurrentInputBox &&
-      maxCurrentInputBox.current &&
-      regenerationInputBox &&
-      regenerationInputBox.current
+      maxCurrentInputBox.current?.value == '' ||
+      regenerationInputBox.current?.value == ''
     ) {
-      const selectedAxis = props.getAxisSelection()
-      if (selectedAxis == '') return
-
-      const maxCurrentStr = maxCurrentInputBox.current.value
-      const regenCurrentStr = regenerationInputBox.current.value
-
-      if (maxCurrentStr == '' || regenCurrentStr == '') {
-        props.LogAction(ErrorTypes.NO_ERR, 'Please enter both inputs.')
-        return
-      }
-
-      const maxCurrent: number = parseInt(maxCurrentStr)
-      const regenCurrent: number = parseInt(regenCurrentStr)
-
-      let rawPayload_ArrayBufferForPosition = new ArrayBuffer(4)
-      const viewPosition = new DataView(rawPayload_ArrayBufferForPosition)
-      viewPosition.setUint16(0, maxCurrent, true)
-      viewPosition.setUint16(2, regenCurrent, true)
-
-      let rawPositionPayload = new Uint8Array(4)
-      rawPositionPayload.set([viewPosition.getUint8(0)], 0)
-      rawPositionPayload.set([viewPosition.getUint8(1)], 1)
-      rawPositionPayload.set([viewPosition.getUint8(2)], 2)
-      rawPositionPayload.set([viewPosition.getUint8(3)], 3)
-
-      const rawData = props.constructCommand(
-        selectedAxis,
-        Uint8ArrayToString(rawPositionPayload),
-      )
-      props.sendDataToSerialPort(rawData)
+      props.LogAction(ErrorTypes.NO_ERR, 'Please enter both inputs.')
+      return
     }
+
+    const rawData = props.constructCommand(
+      selectedAxis,
+      value.codeExamplePayload.Bytes,
+    )
+    props.sendDataToSerialPort(rawData)
+  }
+
+  const handleCurrent = () => {
+    if (maxCurrentInputBox.current == null) return
+
+    const maxCurrentStr = maxCurrentInputBox.current.value
+    if (maxCurrentStr.trim()[0] == '-') {
+      props.LogAction(ErrorTypes.ERR1002, 'You cannot use negative numbers.')
+      maxCurrentInputBox.current.value = ''
+      return
+    }
+    const maxCurrentNum: number = parseInt(maxCurrentStr)
+    const rawMaxCurrent = transfNumberToUint8Arr(maxCurrentNum, 2)
+
+    setMaxCurrent(rawMaxCurrent)
+    value.codeExamplePayload.setBytes(
+      Uint8ArrayToString(rawMaxCurrent) + Uint8ArrayToString(regenCurrent),
+    )
+  }
+  const handleRegen = () => {
+    if (regenerationInputBox.current == null) return
+
+    const regenCurrentStr = regenerationInputBox.current.value
+    if (regenCurrentStr.trim()[0] == '-') {
+      props.LogAction(ErrorTypes.ERR1002, 'You cannot use negative numbers.')
+      regenerationInputBox.current.value = ''
+      return
+    }
+    const regenCurrentNum: number = parseInt(regenCurrentStr)
+    const rawRegenCurrent = transfNumberToUint8Arr(regenCurrentNum, 2)
+
+    setRegenCurrent(rawRegenCurrent)
+    value.codeExamplePayload.setBytes(
+      Uint8ArrayToString(maxCurrent) + Uint8ArrayToString(rawRegenCurrent),
+    )
   }
   return (
     <>
@@ -52,6 +90,7 @@ export const Command28 = (props: ChaptersPropsType) => {
           <div className="m-2">{props.children}</div>
           <input
             ref={maxCurrentInputBox}
+            onChange={handleCurrent}
             type="text"
             placeholder="Motor current"
             defaultValue={150}
@@ -59,6 +98,7 @@ export const Command28 = (props: ChaptersPropsType) => {
           />{' '}
           <input
             ref={regenerationInputBox}
+            onChange={handleRegen}
             type="text"
             placeholder="Regeneration current"
             defaultValue={150}

@@ -5,7 +5,6 @@ import {
   useCallback,
   ReactElement,
   MutableRefObject,
-  useMemo,
 } from 'react'
 import React from 'react'
 import Log from './log-window'
@@ -66,7 +65,6 @@ export type MainWindowProps = {
 }
 
 const Main = (props: MainWindowProps) => {
-  const router = useRouter()
   const disconnectTimeout = useRef<NodeJS.Timeout>()
   const portSer = useRef<SerialPort | null>(null)
   const reader = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null)
@@ -102,7 +100,6 @@ const Main = (props: MainWindowProps) => {
         logError: errorType,
       },
     ]
-
     setLogs(logsRef.current)
   }
 
@@ -154,6 +151,7 @@ const Main = (props: MainWindowProps) => {
     }
   }
 
+  const router = useRouter()
   const disconnectFromSerialPort = useCallback(async () => {
     if (portSer && portSer.current) {
       try {
@@ -171,6 +169,8 @@ const Main = (props: MainWindowProps) => {
         }
       }
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -284,7 +284,6 @@ const Main = (props: MainWindowProps) => {
                   break
                 } else {
                   const receivedBytes = Uint8ArrayToString(value)
-
                   partialData.current += receivedBytes
 
                   if (partialData.current.length >= 6) {
@@ -1017,10 +1016,10 @@ const Main = (props: MainWindowProps) => {
           connectToSerialPort={connectToSerialPort}
           disconnectFromSerialPort={disconnectFromSerialPort}
           isConnected={isConnected}
+          axisSelectionValue={axisSelectionValue}
         >
           {currentCommandLayout}
         </Command>
-
         {props.currentCommandDictionary.CommandEnum === 100 ? null : (
           <Log
             logs={logs}
@@ -1038,4 +1037,5 @@ const Main = (props: MainWindowProps) => {
     </>
   )
 }
+
 export default Main

@@ -1,9 +1,10 @@
-import { useRef } from 'react'
+import { useRef,useContext } from 'react'
+import { GlobalContext } from '../../pages/_app'
 import { ResetCommandType } from './8'
 import { Uint8ArrayToString } from '../../servo-engine/utils'
 
 export const Command10 = (props: ResetCommandType) => {
-  const textPayloadInputBox = useRef<HTMLInputElement | null>(null)
+  const value = useContext(GlobalContext)
 
   const sync_time = () => {
     const selectedAxis = props.getAxisSelection()

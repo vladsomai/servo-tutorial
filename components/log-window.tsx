@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import LogLineServoCommand from './log-line-servo-command'
 import { MainWindowProps } from './main-window'
 
@@ -114,8 +114,8 @@ const Log = (props: {
           <div className="flex flex-col justify-center text-justify font-mono w-full">
             {props.logs.map((log: LogType) => {
               return (
-                <div className="flex " key={log.lineNumber}>
-                  <p className="mr-2 text-gray-500 text-right">
+                <div className="flex w-full" key={log.lineNumber}>
+                  <p className="mr-2 text-gray-500 text-right w-[6%]" style={{borderRight:"1px solid #6B7280", userSelect: "none"}}>
                     {log.lineNumber.toString()}&nbsp;
                   </p>
                   <LogLineServoCommand

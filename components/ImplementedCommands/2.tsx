@@ -1,4 +1,5 @@
-import { ReactElement, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useContext } from 'react'
+import { GlobalContext } from '../../pages/_app'
 import {
   RotationsToMicrosteps,
   SecondToTimesteps,
@@ -15,6 +16,8 @@ import {
 import { ChaptersPropsType } from './0_1'
 
 export const Command2 = (props: ChaptersPropsType) => {
+  const value = useContext(GlobalContext)
+
   const positionInputBox = useRef<HTMLInputElement | null>(null)
   const timeInputBox = useRef<HTMLInputElement | null>(null)
 
@@ -42,7 +45,9 @@ export const Command2 = (props: ChaptersPropsType) => {
       }
     }
   }
-
+  useEffect(() => {
+    return () => value.codeExamplePayload.setBytes('')
+  }, [])
   useEffect(() => {
     setTimestepsValue(SecondToTimesteps(timeValue))
   }, [timeValue])
@@ -50,6 +55,7 @@ export const Command2 = (props: ChaptersPropsType) => {
   useEffect(() => {
     if (timesteps == 0) {
       setTimestepsHexaValue('00000000')
+      value.codeExamplePayload.setBytes(microstepsHexa + '00000000')
     } else {
       let rawPayload_ArrayBufferForTime = new ArrayBuffer(4)
       const viewTime = new DataView(rawPayload_ArrayBufferForTime)
@@ -62,7 +68,9 @@ export const Command2 = (props: ChaptersPropsType) => {
       rawTimePayload.set([viewTime.getUint8(2)], 2)
       rawTimePayload.set([viewTime.getUint8(3)], 3)
 
-      setTimestepsHexaValue(Uint8ArrayToString(rawTimePayload))
+      const strTimesteps = Uint8ArrayToString(rawTimePayload)
+      setTimestepsHexaValue(strTimesteps)
+      value.codeExamplePayload.setBytes(microstepsHexa + strTimesteps)
     }
   }, [timesteps])
   //#endregion TIME_CONVERSION
@@ -121,6 +129,7 @@ export const Command2 = (props: ChaptersPropsType) => {
   useEffect(() => {
     if (microsteps == 0) {
       setMicrostepsHexaValue('00000000')
+      value.codeExamplePayload.setBytes('00000000' + timestepsHexa)
     } else {
       let rawPayload_ArrayBufferForPosition = new ArrayBuffer(4)
       const viewPosition = new DataView(rawPayload_ArrayBufferForPosition)
@@ -132,7 +141,9 @@ export const Command2 = (props: ChaptersPropsType) => {
       rawPositionPayload.set([viewPosition.getUint8(2)], 2)
       rawPositionPayload.set([viewPosition.getUint8(3)], 3)
 
-      setMicrostepsHexaValue(Uint8ArrayToString(rawPositionPayload))
+      const strMicrosteps = Uint8ArrayToString(rawPositionPayload)
+      setMicrostepsHexaValue(strMicrosteps)
+      value.codeExamplePayload.setBytes(strMicrosteps + timestepsHexa)
     }
   }, [microsteps])
   //#endregion POSITION_CONVERSION

@@ -1,5 +1,6 @@
-import { ReactElement, useEffect, useRef, useState } from 'react'
-import { MotorAxes, MotorAxisType } from '../../servo-engine/motor-axes'
+import { useEffect, useRef, useState, useContext } from 'react'
+import { GlobalContext } from '../../pages/_app'
+
 import {
   ErrorTypes,
   InternalVelocityToCommVelocity,
@@ -13,6 +14,8 @@ import {
 import { ChaptersPropsType } from './0_1'
 
 export const Command3 = (props: ChaptersPropsType) => {
+  const value = useContext(GlobalContext)
+
   const velocityInputBox = useRef<HTMLInputElement | null>(null)
 
   //#region VELOCITY_CONVERSION
@@ -72,6 +75,7 @@ export const Command3 = (props: ChaptersPropsType) => {
   useEffect(() => {
     if (commVelocity == 0) {
       setCommVelocityHexa('00000000')
+      value.codeExamplePayload.setBytes('00000000')
     } else {
       let rawPayload_ArrayBufferForVelocity = new ArrayBuffer(4)
       const viewVelocity = new DataView(rawPayload_ArrayBufferForVelocity)
@@ -83,9 +87,11 @@ export const Command3 = (props: ChaptersPropsType) => {
       rawVelocityPayload.set([viewVelocity.getUint8(2)], 2)
       rawVelocityPayload.set([viewVelocity.getUint8(3)], 3)
 
-      setCommVelocityHexa(Uint8ArrayToString(rawVelocityPayload))
+      const strComVel = Uint8ArrayToString(rawVelocityPayload)
+      setCommVelocityHexa(strComVel)
+      value.codeExamplePayload.setBytes(strComVel)
     }
-  }, [commVelocity])
+  }, [commVelocity, value.codeExamplePayload])
   //#endregion VELOCITY_CONVERSION
 
   const execute_command = () => {
