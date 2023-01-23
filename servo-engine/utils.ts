@@ -728,91 +728,150 @@ int main()
 }
 `
 
-const javascriptCode = `async (
-    dataToSend: string | Uint8Array,
-    enableSentLogging = true,
-    enableTimoutLogging = true,
-  ) => {
-    if (dataToSend.length === 0) {
-      LogAction(
-        ErrorTypes.NO_ERR,
-        'We know you are impatient dear scholar, but you must enter at least one byte!',
-      )
-      return
-    }
-    if (portSer && portSer.current && portSer.current.writable) {
-      const writer = portSer.current.writable.getWriter()
+const javascriptCode = `/*
+The JavaScript code example is diveded into 2 sections:
+1. "send_command.js" -> representing the JavaScript code
+2. "send_command.html" -> representing the html markup required to run the example. 
 
-      let data: Uint8Array = new Uint8Array([])
-      if (typeof dataToSend == 'string') {
-        data = stringToUint8Array(dataToSend.toUpperCase())
-        if (data.length == 0) {
-          LogAction(ErrorTypes.ERR1005, 'Your message has an invalid length!')
-          return
+Create the 2 files on your local machine in the same directory, 
+copy the JavaScript code to "send_command.js" 
+and the html markup to "send_command.html", 
+you can then open "send_command.html" using Chrome / Edge.
+*/
+
+
+/** "send_command.js" */
+connectBtn = document.getElementById("connectBtn");
+disconnectBtn = document.getElementById("disconnectBtn");
+executeCmd = document.getElementById("executeCmd");
+
+let serialPort;
+let serialPortReader;
+
+connectBtn.addEventListener("click", async () => {
+  navigator.serial.requestPort().then(async (port) => {
+    serialPort = port;
+    await serialPort.open({ baudRate: 230400 });
+    ReadFromSerialPortUntilClosed();
+  });
+});
+
+disconnectBtn.addEventListener("click", () => {
+  if (serialPortReader) {
+    serialPortReader.cancel();
+  } else {
+    alert("Connect to the serial port first!");
+  }
+});
+
+async function ReadFromSerialPortUntilClosed() {
+  while (serialPort?.readable) {
+    serialPortReader = serialPort.readable.getReader();
+    try {
+      while (true) {
+        const { value, done } = await serialPortReader.read();
+        if (done) {
+          break;
         }
-      } else {
-        data = dataToSend
+        console.log(value);
       }
-
-      await writer.write(data)
-
-      let hexString = Uint8ArrayToString(data)
-      if (enableSentLogging) {
-        LogAction(ErrorTypes.NO_ERR, 'Sent: 0x' + hexString.toUpperCase())
-      }
-
-      if (hexString.slice(0, 2) == 'FF') {
-        enableTimoutLogging = false
-      }
-
-      if (enableTimoutLogging) {
-        timerHandle.current = setTimeout(() => {
-          if (partialData.current.length == 0) {
-            LogAction(ErrorTypes.ERR1003, 'The command timed out.')
-          } else {
-            //the command responded but it was incomplete
-            LogAction(
-              ErrorTypes.ERR1004,
-              'The message received is incomplete.',
-            )
-            LogAction(
-              ErrorTypes.ERR1004,
-              'Received incomplete message: 0x' + partialData.current,
-            )
-            partialData.current = ''
-          }
-        }, 1000)
-      }
-
-      if (enableSentLogging && !enableTimoutLogging) {
-        LogAction(ErrorTypes.NO_ERR, 'No response is expected!')
-      }
-
-      writer.releaseLock()
-    } else {
-      LogAction(
-        ErrorTypes.NO_ERR,
-        'Sending data is not possible, you must connect first!',
-      )
+    } catch (error) {
+      console.log(error);
+    } finally {
+      serialPortReader.releaseLock();
+      await serialPort.close();
+      serialPort = null;
+      serialPortReader = null;
+      alert("Serial port is now closed.");
     }
-  }`
+  }
+}
+
+executeCmd.addEventListener("click", SendDataToSerialPort);
+
+async function SendDataToSerialPort() {
+  if (!serialPort) {
+    alert("Connect to the serial port first!");
+    return;
+  }
+  const writer = serialPort.writable.getWriter();
+  await writer.write(new Uint8Array([0x58, 0x02, 0x08, 0x00, 0x88, 0x1D, 0x00, 0x36, 0x6E, 0x01, 0x00]));
+  writer.releaseLock();
+}
+
+
+
+/** "send_command.html" */
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Servo tutorial</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div
+      class="d-flex flex-column justify-content-center align-items-center vh-100 vw-100"
+    >
+      <div class="w-25 d-flex justify-content-around">
+        <button class="btn btn-success" id="connectBtn">Connect</button>
+        <button class="btn btn-danger" id="disconnectBtn">Disconnect</button>
+      </div>
+
+      <button class="btn btn-primary mt-5" id="executeCmd">
+        Execute command
+      </button>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"
+    ></script>
+    <script src="send_command.js"></script>
+  </body>
+</html>
+
+`
 const pythonCode = `#!/usr/local/bin/python3
 
 import serial
+import platform
 
-ser = serial.Serial('/dev/tty.SLAB_USBtoUART', 230400, timeout = 0.5)
-print(ser.name)         # check which port was really used
-ser.write(bytearray([ord('X'), 2, 4, 0, 8, 0, 0]))
+PORT = "COM8"
+
+if platform.system() == 'Windows':
+    PORT_PREFIX = '\\\\\\\\.\\\\'
+else:
+    PORT_PREFIX = '/dev/tty'
+
+try:
+    serialPort = serial.Serial(PORT_PREFIX+PORT,
+                               230400,
+                               timeout=1)
+except:
+    # print(NameError)
+    print('Could not open serial port.')
+    exit()
+
+print(serialPort.name)
+serialPort.write(bytearray([0x58, 0x1F, 0x0A, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39]))
 
 
-data = ser.read(1000)
+data = serialPort.read(1000)
 print("Received %d bytes" % (len(data)))
 print(data)
 
 for d in data:
     print("0x%02X %d" % (d, d))
 
-ser.close()
+serialPort.close()
 `
 
 export type languages = "python" | "c" | "javascript"
@@ -901,12 +960,57 @@ export const alterCodeSample = (_currentCommand: number, _currentAxis: string, c
         }
     }
     else if (currentCode == SupportedCodeExamples.JavaScript.prismLanguage) {
-        const pythonCodeCmdToken = 'uint8_t cmd'
+        const javascriptCodeCmdToken = 'Uint8Array(['
 
+        const indexOfCmdStart = SupportedCodeExamples.JavaScript.code.indexOf(javascriptCodeCmdToken)
+        const indexOfCmdEnd = SupportedCodeExamples.JavaScript.code.substring(indexOfCmdStart).indexOf(']))')
+        alteredCodeSample = SupportedCodeExamples.JavaScript.code.substring(0, indexOfCmdStart)
+
+        let params = ''
+        if (payload != '') {
+            sendLength = payload.length / 2
+
+            for (let i = 0; i < payload.length; i += 2) {
+                params += ', 0x' + payload[i].toUpperCase() + payload[i + 1].toUpperCase()
+            }
+
+        } else {
+            //set all bytes to 0, we don't know any parameters
+            for (let i = 0; i < sendLength; i++) {
+                params += ', 0'
+            }
+        }
+        const sendLengthInHex = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(sendLength, 1))
+
+        alteredCodeSample += `Uint8Array([${currentAxisASCIICode}, ${currentCommandInHex}, ${sendLengthInHex}${params}]`
+        alteredCodeSample += SupportedCodeExamples.JavaScript.code.substring(indexOfCmdStart + indexOfCmdEnd + 1)
 
     }
     else if (currentCode == SupportedCodeExamples.Python.prismLanguage) {
-        const javascriptCodeCmdToken = 'uint8_t cmd'
+        const pythonCodeCmdToken = 'bytearray'
+
+        const indexOfCmdStart = SupportedCodeExamples.Python.code.indexOf(pythonCodeCmdToken)
+        const indexOfCmdEnd = SupportedCodeExamples.Python.code.substring(indexOfCmdStart).indexOf(']))')
+        alteredCodeSample = SupportedCodeExamples.Python.code.substring(0, indexOfCmdStart)
+
+        let params = ''
+        if (payload != '') {
+            sendLength = payload.length / 2
+
+            for (let i = 0; i < payload.length; i += 2) {
+                params += ', 0x' + payload[i].toUpperCase() + payload[i + 1].toUpperCase()
+            }
+
+        } else {
+            //set all bytes to 0, we don't know any parameters
+            for (let i = 0; i < sendLength; i++) {
+                params += ', 0'
+            }
+        }
+        const sendLengthInHex = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(sendLength, 1))
+
+        alteredCodeSample += `bytearray([${currentAxisASCIICode}, ${currentCommandInHex}, ${sendLengthInHex}${params}]`
+        alteredCodeSample += SupportedCodeExamples.Python.code.substring(indexOfCmdStart + indexOfCmdEnd + 1)
 
     }
 

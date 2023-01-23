@@ -21,9 +21,10 @@ export default function Code({ currentCommand, currentAxis }: CodeProps) {
   const value = useContext(GlobalContext)
 
   const [language, setLanguage] = useState<languages>(
-    SupportedCodeExamples.C.prismLanguage as languages,
+    SupportedCodeExamples.Python.prismLanguage as languages,
   )
-  const [code, setCode] = useState(SupportedCodeExamples.C.code)
+  const [code, setCode] = useState(SupportedCodeExamples.Python.code)
+
   const [current_C_Code, setCurrent_C_Code] = useState(
     SupportedCodeExamples.C.code,
   )
@@ -52,6 +53,14 @@ export default function Code({ currentCommand, currentAxis }: CodeProps) {
     switch (language) {
       case SupportedCodeExamples.C.prismLanguage:
         setCurrent_C_Code(alteredCode)
+        setCode(alteredCode)
+        break
+      case SupportedCodeExamples.Python.prismLanguage:
+        setCurrent_Py_Code(alteredCode)
+        setCode(alteredCode)
+        break
+      case SupportedCodeExamples.JavaScript.prismLanguage:
+        setCurrent_JS_Code(alteredCode)
         setCode(alteredCode)
         break
     }
