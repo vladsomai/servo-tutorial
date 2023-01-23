@@ -232,6 +232,11 @@ const Main = (props: MainWindowProps) => {
           enableTimoutLogging = false
         }
 
+        if (hexString.slice(2, 4) == '14') {
+          //command 20 responds randomly, enable timeout logging if cmd 20 no metter the selected axes
+          enableTimoutLogging = true
+        }
+
         if (enableTimoutLogging) {
           timerHandle.current = setTimeout(() => {
             if (partialData.current.length == 0) {
