@@ -146,4 +146,5 @@ export default function Code({ currentCommand, currentAxis }: CodeProps) {
         </div>
       </div>
     )
+  else return null
 }
