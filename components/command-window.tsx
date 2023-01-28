@@ -61,8 +61,11 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
     api.start({
       from: { opacity: 0 },
       to: { opacity: 1 },
-      config: { duration: 1000 },
+      config: { ...config.gentle, duration: 1300 },
     })
+    return () => {
+      api.stop()
+    }
   }, [props.currentCommandDictionary.CommandEnum, api])
 
   if (props.currentCommandDictionary.CommandEnum !== 100)

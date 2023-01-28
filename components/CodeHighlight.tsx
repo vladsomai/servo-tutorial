@@ -7,12 +7,14 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers.min.js'
 import 'prismjs/components/prism-c.min.js'
 import 'prismjs/components/prism-python.min.js'
 import 'prismjs/components/prism-javascript.min.js'
+import { firmwareUpgradePyCode } from '../servo-engine/CodeExamples/Python'
 import {
   alterCodeSample,
-  firmwareUpgradePyCode,
   languages,
   SupportedCodeExamples,
 } from '../servo-engine/utils'
+import { firmwareUpgradeJsCode } from '../servo-engine/CodeExamples/JavaScript'
+
 interface CodeProps {
   currentCommand: number
   currentAxis: string
@@ -52,24 +54,32 @@ export default function Code({ currentCommand, currentAxis }: CodeProps) {
       value.codeExamplePayload.Bytes,
     )
 
-    if (currentCommand == 23) {
-      setCurrent_Py_Code(firmwareUpgradePyCode)
-      setCode(firmwareUpgradePyCode)
-    } else {
-      switch (language) {
-        case SupportedCodeExamples.C.prismLanguage:
-          setCurrent_C_Code(alteredCode)
-          setCode(alteredCode)
-          break
-        case SupportedCodeExamples.Python.prismLanguage:
+    switch (language) {
+      case SupportedCodeExamples.C.prismLanguage:
+        setCurrent_C_Code(alteredCode)
+        setCode(alteredCode)
+        break
+      case SupportedCodeExamples.Python.prismLanguage:
+        if (currentCommand == 23) {
+          setCurrent_Py_Code(firmwareUpgradePyCode)
+          setCode(firmwareUpgradePyCode)
+        } else {
           setCurrent_Py_Code(alteredCode)
           setCode(alteredCode)
-          break
-        case SupportedCodeExamples.JavaScript.prismLanguage:
+        }
+        break
+      case SupportedCodeExamples.JavaScript.prismLanguage:
+        if (currentCommand == 23) {
+          setCurrent_JS_Code(firmwareUpgradeJsCode)
+          setCode(firmwareUpgradeJsCode)
+        } else {
           setCurrent_JS_Code(alteredCode)
           setCode(alteredCode)
-          break
-      }
+        }
+        break
+      default:
+        setCode('')
+        break
     }
   }, [currentAxis, currentCommand, language, value.codeExamplePayload.Bytes])
 
@@ -90,7 +100,12 @@ export default function Code({ currentCommand, currentAxis }: CodeProps) {
 
   const showJavascript = () => {
     setLanguage(SupportedCodeExamples.JavaScript.prismLanguage as languages)
-    setCode(current_JS_Code)
+
+    if (currentCommand == 23) {
+      setCode(firmwareUpgradeJsCode)
+    } else {
+      setCode(current_JS_Code)
+    }
   }
 
   return (
@@ -123,19 +138,16 @@ export default function Code({ currentCommand, currentAxis }: CodeProps) {
                     C
                   </button>
                 ) : null}
-                {currentCommand != 23 ? (
-                  <button
-                    className={`ml-5 btn self-end rounded-b-none border-0 tracking-widest z-10 ${
-                      language ===
-                      SupportedCodeExamples.JavaScript.prismLanguage
-                        ? 'bg-[#1e293b] btn-sm'
-                        : 'bg-slate-600 btn-xs'
-                    }`}
-                    onClick={showJavascript}
-                  >
-                    JavaScript
-                  </button>
-                ) : null}
+                <button
+                  className={`ml-5 btn self-end rounded-b-none border-0 tracking-widest z-10 ${
+                    language === SupportedCodeExamples.JavaScript.prismLanguage
+                      ? 'bg-[#1e293b] btn-sm'
+                      : 'bg-slate-600 btn-xs'
+                  }`}
+                  onClick={showJavascript}
+                >
+                  JavaScript
+                </button>
               </div>
             </div>
           </div>

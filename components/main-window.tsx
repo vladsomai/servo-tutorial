@@ -142,7 +142,12 @@ const Main = (props: MainWindowProps) => {
     } catch (err) {
       portSer.current = null
       if (err instanceof Error) {
-        LogAction(ErrorTypes.ERR1999, err!.message)
+        try {
+          const indexOfColon = err.message.indexOf(':') + 2
+          LogAction(ErrorTypes.ERR1999, err.message.slice(indexOfColon))
+        } catch (err) {
+          LogAction(ErrorTypes.ERR1999, 'An unknown error occured.')
+        }
         return
       } else {
         console.log(err)

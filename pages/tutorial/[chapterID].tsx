@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { ReactElement, useEffect, useRef, useState } from 'react'
+import { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Layout from '../../components/layout'
 import Chapters from '../../components/chapter-window'
 import Main, { MainWindowProps } from '../../components/main-window'
@@ -59,7 +59,9 @@ const Tutorial = () => {
         setTimeout(()=>{value.alert.setShow(false)},17200)
       }
     }
-  }, [router,value.alert])
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router])
 
   return (
     <>

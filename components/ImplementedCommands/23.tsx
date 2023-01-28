@@ -2,6 +2,7 @@ import { SyntheticEvent, useRef } from 'react'
 import { crc32, ErrorTypes, sleep } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 import Image from 'next/image'
+import Link from 'next/link'
 
 interface FirmwareCmdProps extends ChaptersPropsType {
   isConnected: boolean
@@ -11,7 +12,7 @@ export const Command23 = (props: FirmwareCmdProps) => {
   /*
   ********* Memory map *********
   0............10240 : bootloader (10kb || 5 pages)
-  10240........61440 : firmware / application (51200kb || 25 pages) 
+  10240........61440 : firmware / application (50Kb || 25 pages) 
   61440........63488 : flash settings (2kb || 1 page)
   */
   const FLASH_PAGE_SIZE = 2048
@@ -434,6 +435,11 @@ export const Command23 = (props: FirmwareCmdProps) => {
           <li>Do a firmware reset (command 27).</li>
         </ol>
       </article>
+      <div className="flex justify-center w-100 mt-10">
+        <Link href={'/api/firmware'}>
+          <a className="btn btn-primary tracking-widest">Download firmware</a>
+        </Link>
+      </div>
     </>
   )
 }
