@@ -1,48 +1,73 @@
-import Layout from '../components/layout'
-import { ReactElement, useEffect, useState } from 'react'
-import type { NextPageWithLayout } from './_app'
-import { useTransition, animated } from '@react-spring/web'
+import Layout from "../components/layout";
+import { ReactElement, useContext, useEffect, useState } from "react";
+import { GlobalContext, NextPageWithLayout } from "./_app";
+import { useTransition, animated } from "@react-spring/web";
+import { collection, addDoc } from "firebase/firestore";
+import { firebaseStore } from "../Firebase/initialize";
+import { firebaseApp } from "../Firebase/initialize";
 
 const Test: NextPageWithLayout = () => {
-  const [data, setData] = useState<number[]>([])
+  const [data, setData] = useState<number[]>([]);
+  const value = useContext(GlobalContext);
 
   const transitions = useTransition(data, {
     from: { y: -100, opacity: 0 },
     enter: { y: 0, opacity: 1 },
     leave: { y: 100, opacity: 0 },
-  })
+  });
 
-  useEffect(() => {
-    console.log(data)
-  }, [data])
+  async function addMessage(e: any) {
+    e.preventDefault();
+    const email = e.target["email"].value;
+    const message = e.target["message"].value;
+
+    const response = await fetch("/api/firebase/feedback/send", {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: email, message: message }), // body data type must match "Content-Type" header
+    });
+
+    console.log(await response.text());
+  }
+
+  useEffect(() => {}, [data]);
 
   return (
     <>
-      <button
-        className="btn btn-success"
-        onClick={() => {
-          setData((prev) => [
-            ...prev,
-            prev.length == 0 ? 0 : prev[prev.length - 1] + 1,
-          ])
-        }}
-      >
-        Add
-      </button>
-      <button className="btn btn-error" onClick={()=>setData([])}>Remove</button>
-      <div className="flex justify-center text-lime-50">
-        {transitions((style, data) => (
-          <animated.div style={style}>
-            <p className="flex justify-center text-2xl text-blue-100">{data}</p>
-          </animated.div>
-        ))}
+      <div className="flex justify-center h-[80%]">
+        <form
+          onSubmit={addMessage}
+          className="flex flex-col justify-around w-[30%] h-[40%] items-center "
+        >
+          <input
+            required
+            name="email"
+            className="input input-bordered"
+            placeholder="Email"
+            type="email"
+          ></input>
+          <textarea
+            required
+            name="message"
+            placeholder="Message"
+            className="textarea textarea-bordered textarea-md w-full max-w-xs"
+          ></textarea>
+          <button type="submit" className="btn btn-primary">
+            Send feedback
+          </button>
+        </form>
       </div>
     </>
-  )
-}
+  );
+};
 
 Test.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>
-}
+  return <Layout>{page}</Layout>;
+};
 
-export default Test
+export default Test;

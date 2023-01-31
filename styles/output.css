@@ -3710,6 +3710,10 @@ body[dir="rtl"] .checkbox:checked,
   background-color: hsl(var(--b1) / var(--tw-bg-opacity));
 }
 
+.textarea-bordered {
+  --tw-border-opacity: 0.2;
+}
+
 .textarea:focus {
   outline: 2px solid hsla(var(--bc) / 0.2);
   outline-offset: 2px;
@@ -4443,6 +4447,10 @@ body[dir="rtl"] .checkbox:checked,
   margin-right: 1rem;
 }
 
+.mr-10 {
+  margin-right: 2.5rem;
+}
+
 .mb-5 {
   margin-bottom: 1.25rem;
 }
@@ -4721,6 +4729,18 @@ body[dir="rtl"] .checkbox:checked,
   height: 0px;
 }
 
+.h-\[40\%\] {
+  height: 40%;
+}
+
+.h-screen {
+  height: 100vh;
+}
+
+.h-\[80\%\] {
+  height: 80%;
+}
+
 .w-56 {
   width: 14rem;
 }
@@ -4828,6 +4848,10 @@ body[dir="rtl"] .checkbox:checked,
 
 .w-64 {
   width: 16rem;
+}
+
+.w-\[30\%\] {
+  width: 30%;
 }
 
 .max-w-\[30\%\] {
@@ -4994,10 +5018,6 @@ body[dir="rtl"] .checkbox:checked,
 
 .items-center {
   align-items: center;
-}
-
-.items-baseline {
-  align-items: baseline;
 }
 
 .justify-start {
