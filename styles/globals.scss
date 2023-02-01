@@ -38,3 +38,12 @@ input[type="number"]::-webkit-outer-spin-button {
   --tw-bg-opacity: 1;
   background-color: rgb(58 191 248 / var(--tw-bg-opacity));
 }
+
+.feedbackTextColor{
+  font-size: 56px;
+  font-weight:bold;
+  background: -webkit-linear-gradient(360deg, #3ABFF8FF, rgba(0, 255, 242, 0.9));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
