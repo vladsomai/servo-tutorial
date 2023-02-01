@@ -127,7 +127,7 @@ const Feedback: NextPageWithLayout = () => {
             placeholder="What should we change?"
             className="textarea textarea-bordered w-full h-[40%] max-w-sm"
           ></textarea>
-          <label className="w-full max-w-sm text-left cursor-pointer text-center">
+          <label className="w-full max-w-sm cursor-pointer text-center">
             Images or documents help us diagnose issues faster, attach anything
             that can give us more insight.
             <input
