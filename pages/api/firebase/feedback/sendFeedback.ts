@@ -12,7 +12,6 @@ export default async function handler(
     return;
   }
 
-  //add the email and message to firestore
   try {
     const docRef = await addDoc(collection(firebaseStore, "feedbacks"), {
       email: req.body.email,

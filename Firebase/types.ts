@@ -1,1 +1,1 @@
-export type feedbackType = { email: string; message: string };
+export type FeedbackType = { id: string, email: string; message: string };

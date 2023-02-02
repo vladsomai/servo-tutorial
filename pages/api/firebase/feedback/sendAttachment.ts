@@ -1,10 +1,9 @@
-import { addDoc, collection } from "firebase/firestore";
 import { ref, uploadBytes } from "firebase/storage";
 import fs from "fs";
 import type { NextApiRequest, NextApiResponse, PageConfig } from "next";
 import path from "path";
-import { firebaseFileStorage, firebaseStore } from "../../../../Firebase/initialize";
-import formidable, { errors as formidableErrors } from 'formidable';
+import { firebaseFileStorage } from "../../../../Firebase/initialize";
+import formidable from 'formidable';
 
 export const config = {
   api: {
@@ -62,22 +61,28 @@ export default async function handler(
     return;
   }
 
-  const { fields, files } = await parseRequest(req)
+  try {
+    const { fields, files } = await parseRequest(req)
 
-  for (let _file_ in files) {
-    const file = files[_file_]
+    for (let _file_ in files) {
+      const file = files[_file_]
 
-    //@ts-ignore
-    const pathToFileToUpload = renameFile(file.filepath, fields.attachmentID)
-    const fileBuffer = fs.readFileSync(pathToFileToUpload, {
-      flag: "r",
-    });
-    await uploadAttachment(fileBuffer, pathToFileToUpload.slice(pathToFileToUpload.lastIndexOf('\\')))
-    fs.unlink(pathToFileToUpload, (err) => {
-      if (err) {
-        console.log(err)
-      }
-    })
+      //@ts-ignore
+      const pathToFileToUpload = renameFile(file.filepath, fields.attachmentID)
+      const fileBuffer = fs.readFileSync(pathToFileToUpload, {
+        flag: "r",
+      });
+      await uploadAttachment(fileBuffer, pathToFileToUpload.slice(pathToFileToUpload.lastIndexOf('\\')))
+      fs.unlink(pathToFileToUpload, (err) => {
+        if (err) {
+          console.log(err)
+        }
+      })
+    }
+  }
+  catch (err) {
+    res.status(500).send(String(err))
+    return
   }
   res.status(200).send("Feedback attachment sent.")
   return

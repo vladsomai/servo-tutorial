@@ -1,6 +1,7 @@
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { firebaseStore } from "../../../../Firebase/initialize";
+import { FeedbackType } from "../../../../Firebase/types";
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,14 +9,12 @@ export default async function handler(
 ) {
 
   try {
-    const docRef = doc(firebaseStore, "cities", "SF");
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
-    } else {
-      // doc.data() will be undefined in this case
-      console.log("No such document!");
-    }
+    const querySnapshot = await getDocs(collection(firebaseStore, "feedbacks"));
+    let data: FeedbackType[] = []
+    querySnapshot.forEach((doc) => {
+      data.push({ id: doc.id, ...doc.data() } as FeedbackType)
+    });
+    res.status(200).json(data);
   } catch (e) {
     console.error("Error reading: ", e);
     res
@@ -24,5 +23,4 @@ export default async function handler(
         "We could not read feedbacks, you must contact the vendor directly."
       );
   }
-  res.status(200).send("Feedbacks ");
 }
