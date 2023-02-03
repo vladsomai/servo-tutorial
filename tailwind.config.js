@@ -6,6 +6,7 @@ module.exports = {
   content: [
     "./pages/*.tsx",
     "./pages/tutorial/*.tsx",
+    "./pages/view/*.tsx",
     "./components/*.tsx",
     "./components/ImplementedCommands/*.tsx",
     "node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
@@ -16,10 +17,7 @@ module.exports = {
     },
     extend: {},
   },
-  plugins: [
-    require("@tailwindcss/typography"),
-    require("daisyui"),
-  ],
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
   daisyui: {
     themes: [
       {

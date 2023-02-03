@@ -19,6 +19,7 @@
     "flowbite-react": "^0.3.5",
     "formidable": "^2.1.1",
     "js": "^0.1.0",
+    "jszip": "^3.10.1",
     "next": "^12.3.4",
     "node-sass": "^7.0.3",
     "prismjs": "^1.29.0",

@@ -55,25 +55,29 @@ const Feedback: NextPageWithLayout = () => {
     console.log(parsedResFb)
     //#endregion feedback message
 
-    //#region  feedback attachments
-    let formData = new FormData()
-    formData.append('attachmentID', parsedResFb.attachmentID)
-    if (attachedFiles != null) {
-      for (let i = 0; i < attachedFiles.length; i++) {
-        formData.append(`file${i}`, attachedFiles[i], attachedFiles[i].name)
+    if (attachedFiles?.length != 0) {
+      //#region  feedback attachments
+      let formData = new FormData()
+      formData.append('attachmentID', parsedResFb.attachmentID)
+      if (attachedFiles != null) {
+        for (let i = 0; i < attachedFiles.length; i++) {
+          formData.append(`file${i}`, attachedFiles[i], attachedFiles[i].name)
+        }
       }
+
+      const responseAttachment = await fetch(
+        '/api/firebase/feedback/sendAttachment',
+        {
+          method: 'POST',
+          body: formData,
+        },
+      )
+
+      console.log(await responseAttachment.text())
+      //#region  feedback attachments
     }
 
-    const responseAttachment = await fetch(
-      '/api/firebase/feedback/sendAttachment',
-      {
-        method: 'POST',
-        body: formData,
-      },
-    )
-
-    console.log(await responseAttachment.text())
-    //#region  feedback attachments
+    
     setWaitingFbReply(false)
   }
 
