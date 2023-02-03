@@ -62,7 +62,7 @@ export default async function handler(
   }
   console.log("path to received files:", receivedFiles)
   try {
-    const { fields, files } = await parseRequest(req)
+    const { fields, files } = await parseRequest(req).catch(err => { throw err })
 
     const zip = new JSZip();//create new zip object
 
@@ -83,7 +83,8 @@ export default async function handler(
       //@ts-ignore
       fs.unlink(file.filepath, (err) => {
         if (err) {
-          console.log(err)
+          res.status(500).send(String(err))
+          return
         }
       })
     }
@@ -109,12 +110,12 @@ export default async function handler(
         //@ts-ignore
         fs.unlink(zipPath, (err) => {
           if (err) {
-            console.log(err)
+            res.status(500).send(String(err))
+            return
           }
         })
       })
   }
-
   catch (err) {
     res.status(500).send(String(err))
     return
