@@ -12,24 +12,22 @@ const Home: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Home</title>
+        <title>Page not found</title>
       </Head>
-      <div className="text-center overflow-show-scroll h-[84vh] flex flex-col justify-center">
-        <div>
-          <Image
-            className="mask"
-            src={'/404_page_not_found.svg'}
-            width={MainPicHeight * MainPicAspectRation}
-            height={MainPicHeight}
-            alt="main picture"
-            priority
-          ></Image>
-        </div>
+      <div className="overflow-auto h-[84vh] flex flex-col justify-center items-center">
+        <Image
+          src={'/404_page_not_found.svg'}
+          width={MainPicHeight * MainPicAspectRation}
+          height={MainPicHeight}
+          alt="page not found picture"
+          priority
+        ></Image>
         <h1 className="text-6xl text-center m-12 "> Page not found!</h1>
-        <Link href={`/tutorial/100`}>
-          <a className="btn btn-primary btn-xl w-56 mx-auto">
-            Get back on track
-          </a>
+        <Link
+          href={`/tutorial/100`}
+          className="btn btn-primary btn-xl w-56 mx-auto"
+        >
+          Get back on track
         </Link>
       </div>
     </>

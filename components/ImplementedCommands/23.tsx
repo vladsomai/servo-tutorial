@@ -1,4 +1,4 @@
-import { SyntheticEvent, useRef } from 'react'
+import { SyntheticEvent, useRef, useState } from 'react'
 import { crc32, ErrorTypes, sleep } from '../../servo-engine/utils'
 import { ChaptersPropsType } from './0_1'
 import Image from 'next/image'
@@ -9,6 +9,7 @@ interface FirmwareCmdProps extends ChaptersPropsType {
 }
 
 export const Command23 = (props: FirmwareCmdProps) => {
+  const [waitFirmwareUpgrade, setWaitFirmwareUpgrade] = useState(false)
   /*
   ********* Memory map *********
   0............10240 : bootloader (10kb || 5 pages)
@@ -135,7 +136,7 @@ export const Command23 = (props: FirmwareCmdProps) => {
       )
       return
     }
-
+    setWaitFirmwareUpgrade(true)
     //#region constructOneTelegram
     const constructOneTelegram = (pageNum: number, data: Uint8Array) => {
       //#region FLASH_PAGE_SIZE
@@ -228,6 +229,7 @@ export const Command23 = (props: FirmwareCmdProps) => {
     await props.sendDataToSerialPort('FF1B00', false, false)
 
     props.LogAction(ErrorTypes.NO_ERR, 'Firmware upgrade finished succesfully!')
+    setWaitFirmwareUpgrade(false)
   }
 
   return (
@@ -243,8 +245,15 @@ export const Command23 = (props: FirmwareCmdProps) => {
             onChange={firmwareFileChanged}
           />
         </div>
+
         <div className="flex justify-center">
-          <button className="btn btn-primary btn-sm" onClick={execute_command}>
+          <button
+            className={`btn btn-primary btn-sm ${
+              waitFirmwareUpgrade ? 'loading' : ''
+            }`}
+            disabled={waitFirmwareUpgrade ? true : false}
+            onClick={execute_command}
+          >
             execute
           </button>
         </div>
@@ -434,8 +443,11 @@ export const Command23 = (props: FirmwareCmdProps) => {
         </ol>
       </article>
       <div className="flex justify-center w-100 mt-10">
-        <Link href={'/api/firmware'}>
-          <a className="btn btn-primary tracking-widest">Download firmware</a>
+        <Link
+          href={'/api/firmware'}
+          className="btn btn-primary tracking-widest"
+        >
+          Download firmware
         </Link>
       </div>
     </>
