@@ -4587,16 +4587,16 @@ html {
   margin-right: 1rem;
 }
 
+.mt-10 {
+  margin-top: 2.5rem;
+}
+
 .mt-\[3\%\] {
   margin-top: 3%;
 }
 
 .mt-16 {
   margin-top: 4rem;
-}
-
-.mt-10 {
-  margin-top: 2.5rem;
 }
 
 .mb-5 {
@@ -5022,6 +5022,10 @@ html {
   width: 16rem;
 }
 
+.max-w-lg {
+  max-width: 32rem;
+}
+
 .max-w-sm {
   max-width: 24rem;
 }
@@ -5048,10 +5052,6 @@ html {
 
 .max-w-\[60\%\] {
   max-width: 60%;
-}
-
-.max-w-lg {
-  max-width: 32rem;
 }
 
 .max-w-xl {
@@ -6372,11 +6372,6 @@ html {
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem;
-}
-
-.text-3xl {
-  font-size: 1.875rem;
-  line-height: 2.25rem;
 }
 
 .font-extrabold {

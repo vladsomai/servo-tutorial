@@ -111,8 +111,6 @@ const Feedback: NextPageWithLayout = () => {
     window.addEventListener('resize', handleResize)
     setImgHeight(window.innerHeight / 2)
     setImgWidth((window.innerHeight * ratio) / 2)
-    setShowImage(true)
-
 
     return () => {
       window.removeEventListener('resize', handleResize)
@@ -157,13 +155,11 @@ const Feedback: NextPageWithLayout = () => {
       value.modal.setTitle('Feedback sent successfully!')
       value.modal.setDescription(feedbackSuccess)
       modalElem.current?.click()
-
     } catch (err) {
-
       value.modal.setTitle('Feedback could not be sent!')
       value.modal.setDescription(feedbackError)
       modalElem.current?.click()
-      
+
       console.log(err)
     }
 
@@ -199,6 +195,7 @@ const Feedback: NextPageWithLayout = () => {
                 picturesNumber.current += 1
                 if (picturesNumber.current == 2) {
                   setLoading(false)
+                  setShowImage(true)
                 }
               }}
               quality={100}
@@ -215,6 +212,7 @@ const Feedback: NextPageWithLayout = () => {
               onLoadingComplete={() => {
                 picturesNumber.current += 1
                 if (picturesNumber.current == 2) {
+                  setShowImage(true)
                   setLoading(false)
                 }
               }}
