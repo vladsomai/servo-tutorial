@@ -183,7 +183,7 @@ const Feedback: NextPageWithLayout = () => {
           <meta content="Feedback page" name="Servo tutorial" />
         </Head>
         <div className="flex flex-col justify-center h-full w-full items-center">
-          <div className="w-[50px] h-[50px] bg-slate-50 border-4 rounded-full animate-[ping_1.5s_cubic-bezier(0.1,0.25,0.25,0.75)_infinite]"></div>
+          <div className="w-[50px] h-[50px] bg-slate-50  rounded-full animate-ping"></div>
           <h1 className="text-6xl mt-16">Loading...</h1>
         </div>
 
