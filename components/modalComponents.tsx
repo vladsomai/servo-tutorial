@@ -5,7 +5,7 @@ export const ResetCmd = (
       <kbd className="kbd text-neutral-content">r</kbd>
       <p className="inline"> to reset the current selected axis</p>
     </li>
-    <li>
+    <li className="mt-2">
       <kbd className="kbd text-neutral-content">ctrl</kbd>+
       <kbd className="kbd text-neutral-content">R</kbd>
       <p className="inline"> to reset all axes</p>
@@ -19,7 +19,7 @@ export const EnableCmd = (
       <kbd className="kbd text-neutral-content">e</kbd>
       <p className="inline"> to enable MOSFETs for the current selected axis</p>
     </li>
-    <li>
+    <li className="mt-2">
       <kbd className="kbd text-neutral-content">ctrl</kbd>+
       <kbd className="kbd text-neutral-content">E</kbd>
       <p className="inline"> to enable MOSFETs on all axes</p>
@@ -36,7 +36,7 @@ export const DisableCmd = (
         to disable MOSFETs for the current selected axis
       </p>
     </li>
-    <li>
+    <li className="mt-2">
       <kbd className="kbd text-neutral-content">ctrl</kbd>+
       <kbd className="kbd text-neutral-content">D</kbd>
       <p className="inline"> to disable MOSFETs on all axes</p>

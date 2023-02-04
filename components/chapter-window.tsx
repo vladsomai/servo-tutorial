@@ -47,20 +47,17 @@ const Chapters = (props: ChaptersProps) => {
                 <Link
                   key={cmd.CommandEnum}
                   href={`/tutorial/${cmd.CommandEnum}`}
+                  className={`btn btn-xs mb-2 w-full rounded-sm ${
+                    props.currentCommandDictionary.CommandEnum ===
+                    cmd.CommandEnum
+                      ? ' btn-outline btn-primary border-0 bg-slate-700'
+                      : ' btn-ghost '
+                  } `}
+                  onClick={() => {
+                    props.setCurrentCommandDictionary(cmd)
+                  }}
                 >
-                  <a
-                    className={`btn btn-xs mb-2 w-full rounded-sm ${
-                      props.currentCommandDictionary.CommandEnum ===
-                      cmd.CommandEnum
-                        ? ' btn-outline btn-primary border-0 bg-slate-700'
-                        : ' btn-ghost '
-                    } `}
-                    onClick={() => {
-                      props.setCurrentCommandDictionary(cmd)
-                    }}
-                  >
-                    {cmd.CommandString}
-                  </a>
+                  {cmd.CommandString}
                 </Link>
               )
             })}

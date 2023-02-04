@@ -49,7 +49,7 @@ const Alert = ({}) => {
       <Life style={{ right: life }} />
       <>
         <div className="">
-          <span className="bg-primary rounded-full pt-2 px-2 mr-3">
+          <span className="bg-primary rounded-full py-2 px-2 mr-3">
             <Image
               className="mask mask-squircle p-0 m-0 rounded-full"
               src={'/info-circle-fill.svg'}

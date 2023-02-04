@@ -25,7 +25,6 @@ export default function Dashboard() {
       const querySnapshot = await getDocs(
         collection(firebaseStore, 'feedbacks'),
       )
-      console.log(querySnapshot)
       let data: FeedbackType[] = []
 
       let count = 0

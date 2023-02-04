@@ -6,10 +6,10 @@ import { useContext } from 'react'
 import { GlobalContext } from '../pages/_app'
 import { animated, useSpring, config, useTransition } from '@react-spring/web'
 import { ResetCmd, DisableCmd, EnableCmd } from './modalComponents'
-import {
-  InputOutputObjects,
-  MotorCommandsDictionary,
-} from '../servo-engine/motor-commands'
+import EnvelopeImg from '../public/envelope-paper.svg'
+import InfoImg from '../public/info-circle-fill.svg'
+
+import { InputOutputObjects } from '../servo-engine/motor-commands'
 import Code from './CodeHighlight'
 
 export interface CommandWindowProps extends MainWindowProps {
@@ -77,8 +77,9 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
         {commandsWithShortcuts.includes(
           props.currentCommandDictionary.CommandEnum,
         ) ? (
-          <div className="bg-primary rounded-full absolute top-4 left-4 pt-2 px-2 m-0">
+          <div className="bg-primary rounded-full absolute top-4 left-4 py-2 px-2 m-0">
             <label
+              title="Info"
               className="inline link"
               onClick={() => {
                 shortcuts(props.currentCommandDictionary.CommandEnum)
@@ -86,16 +87,31 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
               htmlFor="my-modal-4"
             >
               <Image
-                className="mask mask-squircle p-0 m-0"
-                src={'/info-circle-fill.svg'}
+                src={InfoImg}
                 width={iconSize}
                 height={iconSize}
-                alt="main picture"
+                alt="info picture"
                 priority
               ></Image>
             </label>
           </div>
         ) : null}
+        <div className="bg-primary rounded-full absolute top-4 right-4 pt-2 px-2 m-0">
+          <button
+            title="Feedback"
+            onClick={() => {
+              window.open('/feedback', '_blank', 'noopener,noreferrer')
+            }}
+          >
+            <Image
+              src={EnvelopeImg}
+              width={25}
+              height={25}
+              alt="feedback picture"
+              priority
+            ></Image>
+          </button>
+        </div>
         <div>
           <div className="mb-5 mt-16">
             <p className="text-center mb-5 text-2xl">
