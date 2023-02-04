@@ -5133,8 +5133,8 @@ html {
   }
 }
 
-.animate-ping {
-  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+.animate-\[ping_1\.5s_cubic-bezier\(0\.1\2c 0\.25\2c 0\.25\2c 0\.75\)_infinite\] {
+  animation: ping 1.5s cubic-bezier(0.1,0.25,0.25,0.75) infinite;
 }
 
 @keyframes spin {
@@ -5145,127 +5145,6 @@ html {
 
 .animate-spin {
   animation: spin 1s linear infinite;
-}
-
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.animate-\[ping_3s_ease-in-out_infinite\] {
-  animation: ping 3s ease-in-out infinite;
-}
-
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.animate-\[ping_3s_cubic-bezier\(0\2c 0\2c 0\.2\2c 1\)_infinite\] {
-  animation: ping 3s cubic-bezier(0,0,0.2,1) infinite;
-}
-
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.animate-\[ping_2s_cubic-bezier\(0\2c 0\2c 0\.2\2c 1\)_infinite\] {
-  animation: ping 2s cubic-bezier(0,0,0.2,1) infinite;
-}
-
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.animate-\[ping_1\.5s_cubic-bezier\(0\2c 0\2c 0\.2\2c 1\)_infinite\] {
-  animation: ping 1.5s cubic-bezier(0,0,0.2,1) infinite;
-}
-
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.animate-\[ping_1\.5s_cubic-bezier\(0\2c 0\2c 0\.5\2c 1\)_infinite\] {
-  animation: ping 1.5s cubic-bezier(0,0,0.5,1) infinite;
-}
-
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.animate-\[ping_1\.5s_cubic-bezier\(0\2c 0\2c 0\.5\2c 2\)_infinite\] {
-  animation: ping 1.5s cubic-bezier(0,0,0.5,2) infinite;
-}
-
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.animate-\[ping_1\.5s_cubic-bezier\(0\2c 0\2c 0\.5\2c 3\)_infinite\] {
-  animation: ping 1.5s cubic-bezier(0,0,0.5,3) infinite;
-}
-
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.animate-\[ping_1\.5s_cubic-bezier\(0\2c 0\2c 0\.5\2c 1\.5\)_infinite\] {
-  animation: ping 1.5s cubic-bezier(0,0,0.5,1.5) infinite;
-}
-
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.animate-\[ping_1\.5s_cubic-bezier\(0\2c 0\2c 1\2c 1\.5\)_infinite\] {
-  animation: ping 1.5s cubic-bezier(0,0,1,1.5) infinite;
-}
-
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.animate-\[ping_1\.5s_cubic-bezier\(0\.75\2c 0\.25\2c 0\.25\2c 0\.75\)_infinite\] {
-  animation: ping 1.5s cubic-bezier(0.75,0.25,0.25,0.75) infinite;
-}
-
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.animate-\[ping_1\.5s_cubic-bezier\(0\.1\2c 0\.25\2c 0\.25\2c 0\.75\)_infinite\] {
-  animation: ping 1.5s cubic-bezier(0.1,0.25,0.25,0.75) infinite;
 }
 
 .cursor-pointer {
@@ -6493,6 +6372,11 @@ html {
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
 }
 
 .font-extrabold {

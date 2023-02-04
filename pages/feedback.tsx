@@ -11,6 +11,8 @@ import { GlobalContext, NextPageWithLayout } from './_app'
 import Image from 'next/image'
 import BoyImg from '../public/feedback_left_boy.png'
 import GirlImg from '../public/feedback_right_girl.png'
+import FeedbackSent from '../public/feedback_sent.svg'
+import FeedbackError from '../public/feedback_error.svg'
 import JSZip from 'jszip'
 import { firebaseFileStorage, firebaseStore } from '../Firebase/initialize'
 import { addDoc, collection } from 'firebase/firestore'
@@ -18,6 +20,46 @@ import { ref, uploadBytes } from 'firebase/storage'
 import Head from 'next/head'
 import { a, animated, useSpring, useTrail } from '@react-spring/web'
 import React from 'react'
+
+export const feedbackSuccess = (
+  <>
+    <div className="w-full h-full flex flex-col items-center max-w-lg">
+      <p>
+        We constantly work on improving our service. In case your feedback
+        refers to an issue, we will do our best to solve it as soon as possible.{' '}
+      </p>
+      <Image
+        quality={100}
+        className=" mt-10"
+        width={200}
+        height={200}
+        src={FeedbackSent}
+        alt="Feedback sent picture"
+        priority
+      ></Image>
+    </div>
+  </>
+)
+
+export const feedbackError = (
+  <>
+    <div className="w-full h-full flex flex-col items-center max-w-lg">
+      <p>
+        We are sorry but it seems our servers are currently down. We work on
+        solving it.
+      </p>
+      <Image
+        quality={100}
+        className=" mt-10"
+        width={200}
+        height={200}
+        src={FeedbackError}
+        alt="Feedback error picture"
+        priority
+      ></Image>
+    </div>
+  </>
+)
 
 const Trail: React.FC<{ open: boolean; children: ReactElement[] }> = ({
   open,
@@ -46,6 +88,13 @@ const Feedback: NextPageWithLayout = () => {
   const attachmentRef = useRef<HTMLInputElement | null>(null)
   const ratio = 1.382
 
+  const value = useContext(GlobalContext)
+  const modalElem = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    modalElem.current = document.getElementById('my-modal-4')
+  }, [])
+
   const [waitingFeedbackReply, setWaitingFbReply] = useState(false)
   const [imgHeight, setImgHeight] = useState(712)
   const [imgWidth, setImgWidth] = useState(712 * ratio)
@@ -63,6 +112,8 @@ const Feedback: NextPageWithLayout = () => {
     setImgHeight(window.innerHeight / 2)
     setImgWidth((window.innerHeight * ratio) / 2)
     setShowImage(true)
+
+
     return () => {
       window.removeEventListener('resize', handleResize)
     }
@@ -102,8 +153,17 @@ const Feedback: NextPageWithLayout = () => {
         const storageRef = ref(firebaseFileStorage, docRef.id + '.zip')
         await uploadBytes(storageRef, zipBlob)
       }
+
+      value.modal.setTitle('Feedback sent successfully!')
+      value.modal.setDescription(feedbackSuccess)
+      modalElem.current?.click()
+
     } catch (err) {
-      //handle error with a modal
+
+      value.modal.setTitle('Feedback could not be sent!')
+      value.modal.setDescription(feedbackError)
+      modalElem.current?.click()
+      
       console.log(err)
     }
 
