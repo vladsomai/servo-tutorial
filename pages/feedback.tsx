@@ -189,46 +189,61 @@ const Feedback: NextPageWithLayout = () => {
 
         {/* trigger the pictures to be downloaded but set them hidden, show loading until pictures are loaded by the browser */}
         <div className="hidden">
-          <div className="absolute bottom-2 left-[20%] z-[-1] ">
-            <Image
-              onLoadingComplete={() => {
-                picturesNumber.current += 1
-                if (picturesNumber.current == 2) {
-                  setLoading(false)
-                  setShowImage(true)
-                }
-              }}
-              quality={100}
-              className=""
-              width={imgWidth}
-              height={imgHeight}
-              src={BoyImg}
-              alt="boy picture"
-              priority
-            ></Image>
-          </div>
-          <div className="absolute bottom-0 right-[10%] z-[-1]">
-            <Image
-              onLoadingComplete={() => {
-                picturesNumber.current += 1
-                if (picturesNumber.current == 2) {
-                  setShowImage(true)
-                  setLoading(false)
-                }
-              }}
-              quality={100}
-              className=""
-              width={imgWidth}
-              height={imgHeight}
-              src={GirlImg}
-              alt="girl picture"
-              priority
-            ></Image>
-          </div>
+          <Image
+            onLoadingComplete={() => {
+              picturesNumber.current += 1
+              if (picturesNumber.current == 2) {
+                setLoading(false)
+                setShowImage(true)
+              }
+            }}
+            quality={100}
+            className=""
+            width={imgWidth}
+            height={imgHeight}
+            src={BoyImg}
+            alt="boy picture"
+            priority
+          ></Image>
+          <Image
+            onLoadingComplete={() => {
+              picturesNumber.current += 1
+              if (picturesNumber.current == 2) {
+                setShowImage(true)
+                setLoading(false)
+              }
+            }}
+            quality={100}
+            className=""
+            width={imgWidth}
+            height={imgHeight}
+            src={GirlImg}
+            alt="girl picture"
+            priority
+          ></Image>
+          <Image
+            quality={100}
+            className=" mt-10"
+            width={200}
+            height={200}
+            src={FeedbackSent}
+            alt="Feedback sent picture"
+            priority
+          ></Image>
+          <Image
+            quality={100}
+            className=" mt-10"
+            width={200}
+            height={200}
+            src={FeedbackError}
+            alt="Feedback error picture"
+            priority
+          ></Image>
         </div>
       </>
     )
   }
+
   return (
     <>
       <Head>
