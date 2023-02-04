@@ -270,11 +270,11 @@ export const Command23 = (props: FirmwareCmdProps) => {
           is a sample:{' '}
         </p>
         <Image
-          className="mask rounded-box"
+          className="rounded-box"
           width={793}
           height={964}
           src="/FirmwareFile.png"
-          alt="main picture"
+          alt="firmware picture"
           priority
         ></Image>
         <p></p>

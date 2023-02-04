@@ -11,6 +11,8 @@ import { useRouter } from 'next/router'
 import { collection, getDocs } from 'firebase/firestore'
 import { firebaseFileStorage, firebaseStore } from '../../Firebase/initialize'
 import { getDownloadURL, ref } from 'firebase/storage'
+import Head from 'next/head'
+import Image from 'next/image'
 
 export default function Dashboard() {
   const [feedbacks, setFeedbacks] = useState<FeedbackType[] | null>(null)
@@ -92,10 +94,24 @@ export default function Dashboard() {
     setFeedbacks(filteredFeedbacks as FeedbackType[])
   }
 
+  const MainPicHeight = 350
+  const MainPicAspectRation = 1.37
+
   if (timeout) {
     return (
       <>
+        <Head>
+          <title>Timeout</title>
+          <meta content="Feedback page" name="Servo tutorial" />
+        </Head>
         <div className="flex flex-col justify-center h-full w-full items-center">
+          <Image
+            src={'/404_page_not_found.svg'}
+            width={MainPicHeight * MainPicAspectRation}
+            height={MainPicHeight}
+            alt="page not found picture"
+            priority
+          ></Image>
           <h1 className="text-6xl mt-16 w-[60%]">
             We could not fetch feedback data from database, please contact your
             developer.
@@ -108,8 +124,12 @@ export default function Dashboard() {
   if (loading) {
     return (
       <>
+        <Head>
+          <title>Loading...</title>
+          <meta content="Feedback page" name="Servo tutorial" />
+        </Head>
         <div className="flex flex-col justify-center h-full w-full items-center">
-          <div className="w-[50px] h-[50px] bg-slate-50 border-4 rounded-full animate-ping"></div>
+          <div className="w-[50px] h-[50px] bg-primary rounded-full animate-[ping_1.5s_cubic-bezier(0.1,0.25,0.25,0.75)_infinite] "></div>
           <h1 className="text-6xl mt-16">Loading...</h1>
         </div>
       </>
@@ -118,6 +138,10 @@ export default function Dashboard() {
 
   return (
     <>
+      <Head>
+        <title>Feedback</title>
+        <meta content="Feedback page" name="Servo tutorial" />
+      </Head>
       {feedbacks && (
         <div className="flex justify-center h-full">
           <div className="flex flex-col items-center justify-center h-full rounded-lg w-[80%] bg-slate-600">

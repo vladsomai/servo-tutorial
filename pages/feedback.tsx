@@ -1,20 +1,48 @@
 import Layout from '../components/layout'
-import { ReactElement, useContext, useEffect, useRef, useState } from 'react'
+import {
+  ReactElement,
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { GlobalContext, NextPageWithLayout } from './_app'
 import Image from 'next/image'
 import BoyImg from '../public/feedback_left_boy.png'
 import GirlImg from '../public/feedback_right_girl.png'
 import JSZip from 'jszip'
-import {
-  firebaseConfig,
-  firebaseFileStorage,
-  firebaseStore,
-} from '../Firebase/initialize'
+import { firebaseFileStorage, firebaseStore } from '../Firebase/initialize'
 import { addDoc, collection } from 'firebase/firestore'
 import { ref, uploadBytes } from 'firebase/storage'
+import Head from 'next/head'
+import { a, animated, useSpring, useTrail } from '@react-spring/web'
+import React from 'react'
+
+const Trail: React.FC<{ open: boolean; children: ReactElement[] }> = ({
+  open,
+  children,
+}) => {
+  const items = React.Children.toArray(children)
+  const trail = useTrail(items.length, {
+    config: { mass: 5, tension: 2000, friction: 200, duration: 700 },
+    opacity: open ? 1 : 0,
+    x: open ? 0 : 20,
+    height: open ? 70 : 0,
+    from: { opacity: 0, x: 20, height: 0 },
+  })
+  return (
+    <div className="text-center mt-[3%]">
+      {trail.map(({ height, ...style }, index) => (
+        <a.div key={index} style={style}>
+          <a.div style={{ height }}>{items[index]}</a.div>
+        </a.div>
+      ))}
+    </div>
+  )
+}
 
 const Feedback: NextPageWithLayout = () => {
-  const value = useContext(GlobalContext)
   const attachmentRef = useRef<HTMLInputElement | null>(null)
   const ratio = 1.382
 
@@ -22,6 +50,8 @@ const Feedback: NextPageWithLayout = () => {
   const [imgHeight, setImgHeight] = useState(712)
   const [imgWidth, setImgWidth] = useState(712 * ratio)
   const [showImage, setShowImage] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const picturesNumber = useRef(0)
 
   function handleResize() {
     setImgHeight(window.innerHeight / 2)
@@ -80,9 +110,78 @@ const Feedback: NextPageWithLayout = () => {
     setWaitingFbReply(false)
   }
 
+  const [styleSpring] = useSpring(
+    () => ({
+      from: { opacity: 0 },
+      to: { opacity: 1 },
+      config: { duration: 1000 },
+    }),
+    [loading],
+  )
+
+  if (loading) {
+    return (
+      <>
+        <Head>
+          <title>Loading...</title>
+          <meta content="Feedback page" name="Servo tutorial" />
+        </Head>
+        <div className="flex flex-col justify-center h-full w-full items-center">
+          <div className="w-[50px] h-[50px] bg-slate-50 border-4 rounded-full animate-[ping_1.5s_cubic-bezier(0.1,0.25,0.25,0.75)_infinite]"></div>
+          <h1 className="text-6xl mt-16">Loading...</h1>
+        </div>
+
+        {/* trigger the pictures to be downloaded but set them hidden, show loading until pictures are loaded by the browser */}
+        <div className="hidden">
+          <div className="absolute bottom-2 left-[20%] z-[-1] ">
+            <Image
+              onLoadingComplete={() => {
+                picturesNumber.current += 1
+                if (picturesNumber.current == 2) {
+                  setLoading(false)
+                }
+              }}
+              quality={100}
+              className=""
+              width={imgWidth}
+              height={imgHeight}
+              src={BoyImg}
+              alt="boy picture"
+              priority
+            ></Image>
+          </div>
+          <div className="absolute bottom-0 right-[10%] z-[-1]">
+            <Image
+              onLoadingComplete={() => {
+                picturesNumber.current += 1
+                if (picturesNumber.current == 2) {
+                  setLoading(false)
+                }
+              }}
+              quality={100}
+              className=""
+              width={imgWidth}
+              height={imgHeight}
+              src={GirlImg}
+              alt="girl picture"
+              priority
+            ></Image>
+          </div>
+        </div>
+      </>
+    )
+  }
   return (
     <>
-      <div className="flex flex-col items-center justify-start h-full relative">
+      <Head>
+        <title>Feedback</title>
+        <meta content="Feedback page" name="Servo tutorial" />
+      </Head>
+
+      <animated.div
+        className="flex flex-col items-center justify-start h-full relative"
+        style={styleSpring}
+      >
         {showImage && (
           <>
             <div className="absolute bottom-2 left-[20%] z-[-1]">
@@ -110,12 +209,16 @@ const Feedback: NextPageWithLayout = () => {
           </>
         )}
 
-        <h1 className="feedbackTextColor text-center mt-[3%] ">
-          We care.<br></br> That&apos;s why we need your feedback.
-        </h1>
+        <Trail open={true}>
+          <span className="feedbackTextColor text-center ">We care.</span>
+          <span className="feedbackTextColor text-center ">
+            That&apos;s why we need your feedback.
+          </span>
+        </Trail>
+
         <form
           onSubmit={sendFeedback}
-          className="flex flex-col justify-around w-[30%] h-[50%] items-center "
+          className="flex flex-col justify-around w-[30%] h-[50%] items-center fixed top-[25%]"
         >
           <input
             required
@@ -153,7 +256,7 @@ const Feedback: NextPageWithLayout = () => {
             Send feedback
           </button>
         </form>
-      </div>
+      </animated.div>
     </>
   )
 }

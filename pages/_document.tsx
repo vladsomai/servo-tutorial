@@ -11,7 +11,12 @@ class MyDocument extends Document {
       <Html lang="en">
         <Head>
           <meta content="Tom's servo tutorial" name="Servo" />
+          <meta
+            name="description"
+            content="This website will help you understand how to use a servo motor"
+          ></meta>
           <meta charSet="utf-8" />
+          <meta name="theme-color" content="dark"></meta>
           <link rel="main icon" href="/favicon.ico" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
