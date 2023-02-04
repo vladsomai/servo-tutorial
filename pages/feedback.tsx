@@ -4,8 +4,14 @@ import { GlobalContext, NextPageWithLayout } from './_app'
 import Image from 'next/image'
 import BoyImg from '../public/feedback_left_boy.png'
 import GirlImg from '../public/feedback_right_girl.png'
-import UploadImg from '../public/upload.svg'
-import { sleep } from '../servo-engine/utils'
+import JSZip from 'jszip'
+import {
+  firebaseConfig,
+  firebaseFileStorage,
+  firebaseStore,
+} from '../Firebase/initialize'
+import { addDoc, collection } from 'firebase/firestore'
+import { ref, uploadBytes } from 'firebase/storage'
 
 const Feedback: NextPageWithLayout = () => {
   const value = useContext(GlobalContext)
@@ -16,10 +22,12 @@ const Feedback: NextPageWithLayout = () => {
   const [imgHeight, setImgHeight] = useState(712)
   const [imgWidth, setImgWidth] = useState(712 * ratio)
   const [showImage, setShowImage] = useState(false)
+
   function handleResize() {
     setImgHeight(window.innerHeight / 2)
     setImgWidth((window.innerHeight * ratio) / 2)
   }
+
   useEffect(() => {
     window.addEventListener('resize', handleResize)
     setImgHeight(window.innerHeight / 2)
@@ -29,6 +37,7 @@ const Feedback: NextPageWithLayout = () => {
       window.removeEventListener('resize', handleResize)
     }
   }, [])
+
   async function sendFeedback(e: any) {
     e.preventDefault()
     if (attachmentRef && attachmentRef.current == null) return
@@ -40,44 +49,34 @@ const Feedback: NextPageWithLayout = () => {
     //#region feedback message
     const email = e.target['email'].value
     const message = e.target['message'].value
-    const responseFeedback = await fetch(
-      '/api/firebase/feedback/sendFeedback',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: email, message: message }),
-      },
-    )
 
-    const parsedResFb = await responseFeedback.json()
-    console.log(parsedResFb)
-    //#endregion feedback message
+    const currentDate = new Date()
+    try {
+      //send email and message
+      const docRef = await addDoc(collection(firebaseStore, 'feedbacks'), {
+        email: email,
+        message: message,
+        date: currentDate,
+      })
 
-    if (attachedFiles?.length != 0) {
-      //#region  feedback attachments
-      let formData = new FormData()
-      formData.append('attachmentID', parsedResFb.attachmentID)
-      if (attachedFiles != null) {
+      //send attachments if any
+      if (attachedFiles != null && attachedFiles.length != 0) {
+        const zip = new JSZip() //create new zip object
+
         for (let i = 0; i < attachedFiles.length; i++) {
-          formData.append(`file${i}`, attachedFiles[i], attachedFiles[i].name)
+          //add each attachment bytes to a zip
+          zip.file(attachedFiles[i].name, attachedFiles[i])
         }
+
+        const zipBlob = await zip.generateAsync({ type: 'blob' })
+        const storageRef = ref(firebaseFileStorage, docRef.id + '.zip')
+        await uploadBytes(storageRef, zipBlob)
       }
-
-      const responseAttachment = await fetch(
-        '/api/firebase/feedback/sendAttachment',
-        {
-          method: 'POST',
-          body: formData,
-        },
-      )
-
-      console.log(await responseAttachment.text())
-      //#region  feedback attachments
+    } catch (err) {
+      //handle error with a modal
+      console.log(err)
     }
 
-    
     setWaitingFbReply(false)
   }
 

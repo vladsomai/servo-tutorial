@@ -8,7 +8,9 @@ import {
 } from 'react'
 import { FeedbackType } from '../../Firebase/types'
 import { useRouter } from 'next/router'
-import { Tooltip } from 'flowbite-react'
+import { collection, getDocs } from 'firebase/firestore'
+import { firebaseFileStorage, firebaseStore } from '../../Firebase/initialize'
+import { getDownloadURL, ref } from 'firebase/storage'
 
 export default function Dashboard() {
   const [feedbacks, setFeedbacks] = useState<FeedbackType[] | null>(null)
@@ -19,14 +21,49 @@ export default function Dashboard() {
   const timeOutHandler = useRef<NodeJS.Timeout>()
 
   async function readFeedbacks() {
-    const res = await fetch(
-      '/api/firebase/feedback/readFeedbacks',
-    ).then((res) => res.json())
+    try {
+      const querySnapshot = await getDocs(
+        collection(firebaseStore, 'feedbacks'),
+      )
+      console.log(querySnapshot)
+      let data: FeedbackType[] = []
 
-    clearTimeout(timeOutHandler.current)
-    allFeedbacks.current = [...res]
-    setFeedbacks(res)
-    setLoading(false)
+      let count = 0
+
+      await new Promise((resolve: Function) => {
+        //get all the links to zip file download for each feedback
+        querySnapshot.forEach(async (doc) => {
+          const pathReference = ref(firebaseFileStorage, `${doc.id}.zip`)
+          const attachmentURL = await getDownloadURL(pathReference).catch(
+            (err) => err,
+          )
+
+          //we must convert data form unix like to js date object
+          const documentData = doc.data()
+          const jsDate = new Date(documentData.date.seconds * 1000)
+
+          data.push({
+            id: doc.id,
+            email: documentData.email,
+            message: documentData.message,
+            date: jsDate,
+            downloadURL: attachmentURL,
+          } as FeedbackType)
+
+          count += 1
+
+          if (count == querySnapshot.size) resolve()
+        })
+      })
+
+      clearTimeout(timeOutHandler.current)
+      allFeedbacks.current = [...data]
+      setFeedbacks(data)
+      setLoading(false)
+    } catch (err) {
+      //add modal here
+      console.log(err)
+    }
   }
 
   useEffect(() => {
@@ -113,8 +150,11 @@ export default function Dashboard() {
               <p className="text-lg font-extrabold bg-slate-600 w-2/12  border-slate-900">
                 Email
               </p>
-              <p className="text-lg font-extrabold bg-slate-600 w-7/12  border-slate-900">
+              <p className="text-lg font-extrabold bg-slate-600 w-5/12  border-slate-900">
                 Message
+              </p>
+              <p className="text-lg font-extrabold bg-slate-600 w-2/12   border-slate-900">
+                Date
               </p>
               <p className="text-lg font-extrabold bg-slate-600 w-2/12   border-slate-900">
                 Attachments
@@ -136,8 +176,11 @@ export default function Dashboard() {
                         <td className="bg-slate-800 w-2/12 border-2 border-slate-900">
                           {feedback.email}
                         </td>
-                        <td className="bg-slate-800 text-left border-2 border-slate-900 whitespace-normal w-7/12">
+                        <td className="bg-slate-800 text-left border-2 border-slate-900 whitespace-normal w-5/12">
                           {feedback.message}
+                        </td>
+                        <td className="bg-slate-800 w-2/12 border-2 border-slate-900 whitespace-normal">
+                          {feedback.date.toUTCString()}
                         </td>
                         <td className="bg-slate-800 w-2/12 border--2 border-slate-900">
                           {typeof feedback.downloadURL == 'string' ? (

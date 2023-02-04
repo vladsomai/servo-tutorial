@@ -1,1 +1,1 @@
-export type FeedbackType = { id: string, email: string; message: string, downloadURL: string };
+export type FeedbackType = { id: string, email: string; message: string, downloadURL: string, date: Date };
