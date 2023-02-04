@@ -74,7 +74,7 @@ const Trail: React.FC<{ open: boolean; children: ReactElement[] }> = ({
     from: { opacity: 0, x: 20, height: 0 },
   })
   return (
-    <div className="text-center mt-[3%]">
+    <div className="text-center mt-[1%]">
       {trail.map(({ height, ...style }, index) => (
         <a.div key={index} style={style}>
           <a.div style={{ height }}>{items[index]}</a.div>
@@ -163,6 +163,7 @@ const Feedback: NextPageWithLayout = () => {
       console.log(err)
     }
 
+    e.target.reset()
     setWaitingFbReply(false)
   }
 
@@ -283,15 +284,15 @@ const Feedback: NextPageWithLayout = () => {
         )}
 
         <Trail open={true}>
-          <span className="feedbackTextColor text-center ">We care.</span>
-          <span className="feedbackTextColor text-center ">
+          <span className="feedbackTextColor text-center md:text-3xl xl:text-5xl 2xl:text-7xl">We care.</span>
+          <span className="feedbackTextColor text-center md:text-3xl xl:text-5xl 2xl:text-7xl">
             That&apos;s why we need your feedback.
           </span>
         </Trail>
 
         <form
           onSubmit={sendFeedback}
-          className="flex flex-col justify-around w-[30%] h-[50%] items-center fixed top-[25%]"
+          className="flex flex-col justify-around w-[30%] h-[60%] 2xl:h-[55%] items-center fixed md:top-[20%] xl:top-[25%]"
         >
           <input
             required

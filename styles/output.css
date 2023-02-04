@@ -4485,10 +4485,6 @@ html {
   left: -0.75rem;
 }
 
-.bottom-\[10\%\] {
-  bottom: 10%;
-}
-
 .z-\[-1\] {
   z-index: -1;
 }
@@ -4526,6 +4522,11 @@ html {
   margin-right: auto;
 }
 
+.my-5 {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
 .my-10 {
   margin-top: 2.5rem;
   margin-bottom: 2.5rem;
@@ -4544,11 +4545,6 @@ html {
 .my-0 {
   margin-top: 0px;
   margin-bottom: 0px;
-}
-
-.my-5 {
-  margin-top: 1.25rem;
-  margin-bottom: 1.25rem;
 }
 
 .-mx-1\.5 {
@@ -4591,21 +4587,20 @@ html {
   margin-right: 1rem;
 }
 
-.mx-56 {
-  margin-left: 14rem;
-  margin-right: 14rem;
-}
-
 .mt-10 {
   margin-top: 2.5rem;
 }
 
-.mt-\[3\%\] {
-  margin-top: 3%;
+.mt-\[1\%\] {
+  margin-top: 1%;
 }
 
 .mt-16 {
   margin-top: 4rem;
+}
+
+.mt-5 {
+  margin-top: 1.25rem;
 }
 
 .mb-5 {
@@ -4724,10 +4719,6 @@ html {
   margin-top: 0.25rem;
 }
 
-.mt-5 {
-  margin-top: 1.25rem;
-}
-
 .block {
   display: block;
 }
@@ -4772,8 +4763,8 @@ html {
   height: 50px;
 }
 
-.h-\[50\%\] {
-  height: 50%;
+.h-\[60\%\] {
+  height: 60%;
 }
 
 .h-\[40\%\] {
@@ -4898,10 +4889,6 @@ html {
   height: 0px;
 }
 
-.h-screen {
-  height: 100vh;
-}
-
 .w-56 {
   width: 14rem;
 }
@@ -4916,6 +4903,10 @@ html {
 
 .w-\[30\%\] {
   width: 30%;
+}
+
+.w-3\/6 {
+  width: 50%;
 }
 
 .w-\[60\%\] {
@@ -5039,14 +5030,6 @@ html {
   width: 16rem;
 }
 
-.w-3\/6 {
-  width: 50%;
-}
-
-.w-2\/6 {
-  width: 33.333333%;
-}
-
 .max-w-lg {
   max-width: 32rem;
 }
@@ -5158,8 +5141,8 @@ html {
   }
 }
 
-.animate-\[ping_1\.5s_cubic-bezier\(0\.1\2c 0\.25\2c 0\.25\2c 0\.75\)_infinite\] {
-  animation: ping 1.5s cubic-bezier(0.1,0.25,0.25,0.75) infinite;
+.animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
 @keyframes spin {
@@ -5170,17 +5153,6 @@ html {
 
 .animate-spin {
   animation: spin 1s linear infinite;
-}
-
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.animate-ping {
-  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
 .cursor-pointer {
@@ -5483,10 +5455,6 @@ html {
   border-bottom-left-radius: 0.5rem;
 }
 
-.border-4 {
-  border-width: 4px;
-}
-
 .border {
   border-width: 1px;
 }
@@ -5677,11 +5645,6 @@ html {
   background-color: rgb(248 250 252 / var(--tw-bg-opacity));
 }
 
-.bg-primary {
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--p) / var(--tw-bg-opacity));
-}
-
 .bg-slate-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(71 85 105 / var(--tw-bg-opacity));
@@ -5700,6 +5663,11 @@ html {
 .bg-slate-800 {
   --tw-bg-opacity: 1;
   background-color: rgb(30 41 59 / var(--tw-bg-opacity));
+}
+
+.bg-primary {
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--p) / var(--tw-bg-opacity));
 }
 
 .bg-base-300 {
@@ -6376,14 +6344,14 @@ html {
   line-height: 1.25rem;
 }
 
-.text-5xl {
-  font-size: 3rem;
-  line-height: 1;
-}
-
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
+}
+
+.text-5xl {
+  font-size: 3rem;
+  line-height: 1;
 }
 
 .text-lg {
@@ -6896,7 +6864,6 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .feedbackTextColor{
-  font-size: 56px;
   font-weight:bold;
   background: -webkit-linear-gradient(360deg, #3ABFF8FF, rgba(0, 255, 242, 0.9));
   -webkit-background-clip: text;
@@ -8442,6 +8409,10 @@ input[type="number"]::-webkit-outer-spin-button {
     left: 0px;
   }
 
+  .md\:top-\[20\%\] {
+    top: 20%;
+  }
+
   .md\:mx-2 {
     margin-left: 0.5rem;
     margin-right: 0.5rem;
@@ -8531,6 +8502,16 @@ input[type="number"]::-webkit-outer-spin-button {
     line-height: 1.25rem;
   }
 
+  .md\:text-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+
+  .md\:text-4xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+
   .md\:font-medium {
     font-weight: 500;
   }
@@ -8574,15 +8555,23 @@ input[type="number"]::-webkit-outer-spin-button {
   .lg\:hidden {
     display: none;
   }
-
-  .lg\:w-3\/6 {
-    width: 50%;
-  }
 }
 
 @media (min-width: 1280px) {
+  .xl\:top-\[25\%\] {
+    top: 25%;
+  }
+
   .xl\:block {
     display: block;
+  }
+
+  .xl\:h-\[50\%\] {
+    height: 50%;
+  }
+
+  .xl\:h-\[77\%\] {
+    height: 77%;
   }
 
   .xl\:flex-row {
@@ -8602,9 +8591,26 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 1.125rem;
     line-height: 1.75rem;
   }
+
+  .xl\:text-5xl {
+    font-size: 3rem;
+    line-height: 1;
+  }
 }
 
 @media (min-width: 1536px) {
+  .\32xl\:h-\[50\%\] {
+    height: 50%;
+  }
+
+  .\32xl\:h-\[77\%\] {
+    height: 77%;
+  }
+
+  .\32xl\:h-\[55\%\] {
+    height: 55%;
+  }
+
   .\32xl\:w-3\/6 {
     width: 50%;
   }
@@ -8615,5 +8621,10 @@ input[type="number"]::-webkit-outer-spin-button {
 
   .\32xl\:max-w-\[17\%\] {
     max-width: 17%;
+  }
+
+  .\32xl\:text-7xl {
+    font-size: 4.5rem;
+    line-height: 1;
   }
 }

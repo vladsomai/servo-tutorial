@@ -63,7 +63,7 @@ export default function Signin() {
                   className="input input-bordered"
                 />
                 <button className="btn btn-primary mt-5" type="submit">
-                  Log in
+                  Sign in
                 </button>
               </form>
             </div>
