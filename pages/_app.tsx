@@ -1,9 +1,11 @@
 import '../styles/output.css'
 import '../styles/prism-vsc-dark.css'
 import type { AppProps } from 'next/app'
-import { MutableRefObject, ReactElement, ReactNode, useState } from 'react'
+import { ReactElement, ReactNode, useEffect, useState } from 'react'
 import type { NextPage } from 'next'
 import { createContext } from 'react'
+import { firebaseAuth } from '../Firebase/initialize'
+import { onAuthStateChanged, User } from 'firebase/auth'
 
 export type GlobalStateType = {
   theme: {
@@ -11,8 +13,6 @@ export type GlobalStateType = {
     setTheme: Function
   }
   modal: {
-    Show: 'modal-open' | 'modal-close'
-    setShow: Function
     Title: string
     setTitle: Function
     Description: ReactNode
@@ -32,15 +32,13 @@ export type GlobalStateType = {
     setBytes: Function
   }
 }
-const GlobalState: GlobalStateType = {
+const DefaultGlobalState: GlobalStateType = {
   theme: {
     getTheme: '',
     setTheme: () => {},
   },
 
   modal: {
-    Show: 'modal-close',
-    setShow: () => {},
     Title: '',
     setTitle: () => {},
     Description: <></>,
@@ -61,7 +59,9 @@ const GlobalState: GlobalStateType = {
     setBytes: Function,
   },
 }
-export const GlobalContext = createContext(GlobalState)
+
+export const UserContext = createContext<User | null>(null)
+export const GlobalContext = createContext(DefaultGlobalState)
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -72,6 +72,18 @@ type AppPropsWithLayout = AppProps & {
 }
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const [useUser, setUser] = useState<User | null>(null)
+
+  useEffect(() => {
+    onAuthStateChanged(firebaseAuth, (user) => {
+      if (user) {
+        setUser(user)
+      } else {
+        setUser(null)
+      }
+    })
+  }, [])
+
   const [_theme, _setTheme] = useState('')
   const [_modalShow, _setModalShow] = useState<'modal-open' | 'modal-close'>(
     'modal-close',
@@ -89,8 +101,6 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       setTheme: _setTheme,
     },
     modal: {
-      Show: _modalShow,
-      setShow: _setModalShow,
       Title: _modalTitle,
       setTitle: _setModalTitle,
       Description: _modalDescription,
@@ -111,7 +121,9 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const layout = getLayout(<Component {...pageProps} />)
   return (
     <GlobalContext.Provider value={GlobalState}>
-      <>{layout}</>
+      <UserContext.Provider value={useUser}>
+        <>{layout}</>
+      </UserContext.Provider>
     </GlobalContext.Provider>
   )
 }

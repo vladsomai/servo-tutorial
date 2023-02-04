@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react'
+import { useContext } from 'react'
 import { GlobalContext } from '../pages/_app'
 
 const Modal = () => {
@@ -7,7 +7,7 @@ const Modal = () => {
   return (
     <>
       <input type="checkbox" id="my-modal-4" className="modal-toggle" />
-      <label htmlFor="my-modal-4" className={`modal ${value.modal.Show}`}>
+      <label htmlFor="my-modal-4" className={`modal`}>
         <label
           className="modal-box w-auto max-w-[60vw] pt-10 relative"
           htmlFor=""

@@ -4485,6 +4485,10 @@ html {
   left: -0.75rem;
 }
 
+.bottom-\[10\%\] {
+  bottom: 10%;
+}
+
 .z-\[-1\] {
   z-index: -1;
 }
@@ -4585,6 +4589,11 @@ html {
 .mx-4 {
   margin-left: 1rem;
   margin-right: 1rem;
+}
+
+.mx-56 {
+  margin-left: 14rem;
+  margin-right: 14rem;
 }
 
 .mt-10 {
@@ -4713,6 +4722,10 @@ html {
 
 .mt-1 {
   margin-top: 0.25rem;
+}
+
+.mt-5 {
+  margin-top: 1.25rem;
 }
 
 .block {
@@ -4883,6 +4896,10 @@ html {
 
 .h-0 {
   height: 0px;
+}
+
+.h-screen {
+  height: 100vh;
 }
 
 .w-56 {

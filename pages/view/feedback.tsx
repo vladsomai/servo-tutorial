@@ -2,6 +2,7 @@ import Layout from '../../components/layout'
 import {
   ReactElement,
   SyntheticEvent,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -9,12 +10,21 @@ import {
 import { FeedbackType } from '../../Firebase/types'
 import { useRouter } from 'next/router'
 import { collection, getDocs } from 'firebase/firestore'
-import { firebaseFileStorage, firebaseStore } from '../../Firebase/initialize'
+import {
+  firebaseAuth,
+  firebaseFileStorage,
+  firebaseStore,
+} from '../../Firebase/initialize'
 import { getDownloadURL, ref } from 'firebase/storage'
 import Head from 'next/head'
 import Image from 'next/image'
+import { signOut } from 'firebase/auth'
+import { UserContext } from '../_app'
 
 export default function Dashboard() {
+  const user = useContext(UserContext)
+  const router = useRouter()
+
   const [feedbacks, setFeedbacks] = useState<FeedbackType[] | null>(null)
   const allFeedbacks = useRef<FeedbackType[] | null>(null)
   const [loading, setLoading] = useState(true)
@@ -62,20 +72,29 @@ export default function Dashboard() {
       setFeedbacks(data)
       setLoading(false)
     } catch (err) {
-      //add modal here
       console.log(err)
     }
   }
 
   useEffect(() => {
-    timeOutHandler.current = setTimeout(() => {
-      console.log('Request timed out')
-      setTimedOut(true)
-    }, 10000)
-    readFeedbacks()
-  }, [])
+    if (user) {
+      clearTimeout(timeOutHandler.current)
+      timeOutHandler.current = setTimeout(() => {
+        console.log('Request timed out')
+        setTimedOut(true)
+      }, 10000)
+      readFeedbacks()
+    } else {
+      timeOutHandler.current = setTimeout(() => {
+        if (router.isReady) router.push('/signin')
+      }, 2000)
+    }
 
-  const router = useRouter()
+    return () => {
+      clearTimeout(timeOutHandler.current)
+    }
+  }, [router, user])
+
   function handleDownlaod(downloadURL: string) {
     router.push(downloadURL)
   }
@@ -96,6 +115,11 @@ export default function Dashboard() {
 
   const MainPicHeight = 350
   const MainPicAspectRation = 1.37
+
+  async function signout() {
+    await signOut(firebaseAuth)
+    router.push('/signin')
+  }
 
   if (timeout) {
     return (
@@ -164,6 +188,9 @@ export default function Dashboard() {
                   onChange={handleSearchChanged}
                 />
               </div>
+              <button className="btn btn-ghost" onClick={signout}>
+                Sign out
+              </button>
               <p className="text-5xl">Feedbacks</p>
             </div>
             <div className="w-full flex flex-row text-center mt-3 border-t-2 border-slate-900 ">
