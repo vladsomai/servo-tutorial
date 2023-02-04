@@ -5022,6 +5022,14 @@ html {
   width: 16rem;
 }
 
+.w-3\/6 {
+  width: 50%;
+}
+
+.w-2\/6 {
+  width: 33.333333%;
+}
+
 .max-w-lg {
   max-width: 32rem;
 }
@@ -8549,6 +8557,10 @@ input[type="number"]::-webkit-outer-spin-button {
   .lg\:hidden {
     display: none;
   }
+
+  .lg\:w-3\/6 {
+    width: 50%;
+  }
 }
 
 @media (min-width: 1280px) {
@@ -8576,6 +8588,10 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 @media (min-width: 1536px) {
+  .\32xl\:w-3\/6 {
+    width: 50%;
+  }
+
   .\32xl\:max-w-\[50\%\] {
     max-width: 50%;
   }

@@ -237,7 +237,7 @@ export const Command23 = (props: FirmwareCmdProps) => {
       <div className="w-full text-center mb-5">
         <div className="m-5 w-full flex justify-center">
           <input
-            className="block w-4/6 text-sm rounded-lg border border-neutral cursor-pointer file:btn file:btn-sm file:rounded-none file:mr-5 file:border-0"
+            className="block w-4/6 2xl:w-3/6 text-sm rounded-lg border border-neutral cursor-pointer file:btn file:btn-sm file:rounded-none file:mr-5 file:border-0"
             type="file"
             accept=".firmware"
             name="firmware"
@@ -273,7 +273,7 @@ export const Command23 = (props: FirmwareCmdProps) => {
           className="rounded-box"
           width={793}
           height={964}
-          src="/FirmwareFile.png"
+          src="/FirmwareFile.webp"
           alt="firmware picture"
           priority
         ></Image>
