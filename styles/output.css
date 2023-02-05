@@ -3259,6 +3259,42 @@ html {
   border-bottom-left-radius: inherit;
 }
 
+.mockup-phone .camera {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  background: #000;
+  height: 25px;
+  width: 150px;
+  margin: 0 auto;
+  border-bottom-left-radius: 17px;
+  border-bottom-right-radius: 17px;
+  z-index: 11;
+}
+
+.mockup-phone .camera:before {
+  content: "";
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  width: 50px;
+  height: 4px;
+  border-radius: 5px;
+  background-color: #0c0b0e;
+  transform: translate(-50%, -50%);
+}
+
+.mockup-phone .camera:after {
+  content: "";
+  position: absolute;
+  top: 20%;
+  left: 70%;
+  width: 8px;
+  height: 8px;
+  border-radius: 5px;
+  background-color: #0f0b25;
+}
+
 .mockup-phone .display {
   overflow: hidden;
   border-radius: 40px;
@@ -4403,10 +4439,6 @@ html {
 
 .right-\[10\%\] {
   right: 10%;
-}
-
-.top-\[25\%\] {
-  top: 25%;
 }
 
 .bottom-\[6\%\] {
@@ -8497,19 +8529,14 @@ input[type="number"]::-webkit-outer-spin-button {
     padding: 0px;
   }
 
-  .md\:text-sm {
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-  }
-
   .md\:text-3xl {
     font-size: 1.875rem;
     line-height: 2.25rem;
   }
 
-  .md\:text-4xl {
-    font-size: 2.25rem;
-    line-height: 2.5rem;
+  .md\:text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 
   .md\:font-medium {
@@ -8566,20 +8593,17 @@ input[type="number"]::-webkit-outer-spin-button {
     display: block;
   }
 
-  .xl\:h-\[50\%\] {
-    height: 50%;
-  }
-
-  .xl\:h-\[77\%\] {
-    height: 77%;
-  }
-
   .xl\:flex-row {
     flex-direction: row;
   }
 
   .xl\:self-end {
     align-self: flex-end;
+  }
+
+  .xl\:text-5xl {
+    font-size: 3rem;
+    line-height: 1;
   }
 
   .xl\:text-4xl {
@@ -8591,22 +8615,9 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 1.125rem;
     line-height: 1.75rem;
   }
-
-  .xl\:text-5xl {
-    font-size: 3rem;
-    line-height: 1;
-  }
 }
 
 @media (min-width: 1536px) {
-  .\32xl\:h-\[50\%\] {
-    height: 50%;
-  }
-
-  .\32xl\:h-\[77\%\] {
-    height: 77%;
-  }
-
   .\32xl\:h-\[55\%\] {
     height: 55%;
   }
