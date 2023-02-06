@@ -4549,6 +4549,10 @@ html {
   margin: 1.25rem;
 }
 
+.m-auto {
+  margin: auto;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -4957,8 +4961,8 @@ html {
   width: 16.666667%;
 }
 
-.w-5\/12 {
-  width: 41.666667%;
+.w-4\/12 {
+  width: 33.333333%;
 }
 
 .w-auto {

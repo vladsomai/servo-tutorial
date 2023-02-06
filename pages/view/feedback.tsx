@@ -9,7 +9,7 @@ import {
 } from 'react'
 import { FeedbackType } from '../../Firebase/types'
 import { useRouter } from 'next/router'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore'
 import {
   firebaseAuth,
   firebaseFileStorage,
@@ -19,11 +19,38 @@ import { getDownloadURL, ref } from 'firebase/storage'
 import Head from 'next/head'
 import Image from 'next/image'
 import { signOut } from 'firebase/auth'
-import { UserContext } from '../_app'
+import { GlobalContext, UserContext } from '../_app'
+import ConfirmDeleteImg from '../../public/confirm.svg'
+
+export const feedbackDeletedSuccess = (
+  <>
+    <div className="w-full h-full flex flex-col items-center max-w-lg">
+      <p className="text-2xl">Feedback deleted!</p>
+      <Image
+        quality={100}
+        className=" mt-10"
+        width={200}
+        height={200}
+        src={ConfirmDeleteImg}
+        alt="Feedback sent picture"
+        priority
+      ></Image>
+    </div>
+  </>
+)
 
 export default function Dashboard() {
   const user = useContext(UserContext)
   const router = useRouter()
+
+  const value = useContext(GlobalContext)
+
+  const modalElem = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    modalElem.current = document.getElementById('my-modal-4')
+
+  }, [])
 
   const [feedbacks, setFeedbacks] = useState<FeedbackType[] | null>(null)
   const allFeedbacks = useRef<FeedbackType[] | null>(null)
@@ -42,6 +69,8 @@ export default function Dashboard() {
       let count = 0
 
       await new Promise((resolve: Function) => {
+        if (querySnapshot.size == 0) resolve()
+
         //get all the links to zip file download for each feedback
         querySnapshot.forEach(async (doc) => {
           const pathReference = ref(firebaseFileStorage, `${doc.id}.zip`)
@@ -51,7 +80,7 @@ export default function Dashboard() {
 
           //we must convert data form unix like to js date object
           const documentData = doc.data()
-          const jsDate = new Date(documentData.date.seconds * 1000)
+          const jsDate = new Date(documentData.date?.seconds * 1000)
 
           data.push({
             id: doc.id,
@@ -67,9 +96,13 @@ export default function Dashboard() {
         })
       })
 
+      const sortedData = data.sort(
+        (a, b) => b.date.getTime() - a.date.getTime(),
+      )
+
       clearTimeout(timeOutHandler.current)
-      allFeedbacks.current = [...data]
-      setFeedbacks(data)
+      allFeedbacks.current = [...sortedData]
+      setFeedbacks(sortedData)
       setLoading(false)
     } catch (err) {
       console.log(err)
@@ -119,6 +152,20 @@ export default function Dashboard() {
   async function signout() {
     await signOut(firebaseAuth)
     router.push('/signin')
+  }
+
+  async function deleteFeedback(feedback: FeedbackType, index: number) {
+    const deleteConfirmed = confirm(
+      `You are going to delete feedback with index ${index + 1}, proceed?`,
+    )
+
+    if (deleteConfirmed) {
+      await deleteDoc(doc(firebaseStore, 'feedbacks', feedback.id))
+      readFeedbacks()
+      value.modal.setTitle('')
+      value.modal.setDescription(feedbackDeletedSuccess)
+      modalElem.current?.click()
+    }
   }
 
   if (timeout) {
@@ -197,10 +244,13 @@ export default function Dashboard() {
               <p className="text-lg font-extrabold bg-slate-600 w-1/12  border-slate-900 ">
                 #
               </p>
+              <p className="text-lg font-extrabold bg-slate-600 w-1/12  border-slate-900 ">
+                Menu
+              </p>
               <p className="text-lg font-extrabold bg-slate-600 w-2/12  border-slate-900">
                 Email
               </p>
-              <p className="text-lg font-extrabold bg-slate-600 w-5/12  border-slate-900">
+              <p className="text-lg font-extrabold bg-slate-600 w-4/12  border-slate-900">
                 Message
               </p>
               <p className="text-lg font-extrabold bg-slate-600 w-2/12   border-slate-900">
@@ -223,10 +273,27 @@ export default function Dashboard() {
                         <td className="bg-slate-800 w-1/12 border-2 border-slate-900">
                           {index + 1}
                         </td>
+                        <td className="bg-slate-800 w-1/12 border-2  border-slate-900">
+                          <button
+                            title={`Delete feedback ${index + 1}`}
+                            className="btn btn-error btn-sm btn-circle m-auto flex justify-center"
+                            onClick={() => {
+                              deleteFeedback(feedback, index)
+                            }}
+                          >
+                            <Image
+                              alt="Add command"
+                              src="/delete.svg"
+                              width={20}
+                              height={20}
+                              priority
+                            />
+                          </button>
+                        </td>
                         <td className="bg-slate-800 w-2/12 border-2 border-slate-900">
                           {feedback.email}
                         </td>
-                        <td className="bg-slate-800 text-left border-2 border-slate-900 whitespace-normal w-5/12">
+                        <td className="bg-slate-800 text-left border-2 border-slate-900 whitespace-normal w-4/12">
                           {feedback.message}
                         </td>
                         <td className="bg-slate-800 w-2/12 border-2 border-slate-900 whitespace-normal">
