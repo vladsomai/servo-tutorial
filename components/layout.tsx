@@ -10,6 +10,13 @@ export default function Layout({ session, children }: any) {
         <Navbar />
       </div> */}
       <main className="hidden lg:block tracking-wider h-[96vh] px-3 mt-[1vh]">
+        <div
+          className="fixed flex-col justify-center h-full w-full items-center z-50 hidden"
+          id="loading-motor"
+        >
+          <div className="w-[50px] h-[50px] bg-slate-50  rounded-full animate-ping "></div>
+          <h1 className="text-6xl mt-16">Loading assets...</h1>
+        </div>
         <Modal />
         <Alert />
         {children}

@@ -17,27 +17,41 @@ interface ILoadingScreen {
 
 class CustomLoadingScreen implements ILoadingScreen {
   //optional, but needed due to interface definitions
-  public loadingUIBackgroundColor: string = '#FFAAFF'
-  constructor(public loadingUIText: string) {}
+  public loadingUIBackgroundColor: string = '#0f172a'
+  private classListWhenLoadingStarts = 'flex'
+  private classListWhenLoadingEnds = 'hidden'
+  private loadingDiv = document.getElementById('loading-motor')
+
+  constructor(public loadingUIText: string) {
+    loadingUIText = 'Loading assets...'
+  }
   public displayLoadingUI() {
-    console.log('Loading')
+    this.loadingDiv?.classList.replace(
+      this.classListWhenLoadingEnds,
+      this.classListWhenLoadingStarts,
+    )
+    console.log(this.loadingDiv?.classList.value)
   }
 
   public hideLoadingUI() {
-    console.log('Loaded')
+    this.loadingDiv?.classList.replace(
+      this.classListWhenLoadingStarts,
+      this.classListWhenLoadingEnds,
+    )
   }
 }
-
 
 class Playground {
   public static CreateScene(
     canvas: HTMLCanvasElement,
   ): { scene: BABYLON.Scene; engine: BABYLON.Engine } {
     const engine = new BABYLON.Engine(canvas, true)
-    // engine.loadingScreen = new CustomLoadingScreen('Loading...')
-    // engine.displayLoadingUI()
+    engine.loadingScreen = new CustomLoadingScreen('Loading...')
+    engine.displayLoadingUI()
 
     const scene = new BABYLON.Scene(engine)
+    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0)
+
     const camera = new BABYLON.UniversalCamera(
       'camera1',
       new BABYLON.Vector3(0, 5, -10),
@@ -62,7 +76,7 @@ class Playground {
       scene.activeCamera!.radius += -0.8
     })
 
-    // engine.hideLoadingUI()
+    engine.hideLoadingUI()
     engine.runRenderLoop(function () {
       scene?.render()
     })
