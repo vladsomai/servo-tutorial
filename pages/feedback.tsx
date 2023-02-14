@@ -34,7 +34,7 @@ export const feedbackSuccess = (
         width={200}
         height={200}
         src={FeedbackSent}
-        alt="Feedback sent picture"
+        alt="Feedback sent"
         priority
       ></Image>
     </div>
@@ -54,7 +54,7 @@ export const feedbackError = (
         width={200}
         height={200}
         src={FeedbackError}
-        alt="Feedback error picture"
+        alt="Feedback error"
         priority
       ></Image>
     </div>
@@ -203,7 +203,7 @@ const Feedback: NextPageWithLayout = () => {
             width={imgWidth}
             height={imgHeight}
             src={BoyImg}
-            alt="boy picture"
+            alt="boy illustration"
             priority
           ></Image>
           <Image
@@ -219,7 +219,7 @@ const Feedback: NextPageWithLayout = () => {
             width={imgWidth}
             height={imgHeight}
             src={GirlImg}
-            alt="girl picture"
+            alt="girl illustration"
             priority
           ></Image>
           <Image
@@ -228,7 +228,7 @@ const Feedback: NextPageWithLayout = () => {
             width={200}
             height={200}
             src={FeedbackSent}
-            alt="Feedback sent picture"
+            alt="Feedback sent"
             priority
           ></Image>
           <Image
@@ -237,7 +237,7 @@ const Feedback: NextPageWithLayout = () => {
             width={200}
             height={200}
             src={FeedbackError}
-            alt="Feedback error picture"
+            alt="Feedback error"
             priority
           ></Image>
         </div>
@@ -248,7 +248,7 @@ const Feedback: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Feedback</title>
+        <title>Feedback | Robots Mobots</title>
         <meta content="Feedback page" name="Servo tutorial" />
       </Head>
 
@@ -265,7 +265,7 @@ const Feedback: NextPageWithLayout = () => {
                 width={imgWidth}
                 height={imgHeight}
                 src={BoyImg}
-                alt="boy picture"
+                alt="boy illustration"
                 priority
               ></Image>
             </div>
@@ -276,7 +276,7 @@ const Feedback: NextPageWithLayout = () => {
                 width={imgWidth}
                 height={imgHeight}
                 src={GirlImg}
-                alt="girl picture"
+                alt="girl illustration"
                 priority
               ></Image>
             </div>

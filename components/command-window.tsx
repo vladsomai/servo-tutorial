@@ -90,7 +90,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
                 src={InfoImg}
                 width={iconSize}
                 height={iconSize}
-                alt="info picture"
+                alt="info about command shortcuts"
                 priority
               ></Image>
             </label>
@@ -107,7 +107,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
               src={EnvelopeImg}
               width={25}
               height={25}
-              alt="feedback picture"
+              alt="feedback"
               priority
             ></Image>
           </button>

@@ -23,6 +23,7 @@ module.exports = {
       {
         night: {
           ...require("daisyui/src/colors/themes")["[data-theme=night]"],
+          primary:'#74bF44'
         },
       },
       {

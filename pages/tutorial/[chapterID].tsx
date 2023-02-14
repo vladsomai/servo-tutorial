@@ -16,11 +16,13 @@ import RawMotorCommands from "../../public/motor_commands.json" assert { type: "
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import { GlobalContext } from "../_app";
+import { animated, useSpring } from "react-spring";
 
 const Tutorial = () => {
   const router = useRouter();
   const value = useContext(GlobalContext);
   const codeAlertWasShown = useRef(false);
+  const alertTimoutHandle = useRef<NodeJS.Timeout>();
   const MotorCommands = useRef<MotorCommandsDictionary[]>([]);
   const [currentCommandDictionary, setCurrentCommandDictionary] =
     useState<MotorCommandsDictionary | null>(null);
@@ -62,7 +64,7 @@ const Tutorial = () => {
             </p>
           </>
         );
-        setTimeout(() => {
+        alertTimoutHandle.current = setTimeout(() => {
           value.alert.setShow(true);
         }, 2000);
         setTimeout(() => {
@@ -71,8 +73,18 @@ const Tutorial = () => {
       }
     }
 
+    return ()=>{clearTimeout(alertTimoutHandle.current)}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
+
+  const [styleSpring] = useSpring(
+    () => ({
+      from: { opacity: 0 },
+      to: { opacity: 1 },
+      config: { duration: 1000 },
+    }),
+    [],
+  )
 
   return (
     <>
@@ -84,7 +96,7 @@ const Tutorial = () => {
         </title>
       </Head>
       {currentCommandDictionary != null ? (
-        <div className="flex h-full w-full">
+        <animated.div className="flex h-full w-full" style={styleSpring}>
           <Chapters
             {...{
               MotorCommands,
@@ -98,7 +110,7 @@ const Tutorial = () => {
               MotorCommands,
             } as MainWindowProps)}
           />
-        </div>
+        </animated.div>
       ) : null}
     </>
   );

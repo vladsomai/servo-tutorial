@@ -1,6 +1,7 @@
 import { MutableRefObject, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { MotorCommandsDictionary } from '../servo-engine/motor-commands'
+import Image from 'next/image'
 
 export type ChaptersProps = {
   MotorCommands: MutableRefObject<MotorCommandsDictionary[]>
@@ -30,9 +31,21 @@ const Chapters = (props: ChaptersProps) => {
     setDisplaiedCommands(props.MotorCommands.current)
   }, [props.MotorCommands])
 
+  const LogoHeight = 50
+  const LogoAspectRatio = 2234 / 676
   return (
     <>
-      <div className="h-full bg-base-300 rounded-box  mr-2 px-1 flex flex-col">
+      <div className="h-full bg-base-300 rounded-box mr-2 px-1 flex flex-col items-center">
+        <Link href="/">
+          <Image
+            className="mt-4"
+            src={'/Logo.png'}
+            width={LogoHeight * LogoAspectRatio}
+            height={LogoHeight}
+            alt="logo"
+            priority
+          ></Image>
+        </Link>
         <input
           ref={searchInputBox}
           type="text"

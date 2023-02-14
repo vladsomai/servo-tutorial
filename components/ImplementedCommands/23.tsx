@@ -274,7 +274,7 @@ export const Command23 = (props: FirmwareCmdProps) => {
           width={793}
           height={964}
           src="/FirmwareFile.webp"
-          alt="firmware picture"
+          alt="firmware file example"
           priority
         ></Image>
         <p></p>

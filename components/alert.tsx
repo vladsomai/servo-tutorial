@@ -14,7 +14,7 @@ export const Life = styled(animated.div)`
   bottom: 0;
   left: 0px;
   width: auto;
-  background-image: linear-gradient(130deg, #00b4e6, #00f0e0);
+  background-image: linear-gradient(130deg, #c3c3c3, #74bF44);
   height: 5px;
 `
 
@@ -55,7 +55,7 @@ const Alert = ({}) => {
               src={'/info-circle-fill.svg'}
               width={iconSize}
               height={iconSize}
-              alt="main picture"
+              alt="info about code examples"
               priority
             ></Image>
           </span>

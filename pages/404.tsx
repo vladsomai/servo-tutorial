@@ -19,7 +19,7 @@ const Home: NextPageWithLayout = () => {
           src={'/404_page_not_found.svg'}
           width={MainPicHeight * MainPicAspectRation}
           height={MainPicHeight}
-          alt="page not found picture"
+          alt="page not found"
           priority
         ></Image>
         <h1 className="text-6xl text-center m-12 "> Page not found!</h1>

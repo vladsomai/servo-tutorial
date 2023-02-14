@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <footer className="h-full">
       <p className="flex flex-col text-center h-full justify-center text-xs">
-        &copy;&nbsp;Tom&apos;s company&nbsp;- {currentDate.getFullYear()}
+        &copy; Robots Mobots - {currentDate.getFullYear()}
       </p>
     </footer>
   )

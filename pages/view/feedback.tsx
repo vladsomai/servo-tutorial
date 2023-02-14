@@ -6,6 +6,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useTransition,
 } from 'react'
 import { FeedbackType } from '../../Firebase/types'
 import { useRouter } from 'next/router'
@@ -21,6 +22,7 @@ import Image from 'next/image'
 import { signOut } from 'firebase/auth'
 import { GlobalContext, UserContext } from '../_app'
 import ConfirmDeleteImg from '../../public/confirm.svg'
+import { Tooltip } from 'flowbite-react'
 
 export const feedbackDeletedSuccess = (
   <>
@@ -32,7 +34,7 @@ export const feedbackDeletedSuccess = (
         width={200}
         height={200}
         src={ConfirmDeleteImg}
-        alt="Feedback sent picture"
+        alt="Feedback sent"
         priority
       ></Image>
     </div>
@@ -49,7 +51,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     modalElem.current = document.getElementById('my-modal-4')
-
   }, [])
 
   const [feedbacks, setFeedbacks] = useState<FeedbackType[] | null>(null)
@@ -180,7 +181,7 @@ export default function Dashboard() {
             src={'/404_page_not_found.svg'}
             width={MainPicHeight * MainPicAspectRation}
             height={MainPicHeight}
-            alt="page not found picture"
+            alt="feedback timeout"
             priority
           ></Image>
           <h1 className="text-6xl mt-16 w-[60%]">
@@ -274,21 +275,31 @@ export default function Dashboard() {
                           {index + 1}
                         </td>
                         <td className="bg-slate-800 w-1/12 border-2  border-slate-900">
-                          <button
-                            title={`Delete feedback ${index + 1}`}
-                            className="btn btn-error btn-sm btn-circle m-auto flex justify-center"
-                            onClick={() => {
-                              deleteFeedback(feedback, index)
-                            }}
-                          >
-                            <Image
-                              alt="Add command"
-                              src="/delete.svg"
-                              width={20}
-                              height={20}
-                              priority
-                            />
-                          </button>
+                          <div className="flex justify-center">
+                            <Tooltip
+                              content={`Delete feedback ${index + 1}`}
+                              placement="top"
+                              className=" w-auto max-w-md text-slate-200 bg-gray-600 font-extrabold border-opacity-0 "
+                              animation="duration-150"
+                              role="tooltip"
+                              style="light"
+                            >
+                              <button
+                                className="btn btn-error btn-sm btn-circle m-auto flex justify-center"
+                                onClick={() => {
+                                  deleteFeedback(feedback, index)
+                                }}
+                              >
+                                <Image
+                                  alt="Delete command"
+                                  src="/delete.svg"
+                                  width={20}
+                                  height={20}
+                                  priority
+                                />
+                              </button>
+                            </Tooltip>
+                          </div>
                         </td>
                         <td className="bg-slate-800 w-2/12 border-2 border-slate-900">
                           {feedback.email}

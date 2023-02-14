@@ -531,7 +531,7 @@ export const Command29 = (props: MultiMoveChapterProps) => {
                     }}
                   >
                     <Image
-                      alt="Add command"
+                      alt="Delete command"
                       src="/delete.svg"
                       width={20}
                       height={20}
