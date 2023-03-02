@@ -62,21 +62,18 @@ class Playground {
     )
     light.intensity = 4
 
-    BABYLON.SceneLoader.Append(
-      '/',
-      'motor_with_textures.glb',
+    BABYLON.SceneLoader.Append('/', 'motor_with_textures.glb', scene, function (
       scene,
-      function (scene) {
-        // // Create a default arc rotate camera and light.
-        scene.createDefaultCameraOrLight(true, true, true)
-        //@ts-ignore
-        scene.activeCamera!.alpha += -Math.PI / 3
+    ) {
+      // // Create a default arc rotate camera and light.
+      scene.createDefaultCameraOrLight(true, true, true)
+      //@ts-ignore
+      scene.activeCamera!.alpha += -Math.PI / 3
 
-        //@ts-ignore
-        scene.activeCamera!.radius += -7
-        Playground.setLoading(false)
-      },
-    )
+      //@ts-ignore
+      scene.activeCamera!.radius += -7
+      Playground.setLoading(false)
+    })
 
     engine.runRenderLoop(function () {
       scene?.render()
@@ -141,9 +138,9 @@ const Home: NextPageWithLayout = () => {
           </Link>
         </nav>
         <div className="flex justify-center items-center">
-          <div className="flex flex-col items-center w-[50%]">
+          <div className="flex flex-col items-center w-[60%]">
             <div className="text-3xl xl:text-6xl mb-10 w-full">
-              <p className="feedbackTextColor">Welcome,</p>
+              <p className="feedbackTextColor mb-5">Welcome,</p>
               <p className="text-lg xl:text-xl  text-justify">
                 We are a start-up, provider of high-quality servo motors for a
                 variety of applications. Our servo motors are designed to meet

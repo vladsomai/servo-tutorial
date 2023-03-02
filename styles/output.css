@@ -5131,6 +5131,10 @@ html {
   width: 100vw;
 }
 
+.w-\[70\%\] {
+  width: 70%;
+}
+
 .max-w-lg {
   max-width: 32rem;
 }
