@@ -3,7 +3,6 @@ import Image from 'next/image'
 import Layout from '../components/layout'
 import { ReactElement, useEffect, useRef, useState } from 'react'
 import type { NextPageWithLayout } from './_app'
-import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 import * as BABYLON from 'babylonjs'
@@ -22,37 +21,22 @@ interface ILoadingScreen {
 
 class CustomLoadingScreen implements ILoadingScreen {
   //optional, but needed due to interface definitions
-  public loadingUIBackgroundColor: string = '#0f172a'
-  private classListWhenLoadingStarts = 'flex'
-  private classListWhenLoadingEnds = 'hidden'
-  private loadingDiv = document.getElementById('loading-motor')
+  public loadingUIBackgroundColor: string = ''
+  public loadingUIText: string = ''
 
-  constructor(public loadingUIText: string) {
-    loadingUIText = 'Loading assets...'
-  }
-  public displayLoadingUI() {
-    this.loadingDiv?.classList.replace(
-      this.classListWhenLoadingEnds,
-      this.classListWhenLoadingStarts,
-    )
-    console.log(this.loadingDiv?.classList.value)
-  }
+  public displayLoadingUI() {}
 
-  public hideLoadingUI() {
-    this.loadingDiv?.classList.replace(
-      this.classListWhenLoadingStarts,
-      this.classListWhenLoadingEnds,
-    )
-  }
+  public hideLoadingUI() {}
 }
 
 class Playground {
+  public static setLoading: Function = function (input: boolean): void {}
+
   public static CreateScene(
     canvas: HTMLCanvasElement,
   ): { scene: BABYLON.Scene; engine: BABYLON.Engine } {
     const engine = new BABYLON.Engine(canvas, true)
-    // engine.loadingScreen = new CustomLoadingScreen('Loading...')
-    // engine.displayLoadingUI()
+    engine.loadingScreen = new CustomLoadingScreen()
 
     const scene = new BABYLON.Scene(engine)
     scene.clearColor = new BABYLON.Color4(0, 0, 0, 0)
@@ -64,13 +48,12 @@ class Playground {
     )
     camera.attachControl(canvas, true)
 
-        let light2 = new BABYLON.PointLight(
+    let light2 = new BABYLON.PointLight(
       'light1',
       new BABYLON.Vector3(100, -100, 100),
       scene,
     )
-    light2.intensity = .1
-
+    light2.intensity = 0.1
 
     let light = new BABYLON.HemisphericLight(
       'light1',
@@ -79,17 +62,22 @@ class Playground {
     )
     light.intensity = 4
 
-    BABYLON.SceneLoader.Append('/', 'motor_with_textures.glb', scene, function (scene) {
-      // // Create a default arc rotate camera and light.
-      scene.createDefaultCameraOrLight(true, true, true)
-      //@ts-ignore
-      scene.activeCamera!.alpha += -Math.PI / 3
+    BABYLON.SceneLoader.Append(
+      '/',
+      'motor_with_textures.glb',
+      scene,
+      function (scene) {
+        // // Create a default arc rotate camera and light.
+        scene.createDefaultCameraOrLight(true, true, true)
+        //@ts-ignore
+        scene.activeCamera!.alpha += -Math.PI / 3
 
-      //@ts-ignore
-      scene.activeCamera!.radius += -7
-    })
+        //@ts-ignore
+        scene.activeCamera!.radius += -7
+        Playground.setLoading(false)
+      },
+    )
 
-    // engine.hideLoadingUI()
     engine.runRenderLoop(function () {
       scene?.render()
     })
@@ -99,10 +87,11 @@ class Playground {
 }
 
 const Home: NextPageWithLayout = () => {
-
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    Playground.setLoading = setLoading
     const { scene, engine } = Playground.CreateScene(
       canvasRef.current as HTMLCanvasElement,
     )
@@ -132,8 +121,8 @@ const Home: NextPageWithLayout = () => {
       <Head>
         <title>Home | Robots Mobots</title>
       </Head>
-      <animated.div className="h-full w-full" style={styleSpring}>
-        <nav className="flex justify-around items-center m-auto w-[70%] pt-10">
+      <animated.div className="h-full w-[60vw] m-auto " style={styleSpring}>
+        <nav className="flex justify-around items-center h-[15%]  ">
           <Link href="/">
             <Image
               className=""
@@ -151,25 +140,37 @@ const Home: NextPageWithLayout = () => {
             Docs
           </Link>
         </nav>
-        <div className="flex justify-center items-center h-[70%] mx-[10%] mt-[3%]">
-          <div className="flex flex-col items-center ">
-            <div className="text-3xl xl:text-6xl w-[50%]">
-              <p className="feedbackTextColor">
-                Welcome,
-              </p>
-              <p className="text-xl xl:text-xl py-10 text-justify">
+        <div className="flex justify-center items-center">
+          <div className="flex flex-col items-center w-[50%]">
+            <div className="text-3xl xl:text-6xl mb-10 w-full">
+              <p className="feedbackTextColor">Welcome,</p>
+              <p className="text-lg xl:text-xl  text-justify">
                 We are a start-up, provider of high-quality servo motors for a
                 variety of applications. Our servo motors are designed to meet
-                the needs of today&apos;s advanced robotics, 3D printing, and CNC
-                machines. With our advanced technology and commitment to
+                the needs of today&apos;s advanced robotics, 3D printing, and
+                CNC machines. With our advanced technology and commitment to
                 excellence, we strive to provide our customers with the best
                 possible solution for their unique requirements.
               </p>
             </div>
-            <canvas
-              ref={canvasRef}
-              className="focus:outline-none rounded-2xl bg-slate-800 w-[50%]"
-            ></canvas>
+            <div className="w-full h-full flex justify-center text-center items-center  mb-[15vh] 2xl:mb-0">
+              {loading && (
+                <div
+                  className="flex flex-col justify-center items-center bg-base-100 "
+                  id="loading-motor"
+                >
+                  <progress className="progress progress-primary w-56"></progress>
+                  {/* <div className="w-[50px] h-[50px] bg-slate-50  rounded-full animate-ping "></div> */}
+                  <h1 className="text-xl mt-5">Loading 3D asset...</h1>
+                </div>
+              )}
+              <canvas
+                ref={canvasRef}
+                className={`focus:outline-none rounded-2xl bg-slate-800 w-full h-full ${
+                  loading ? ' hidden ' : ''
+                }`}
+              ></canvas>
+            </div>
           </div>
         </div>
       </animated.div>
