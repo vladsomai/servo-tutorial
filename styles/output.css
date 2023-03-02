@@ -3320,11 +3320,6 @@ html {
   background-color: hsl(var(--p) / var(--tw-bg-opacity));
 }
 
-.progress-error::-moz-progress-bar {
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--er) / var(--tw-bg-opacity));
-}
-
 .progress:indeterminate::after {
   --tw-bg-opacity: 1;
   background-color: hsl(var(--n) / var(--tw-bg-opacity));
@@ -3343,11 +3338,6 @@ html {
   background-color: hsl(var(--p) / var(--tw-bg-opacity));
 }
 
-.progress-error:indeterminate::after {
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--er) / var(--tw-bg-opacity));
-}
-
 .progress::-webkit-progress-bar {
   background-color: hsl(var(--n) / var(--tw-bg-opacity));
   --tw-bg-opacity: 0.2;
@@ -3363,11 +3353,6 @@ html {
 .progress-primary::-webkit-progress-value {
   --tw-bg-opacity: 1;
   background-color: hsl(var(--p) / var(--tw-bg-opacity));
-}
-
-.progress-error::-webkit-progress-value {
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--er) / var(--tw-bg-opacity));
 }
 
 @keyframes progress-loading {
@@ -4664,6 +4649,14 @@ html {
   margin-bottom: 2.5rem;
 }
 
+.mb-5 {
+  margin-bottom: 1.25rem;
+}
+
+.mb-\[15vh\] {
+  margin-bottom: 15vh;
+}
+
 .mt-5 {
   margin-top: 1.25rem;
 }
@@ -4698,10 +4691,6 @@ html {
 
 .ml-5 {
   margin-left: 1.25rem;
-}
-
-.mb-5 {
-  margin-bottom: 1.25rem;
 }
 
 .ml-10 {
@@ -4780,20 +4769,12 @@ html {
   margin-top: 0.25rem;
 }
 
-.mb-\[10\%\] {
-  margin-bottom: 10%;
+.mb-\[5vh\] {
+  margin-bottom: 5vh;
 }
 
-.mb-\[30vh\] {
-  margin-bottom: 30vh;
-}
-
-.mb-\[20vh\] {
-  margin-bottom: 20vh;
-}
-
-.mb-\[15vh\] {
-  margin-bottom: 15vh;
+.mb-\[7vh\] {
+  margin-bottom: 7vh;
 }
 
 .block {
@@ -4850,14 +4831,6 @@ html {
 
 .h-\[15\%\] {
   height: 15%;
-}
-
-.h-\[70\%\] {
-  height: 70%;
-}
-
-.h-\[50\%\] {
-  height: 50%;
 }
 
 .h-16 {
@@ -4970,12 +4943,8 @@ html {
   height: 0px;
 }
 
-.h-\[200px\] {
-  height: 200px;
-}
-
-.h-screen {
-  height: 100vh;
+.h-\[50\%\] {
+  height: 50%;
 }
 
 .w-56 {
@@ -4998,16 +4967,12 @@ html {
   width: 60vw;
 }
 
-.w-\[50\%\] {
-  width: 50%;
+.w-\[60\%\] {
+  width: 60%;
 }
 
 .w-3\/6 {
   width: 50%;
-}
-
-.w-\[60\%\] {
-  width: 60%;
 }
 
 .w-\[80\%\] {
@@ -5048,6 +5013,10 @@ html {
 
 .w-4\/6 {
   width: 66.666667%;
+}
+
+.w-\[50\%\] {
+  width: 50%;
 }
 
 .w-8\/12 {
@@ -5123,16 +5092,28 @@ html {
   width: 16rem;
 }
 
-.w-\[400px\] {
-  width: 400px;
+.w-\[200px\] {
+  width: 200px;
 }
 
-.w-screen {
-  width: 100vw;
+.w-\[100px\] {
+  width: 100px;
 }
 
-.w-\[70\%\] {
-  width: 70%;
+.w-\[150px\] {
+  width: 150px;
+}
+
+.w-\[160px\] {
+  width: 160px;
+}
+
+.w-\[170px\] {
+  width: 170px;
+}
+
+.w-\[165px\] {
+  width: 165px;
 }
 
 .max-w-lg {
@@ -5754,6 +5735,11 @@ html {
   background-color: rgb(248 250 252 / var(--tw-bg-opacity));
 }
 
+.bg-base-100 {
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--b1) / var(--tw-bg-opacity));
+}
+
 .bg-slate-800 {
   --tw-bg-opacity: 1;
   background-color: rgb(30 41 59 / var(--tw-bg-opacity));
@@ -6013,21 +5999,6 @@ html {
 .bg-purple-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(147 51 234 / var(--tw-bg-opacity));
-}
-
-.bg-neutral {
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--n) / var(--tw-bg-opacity));
-}
-
-.bg-base-100 {
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--b1) / var(--tw-bg-opacity));
-}
-
-.bg-zinc-100 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(244 244 245 / var(--tw-bg-opacity));
 }
 
 .bg-opacity-50 {
@@ -6478,6 +6449,11 @@ html {
   line-height: 1.75rem;
 }
 
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -6495,11 +6471,6 @@ html {
 
 .text-\[10px\] {
   font-size: 10px;
-}
-
-.text-xl {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
 }
 
 .text-base {
@@ -8700,10 +8671,6 @@ input[type="number"]::-webkit-outer-spin-button {
     margin-bottom: 2rem;
   }
 
-  .lg\:mb-0 {
-    margin-bottom: 0px;
-  }
-
   .lg\:block {
     display: block;
   }
@@ -8716,10 +8683,6 @@ input[type="number"]::-webkit-outer-spin-button {
 @media (min-width: 1280px) {
   .xl\:top-\[25\%\] {
     top: 25%;
-  }
-
-  .xl\:mb-0 {
-    margin-bottom: 0px;
   }
 
   .xl\:block {

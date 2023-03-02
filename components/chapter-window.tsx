@@ -31,19 +31,18 @@ const Chapters = (props: ChaptersProps) => {
     setDisplaiedCommands(props.MotorCommands.current)
   }, [props.MotorCommands])
 
-  const LogoHeight = 50
-  const LogoAspectRatio = 2234 / 676
   return (
     <>
       <div className="h-full bg-base-300 rounded-box mr-2 px-1 flex flex-col items-center">
         <Link href="/">
           <Image
-            className="mt-4"
+            className="w-[165px] h-auto mt-4"
+            loading="eager"
             src={'/Logo.png'}
-            width={LogoHeight * LogoAspectRatio}
-            height={LogoHeight}
+            sizes="100vw"
+            width={0}
+            height={0}
             alt="logo"
-            priority
           ></Image>
         </Link>
         <input

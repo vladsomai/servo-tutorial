@@ -21,17 +21,24 @@ interface ILoadingScreen {
 
 class CustomLoadingScreen implements ILoadingScreen {
   //optional, but needed due to interface definitions
-  public loadingUIBackgroundColor: string = ''
+  public loadingUIBackgroundColor: string = '#FFF'
   public loadingUIText: string = ''
+  private static loadingDiv: HTMLDivElement | null = null
 
   public displayLoadingUI() {}
 
-  public hideLoadingUI() {}
+  public hideLoadingUI() {
+    CustomLoadingScreen.loadingDiv?.classList.add('hidden')
+  }
+
+  public static setLoadingDiv: Function = function (
+    input: HTMLDivElement | null,
+  ): void {
+    CustomLoadingScreen.loadingDiv = input
+  }
 }
 
 class Playground {
-  public static setLoading: Function = function (input: boolean): void {}
-
   public static CreateScene(
     canvas: HTMLCanvasElement,
   ): { scene: BABYLON.Scene; engine: BABYLON.Engine } {
@@ -72,7 +79,7 @@ class Playground {
 
       //@ts-ignore
       scene.activeCamera!.radius += -7
-      Playground.setLoading(false)
+      // engine.hideLoadingUI()
     })
 
     engine.runRenderLoop(function () {
@@ -85,14 +92,13 @@ class Playground {
 
 const Home: NextPageWithLayout = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const [loading, setLoading] = useState(true)
+  const loadingDiv = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    Playground.setLoading = setLoading
+    CustomLoadingScreen.setLoadingDiv(loadingDiv.current)
     const { scene, engine } = Playground.CreateScene(
       canvasRef.current as HTMLCanvasElement,
     )
-
     function handleResize() {
       engine.resize()
     }
@@ -111,8 +117,6 @@ const Home: NextPageWithLayout = () => {
     [],
   )
 
-  const LogoHeight = 50
-  const LogoAspectRatio = 2234 / 676
   return (
     <>
       <Head>
@@ -122,12 +126,13 @@ const Home: NextPageWithLayout = () => {
         <nav className="flex justify-around items-center h-[15%]  ">
           <Link href="/">
             <Image
-              className=""
+              className="w-[165px] h-auto"
+              loading="eager"
               src={'/Logo.png'}
-              width={LogoHeight * LogoAspectRatio}
-              height={LogoHeight}
+              sizes="100vw"
+              width={0}
+              height={0}
               alt="logo"
-              priority
             ></Image>
           </Link>
           <Link
@@ -150,22 +155,18 @@ const Home: NextPageWithLayout = () => {
                 possible solution for their unique requirements.
               </p>
             </div>
-            <div className="w-full h-full flex justify-center text-center items-center  mb-[15vh] 2xl:mb-0">
-              {loading && (
-                <div
-                  className="flex flex-col justify-center items-center bg-base-100 "
-                  id="loading-motor"
-                >
-                  <progress className="progress progress-primary w-56"></progress>
-                  {/* <div className="w-[50px] h-[50px] bg-slate-50  rounded-full animate-ping "></div> */}
-                  <h1 className="text-xl mt-5">Loading 3D asset...</h1>
-                </div>
-              )}
+
+            <div className="relative w-full h-full flex justify-center text-center items-center mb-[15vh] 2xl:mb-0 ">
+              <div
+                ref={loadingDiv}
+                className="absolute w-full h-full flex flex-col justify-center items-center bg-base-100"
+              >
+                <progress className="progress progress-primary w-56"></progress>
+                <h1 className="text-xl mt-5">Loading 3D asset...</h1>
+              </div>
               <canvas
                 ref={canvasRef}
-                className={`focus:outline-none rounded-2xl bg-slate-800 w-full h-full ${
-                  loading ? ' hidden ' : ''
-                }`}
+                className={`focus:outline-none rounded-2xl bg-slate-800 w-full h-full`}
               ></canvas>
             </div>
           </div>
