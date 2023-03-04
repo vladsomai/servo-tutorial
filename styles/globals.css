@@ -3,75 +3,60 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    font-family: "Mukta", sans-serif;
-  }
+    html {
+        font-family: "Mukta", sans-serif;
+    }
 }
 
-/* @media (min-width: 768px) {
-  ::-webkit-scrollbar {
-    width: 9px;
-  }
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
 
-  ::-webkit-scrollbar-track {
+::-webkit-scrollbar-corner {
+    background: rgba(0, 0, 0, 0);
+}
+
+::-webkit-scrollbar-track {
+    background: #1d283a;
     -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
     box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
-    background: #1d283a;
     border-radius: 15px;
-  }
+}
 
-  ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     border-radius: 15px;
-    background: rgb(51 65 85 / var(--tw-bg-opacity));
-  }
+    background: #334155;
+}
 
-  ::-webkit-scrollbar-thumb:hover {
-    background: #666;
-  }
-} */
-
-@media (min-width: 768px) {
-	::-webkit-scrollbar {
-		width: 8px;
-	}
-
-	::-webkit-scrollbar-track {
-		background: #1d283a;
-		-webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
-		box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
-		border-radius: 15px;
-	}
-
-	::-webkit-scrollbar-thumb {
-		border-radius: 15px;
-		background: #334155;
-	}
-
-	::-webkit-scrollbar-thumb:hover {
-		background: #445266;
-	}
+::-webkit-scrollbar-thumb:hover {
+    background: #445266;
 }
 
 input[type="number"] {
-  -webkit-appearance: textfield;
-  -moz-appearance: textfield;
-  appearance: textfield;
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
+    -webkit-appearance: none;
 }
 
 .bg-\[\#3abff8\] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(58 191 248 / var(--tw-bg-opacity));
+    --tw-bg-opacity: 1;
+    background-color: rgb(58 191 248 / var(--tw-bg-opacity));
 }
 
 .feedbackTextColor {
-  font-weight: bold;
-  background: -webkit-linear-gradient(360deg, #74bf44, rgba(116, 191, 68, 0.6));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    background: -webkit-linear-gradient(
+        360deg,
+        #74bf44,
+        rgba(116, 191, 68, 0.6)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }

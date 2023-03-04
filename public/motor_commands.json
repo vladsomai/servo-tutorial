@@ -303,7 +303,7 @@
   {
     "CommandString": "Firmware upgrade",
     "CommandEnum": 23,
-    "Description": "Upgrade one page of flash memory (several of these are needed to do a full firmware upgrade). Documentation to be done later.",
+    "Description": "This command will upgrade the flash memory of the servo motor. Before issuing a firmware upgrade command, you must do some calculations as shown in the examples.",
     "Input": "Firmware file",
     "Output": "Success_response"
   },

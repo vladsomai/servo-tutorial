@@ -10,7 +10,9 @@ import Chapters from "../../components/chapter-window";
 import Main, { MainWindowProps } from "../../components/main-window";
 import {
   MotorCommandsDictionary,
-  CommandsProtocoolChapter,
+  CommandsProtocolChapter,
+  Tutorial,
+  NonCommands
 } from "../../servo-engine/motor-commands";
 import RawMotorCommands from "../../public/motor_commands.json" assert { type: "json" };
 import { useRouter } from "next/router";
@@ -18,7 +20,7 @@ import { useContext } from "react";
 import { GlobalContext } from "../_app";
 import { animated, useSpring } from "react-spring";
 
-const Tutorial = () => {
+const Docs = () => {
   const router = useRouter();
   const value = useContext(GlobalContext);
   const codeAlertWasShown = useRef(false);
@@ -29,7 +31,8 @@ const Tutorial = () => {
 
   useEffect(() => {
     MotorCommands.current = [
-      CommandsProtocoolChapter,
+      Tutorial,
+      CommandsProtocolChapter,
       ...RawMotorCommands,
     ] as MotorCommandsDictionary[];
   }, []);
@@ -53,7 +56,7 @@ const Tutorial = () => {
         router.push("/404");
       }
 
-      if (!codeAlertWasShown.current && CommandID != 100) {
+      if (!codeAlertWasShown.current && ![...NonCommands].includes(['',CommandID])) {
         codeAlertWasShown.current = true;
         value.alert.setTitle("Check out the 'Code examples' section!");
         value.alert.setDescription(
@@ -81,7 +84,7 @@ const Tutorial = () => {
     () => ({
       from: { opacity: 0 },
       to: { opacity: 1 },
-      config: { duration: 1000 },
+    //   config: { duration: 1000 },
     }),
     [],
   )
@@ -90,9 +93,7 @@ const Tutorial = () => {
     <>
       <Head>
         <title>
-          {currentCommandDictionary?.CommandEnum == 100
-            ? "Commands protocol"
-            : `Command ${currentCommandDictionary?.CommandEnum}`}
+          {`Command ${currentCommandDictionary?.CommandEnum} | Robots Mobots`}
         </title>
       </Head>
       {currentCommandDictionary != null ? (
@@ -116,8 +117,8 @@ const Tutorial = () => {
   );
 };
 
-Tutorial.getLayout = function getLayout(page: ReactElement) {
+Docs.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-export default Tutorial;
+export default Docs;

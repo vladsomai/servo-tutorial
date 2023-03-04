@@ -143,6 +143,7 @@ export const Command21 = (props: ChaptersPropsType) => {
       const rawData = props.constructCommand(
         selectedAxis,
         uniqueIdInputBox.current.value + hexaAlias,
+        21,
       )
       props.sendDataToSerialPort(rawData, true, false)
     }
@@ -150,7 +151,7 @@ export const Command21 = (props: ChaptersPropsType) => {
 
   return (
     <>
-      <div className='my-5'>
+      <div className="my-5">
         <p>
           Using &quot;Detect devices&quot; command you will be able to find out
           your motor&apos;s Unique ID, make sure you reset the motor using
@@ -158,9 +159,14 @@ export const Command21 = (props: ChaptersPropsType) => {
           &quot;Set device alias&quot; command.
         </p>
         <p>
-          The Unique ID replied by &quot;Detect devices&quot; can directly be copy-pasted from the log window as is.
+          The Unique ID replied by &quot;Detect devices&quot; can directly be
+          copy-pasted from the log window as is.
         </p>
-        <p>The &quot;Alias&quot; of your motor will also be replied by &quot;Detect devices&quot;, select that alias from the left-most selection box below.</p>
+        <p>
+          The &quot;Alias&quot; of your motor will also be replied by
+          &quot;Detect devices&quot;, select that alias from the left-most
+          selection box below.
+        </p>
       </div>
       <div className="w-full text-center mb-5">
         <div className="flex flex-col xl:flex-row justify-center items-center">

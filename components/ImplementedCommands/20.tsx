@@ -5,7 +5,7 @@ export const Command20 = (props: ChaptersPropsType) => {
     const selectedAxis = props.getAxisSelection()
     if (selectedAxis == '') return
 
-    const rawData = props.constructCommand(selectedAxis, '')
+    const rawData = props.constructCommand(selectedAxis, '', 20)
     props.sendDataToSerialPort(rawData)
   }
   return (
@@ -14,7 +14,7 @@ export const Command20 = (props: ChaptersPropsType) => {
         <div className="flex justify-center">
           <div className="mr-4">{props.children}</div>
           <button className="btn btn-primary btn-sm" onClick={execute_command}>
-            execute
+            detect devices
           </button>
         </div>
       </div>

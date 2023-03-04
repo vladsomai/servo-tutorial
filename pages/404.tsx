@@ -24,7 +24,7 @@ const Home: NextPageWithLayout = () => {
         ></Image>
         <h1 className="text-6xl text-center m-12 "> Page not found!</h1>
         <Link
-          href={`/tutorial/100`}
+          href={`/`}
           className="btn btn-primary btn-xl w-56 mx-auto"
         >
           Get back on track

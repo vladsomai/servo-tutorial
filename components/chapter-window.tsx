@@ -10,7 +10,7 @@ export type ChaptersProps = {
 }
 
 const Chapters = (props: ChaptersProps) => {
-  const [displaiedCommands, setDisplaiedCommands] = useState<
+  const [displayedCommands, setDisplayedCommands] = useState<
     MotorCommandsDictionary[]
   >(props.MotorCommands.current)
   const searchInputBox = useRef<HTMLInputElement | null>(null)
@@ -24,11 +24,11 @@ const Chapters = (props: ChaptersProps) => {
         arr.push(cmd)
       }
     }
-    setDisplaiedCommands(arr)
+    setDisplayedCommands(arr)
   }
 
   useEffect(() => {
-    setDisplaiedCommands(props.MotorCommands.current)
+    setDisplayedCommands(props.MotorCommands.current)
   }, [props.MotorCommands])
 
   return (
@@ -48,17 +48,17 @@ const Chapters = (props: ChaptersProps) => {
         <input
           ref={searchInputBox}
           type="text"
-          placeholder="Search for a command"
+          placeholder="Search"
           className="input input-bordered input-sm my-3 mx-auto"
           onChange={handleSearch}
         />
         <div className="flex flex-col w-full border-opacity-50 overflow-auto">
           <div className="flex flex-col items-center">
-            {displaiedCommands.map((cmd) => {
+            {displayedCommands.map((cmd) => {
               return (
                 <Link
                   key={cmd.CommandEnum}
-                  href={`/tutorial/${cmd.CommandEnum}`}
+                  href={`/docs/${cmd.CommandEnum}`}
                   className={`btn btn-xs mb-2 w-full rounded-sm ${
                     props.currentCommandDictionary.CommandEnum ===
                     cmd.CommandEnum

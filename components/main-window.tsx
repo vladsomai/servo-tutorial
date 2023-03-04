@@ -18,6 +18,7 @@ import {
 import {
   InputOutputObjects,
   MotorCommandsDictionary,
+  NonCommands,
 } from '../servo-engine/motor-commands'
 import { LogType } from '../components/log-window'
 import { MotorAxes } from '../servo-engine/motor-axes'
@@ -405,7 +406,11 @@ const Main = (props: MainWindowProps) => {
   Third byte: Length of the payload
   Payload bytes: arguments that will be applied to the command. Each command has different arguments, in case no arguments are needed you must specify the Third byte as 0x00
   */
-  const constructCommand = (_axis: string, _payload: string): Uint8Array => {
+  const constructCommand = (
+    _axis: string,
+    _payload: string,
+    _currentCommand?: number,
+  ): Uint8Array => {
     //allocate the raw array
     const axisSize = 1
     const commandSize = 1
@@ -416,8 +421,12 @@ const Main = (props: MainWindowProps) => {
 
     initialRawBytes.set([axisCode])
 
-    //get value of command_id
-    initialRawBytes.set([props.currentCommandDictionary.CommandEnum], 1)
+    if (_currentCommand != undefined) {
+      initialRawBytes.set([_currentCommand], 1)
+    } else {
+      //get value of command_id
+      initialRawBytes.set([props.currentCommandDictionary.CommandEnum], 1)
+    }
 
     //get hex value of payload
 
@@ -1019,6 +1028,10 @@ const Main = (props: MainWindowProps) => {
       <div className="flex w-full h-full bg-base-300 rounded-box overflow-auto">
         <Command
           {...props}
+          setAxisSelectionValue={setAxisSelectionValue}
+          getAxisSelection={getAxisSelection}
+          LogAction={LogAction}
+          constructCommand={constructCommand}
           sendDataToSerialPort={sendDataToSerialPort}
           connectToSerialPort={connectToSerialPort}
           disconnectFromSerialPort={disconnectFromSerialPort}
@@ -1027,7 +1040,8 @@ const Main = (props: MainWindowProps) => {
         >
           {currentCommandLayout}
         </Command>
-        {props.currentCommandDictionary.CommandEnum === 100 ? null : (
+        {props.currentCommandDictionary.CommandEnum ===
+        NonCommands.get('Commands protocol') ? null : (
           <Log
             logs={logs}
             mainWindow={props}

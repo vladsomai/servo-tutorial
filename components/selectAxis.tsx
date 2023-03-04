@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { MotorAxes, MotorAxisType } from '../servo-engine/motor-axes'
 
 export type SelectAxisPropsType = {
-  LogAction: Function
+  LogAction: (errorType: string, log: string) => void
   axisSelectionValue: string
   setAxisSelectionValue: Function
 }

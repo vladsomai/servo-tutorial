@@ -334,7 +334,7 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
                   style="light"
                   >
                   <p
-                  className={`inline break-all cursor-pointer ${byte.Color}`}
+                  className={`inline break-all cursor-text ${byte.Color}`}
                   >
                   {byte.Value}
                   </p>

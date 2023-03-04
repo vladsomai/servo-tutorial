@@ -16,10 +16,21 @@ export interface InputOutputObjects {
     TooltipDisplayFormat?: string
 }
 
-export const CommandsProtocoolChapter = {
+export const NonCommands = new Map(
+    [["Commands protocol", 1001], ["Tutorial", 1002]]);
+
+export const CommandsProtocolChapter = {
     "CommandString": "Commands protocol",
-    "CommandEnum": 100,
-    "Description": "Here you will learn how a raw command that is being sent to the servo motor is built.",
+    "CommandEnum": NonCommands.get("Commands protocol"),
+    "Description": "",
+    "Input": "",
+    "Output": ""
+}
+
+export const Tutorial = {
+    "CommandString": "Tutorial",
+    "CommandEnum": NonCommands.get("Tutorial"),
+    "Description": "",
     "Input": "",
     "Output": ""
 }

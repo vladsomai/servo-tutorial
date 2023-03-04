@@ -6,21 +6,28 @@ import { useContext } from 'react'
 import { GlobalContext } from '../pages/_app'
 import { animated, useSpring, config, useTransition } from '@react-spring/web'
 import { ResetCmd, DisableCmd, EnableCmd } from './modalComponents'
-import EnvelopeImg from '../public/envelope-paper.svg'
 import InfoImg from '../public/info-circle-fill.svg'
 
-import { InputOutputObjects } from '../servo-engine/motor-commands'
+import { InputOutputObjects, NonCommands } from '../servo-engine/motor-commands'
 import Code from './CodeHighlight'
+import Tutorial, { TutorialProps } from './ImplementedCommands/tutorial'
+import FeedbackButton from './feedbackButton'
+import { ChaptersPropsType } from './ImplementedCommands/0_1'
 
 export interface CommandWindowProps extends MainWindowProps {
-  sendDataToSerialPort: Function
+  sendDataToSerialPort: (
+    dataToSend: string | Uint8Array,
+    enableSentLogging?: boolean,
+    enableTimoutLogging?: boolean,
+  ) => void
   connectToSerialPort: Function
   disconnectFromSerialPort: Function
   children: ReactElement
   isConnected: boolean
   axisSelectionValue: string
 }
-const Command = (props: CommandWindowProps, children: ReactElement) => {
+
+const Command = (props: TutorialProps, children: ReactElement) => {
   const commandsWithShortcuts = [0, 1, 27]
   const globalContext = useContext(GlobalContext)
   const iconSize = 25
@@ -68,7 +75,33 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
     }
   }, [props.currentCommandDictionary.CommandEnum, api])
 
-  if (props.currentCommandDictionary.CommandEnum !== 100)
+  if (
+    props.currentCommandDictionary.CommandEnum === NonCommands.get('Tutorial')
+  )
+    return (
+      <animated.div
+        style={styleSpring}
+        className={`overflow-auto relative px-5 w-6/12`}
+      >
+        <FeedbackButton />
+
+        <Tutorial {...props} />
+      </animated.div>
+    )
+  else if (
+    props.currentCommandDictionary.CommandEnum ===
+    NonCommands.get('Commands protocol')
+  )
+    return (
+      <div className={`overflow-auto relative`}>
+        <CommandsProtocol
+          MotorCommands={props.MotorCommands}
+          currentCommandDictionary={props.currentCommandDictionary}
+          currentChapter={props.currentChapter}
+        />
+      </div>
+    )
+  else
     return (
       <animated.div
         style={styleSpring}
@@ -96,22 +129,7 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
             </label>
           </div>
         ) : null}
-        <div className="bg-primary rounded-full absolute top-4 right-4 pt-2 px-2 m-0">
-          <button
-            title="Feedback"
-            onClick={() => {
-              window.open('/feedback', '_blank', 'noopener,noreferrer')
-            }}
-          >
-            <Image
-              src={EnvelopeImg}
-              width={25}
-              height={25}
-              alt="feedback"
-              priority
-            ></Image>
-          </button>
-        </div>
+        <FeedbackButton />
         <div>
           <div className="mb-5 mt-16">
             <p className="text-center mb-5 text-2xl">
@@ -183,16 +201,6 @@ const Command = (props: CommandWindowProps, children: ReactElement) => {
           currentAxis={props.axisSelectionValue}
         />
       </animated.div>
-    )
-  else
-    return (
-      <div className={`overflow-auto relative`}>
-        <CommandsProtocol
-          MotorCommands={props.MotorCommands}
-          currentCommandDictionary={props.currentCommandDictionary}
-          currentChapter={props.currentChapter}
-        />
-      </div>
     )
 }
 export default Command

@@ -74,7 +74,7 @@ const Trail: React.FC<{ open: boolean; children: ReactElement[] }> = ({
     from: { opacity: 0, x: 20, height: 0 },
   })
   return (
-    <div className="text-center mt-[1%]">
+    <div className="text-center 2xl:mt-[1%]">
       {trail.map(({ height, ...style }, index) => (
         <a.div key={index} style={style}>
           <a.div style={{ height }}>{items[index]}</a.div>
@@ -249,7 +249,7 @@ const Feedback: NextPageWithLayout = () => {
     <>
       <Head>
         <title>Feedback | Robots Mobots</title>
-        <meta content="Feedback page" name="Servo tutorial" />
+        <meta content="Feedback page | Robots Mobots" name="description" />
       </Head>
 
       <animated.div
@@ -260,10 +260,11 @@ const Feedback: NextPageWithLayout = () => {
           <>
             <div className="absolute bottom-2 left-[20%] z-[-1]">
               <Image
-                quality={100}
-                className=""
-                width={imgWidth}
-                height={imgHeight}
+                className={`w-[400px] 2xl:w-[712px] h-auto`}
+                loading="eager"
+                width={0}
+                height={0}
+                sizes="100vw"
                 src={BoyImg}
                 alt="boy illustration"
                 priority
@@ -271,10 +272,11 @@ const Feedback: NextPageWithLayout = () => {
             </div>
             <div className="absolute bottom-0 right-[10%] z-[-1]">
               <Image
-                quality={100}
-                className=""
-                width={imgWidth}
-                height={imgHeight}
+                className="w-[400px] 2xl:w-[712px] h-auto"
+                loading="eager"
+                width={0}
+                height={0}
+                sizes="100vw"
                 src={GirlImg}
                 alt="girl illustration"
                 priority
@@ -284,8 +286,10 @@ const Feedback: NextPageWithLayout = () => {
         )}
 
         <Trail open={true}>
-          <span className="feedbackTextColor text-center md:text-3xl xl:text-5xl 2xl:text-7xl">We care.</span>
-          <span className="feedbackTextColor text-center md:text-3xl xl:text-5xl 2xl:text-7xl">
+          <span className="feedbackTextColor text-center md:text-2xl xl:text-3xl 2xl:text-7xl">
+            We care.
+          </span>
+          <span className="feedbackTextColor text-center md:text-2xl xl:text-3xl 2xl:text-7xl">
             That&apos;s why we need your feedback.
           </span>
         </Trail>
@@ -297,7 +301,7 @@ const Feedback: NextPageWithLayout = () => {
           <input
             required
             name="email"
-            className="input input-bordered w-full max-w-sm"
+            className="input input-sm 2xl:input-lg input-bordered w-full max-w-sm"
             placeholder="Your email"
             type="email"
           ></input>
@@ -305,9 +309,9 @@ const Feedback: NextPageWithLayout = () => {
             required
             name="message"
             placeholder="What should we change?"
-            className="textarea textarea-bordered w-full h-[40%] max-w-sm"
+            className="textarea textarea-bordered w-full h-[30%] 2xl:h-[40%] max-w-sm textarea-xs 2xl:textarea-lg"
           ></textarea>
-          <label className="w-full max-w-sm cursor-pointer text-center">
+          <label className="w-full max-w-sm cursor-pointer text-center text-xs 2xl:text-lg">
             Images or documents help us diagnose issues faster, attach anything
             that can give us more insight.
             <input
@@ -322,7 +326,7 @@ const Feedback: NextPageWithLayout = () => {
           </label>
           <button
             type="submit"
-            className={`btn btn-primary ${
+            className={`btn btn-primary btn-xs 2xl:btn-md ${
               waitingFeedbackReply ? 'loading' : ''
             }`}
             disabled={waitingFeedbackReply ? true : false}

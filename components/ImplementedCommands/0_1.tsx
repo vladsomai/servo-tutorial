@@ -8,7 +8,11 @@ export interface ChaptersPropsType extends MainWindowProps {
     enableTimoutLogging?: boolean,
   ) => void
   LogAction: (errorType: string, log: string) => void
-  constructCommand: (_axis: string, _payload: string) => Uint8Array
+  constructCommand: (
+    _axis: string,
+    _payload: string,
+    _currentCommand?: number,
+  ) => Uint8Array
   getAxisSelection: () => string
   children: ReactElement
 }
