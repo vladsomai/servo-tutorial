@@ -188,9 +188,9 @@ function Tutorial(props: TutorialProps) {
                             a better user experience, you can hover with the
                             mouse over the sent and received bytes in the Log
                             Window to quickly understand what each byte means.
-                            Some received bytes are dinamically converted to
-                            ASCII, decimal or strings to quickly translate the
-                            hexadecimal to something more human understandable.
+                            Some received bytes are dynamically converted to
+                            ASCII, decimal, or strings to quickly translate the
+                            hexadecimal to something more human-understandable.
                             <br />
                             Note: The Log Window always displays data in
                             little-endian format. That&apos;s the format we use
@@ -199,7 +199,7 @@ function Tutorial(props: TutorialProps) {
                         <p>The Log Window header contains 5 buttons:</p>
                         <ol>
                             <li>
-                                Connect/Disconnect: cleary informs the user
+                                Connect/Disconnect: clearly informs the user
                                 whether he/she is currently connected to the
                                 servo motor.
                                 <br /> When this button is green, you can send
@@ -208,20 +208,20 @@ function Tutorial(props: TutorialProps) {
                                 in order to send any commands.
                             </li>
                             <li>
-                                DISABLE FETS: disables the MOSFETS transistors.
+                                DISABLE FETS: disables the MOSFETs transistors.
                                 Those transistors are used to control whether
                                 the motor itself can receive current. <br />
-                                Note: The motor has the MOSFETS disabled by
+                                Note: The motor has the MOSFETs disabled by
                                 default when your power it on or after issuing a
                                 system reset command.
                             </li>
                             <li>
-                                ENABLE FETS: enables the MOSFETS transistors.
-                                Before issuing any movement command, the MOSFETS
+                                ENABLE FETS: enables the MOSFETs transistors.
+                                Before issuing any movement command, the MOSFETs
                                 must be enabled in order for the motor to spin.
                                 <br />
                                 Note: When you press the physical rotate button
-                                from the PCBA, the MOSFETS will be enabled by
+                                from the PCBA, the MOSFETs will be enabled by
                                 the firmware and it will remain enabled until
                                 power off or system reset.
                             </li>
@@ -249,7 +249,7 @@ function Tutorial(props: TutorialProps) {
                             commands, you must find your motor alias.
                             <br />
                             The alias is simply an ASCII character that
-                            identifies your motor. Currently we use E, X, Y, Z
+                            identifies your motor. Currently, we use E, X, Y and Z
                             aliases.
                         </p>
                         <p>
@@ -273,7 +273,7 @@ function Tutorial(props: TutorialProps) {
                         </Command20>
                         <p>
                             The motor will respond with its unique id, current
-                            alias and a CRC32 payload that is not currently
+                            alias, and a CRC32 payload that is not currently
                             supported.
                             <br />
                             Hover over the alias byte to see its ASCII
@@ -315,7 +315,7 @@ function Tutorial(props: TutorialProps) {
                         <p>
                             All good you may say, but our main scope is to
                             actually make some metal spin. Let&apos;s see how we
-                            can acomplish that together.
+                            can accomplish that together.
                         </p>
                         <p>
                             Using the TRAPEZOID MOVE command, we can make the
@@ -328,8 +328,8 @@ function Tutorial(props: TutorialProps) {
                                 Click on the &apos;ENABLE FETS&apos; button from
                                 the Log Window.
                             </li>
-                            <li>Set the postion to -2.</li>
-                            <li> Set the time limit to 2.</li>
+                            <li>Set the position to -2.</li>
+                            <li>Set the time limit to 2.</li>
                             <li>
                                 Select the correct alias detected in our
                                 previous step.
@@ -337,14 +337,14 @@ function Tutorial(props: TutorialProps) {
                         </ol>
                         <p>
                             After you press the execute button the motor should
-                            start spining for 2 seconds and respond with 0x 52
+                            start spinning for 2 seconds and respond with 0x 52
                             00 00.
                         </p>
                         <p>
                             You can see below the actual conversions that are
-                            made to translate the human understandable units to
+                            made to translate the human-understandable units to
                             something that our MCU understands and executes, we
-                            advise you check out our COMMANDS PROTOCOL page to
+                            advise you to check out our COMMANDS PROTOCOL page to
                             learn more.
                         </p>
                         <Command2
@@ -366,9 +366,9 @@ function Tutorial(props: TutorialProps) {
                         <div className="text-center w-full flex flex-col justify-center items-center">
                             <h2>
                                 {" "}
-                                Congrats for making it this far! We now belive
+                                Congrats on making it this far! We now believe
                                 you are ready to explore the rest of the
-                                commands by your own.
+                                commands on your own.
                             </h2>
                             <Image
                                 className="w-[200px] h-auto"

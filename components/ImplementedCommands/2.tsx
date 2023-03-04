@@ -305,7 +305,7 @@ export const Command2 = (props: ChaptersPropsType) => {
                         </li>
                         <li>
                             Taking the output from step 3 and transforming it to
-                            32-bit unsigned integer with little-endian fromat
+                            32-bit unsigned integer with little-endian format
                             <br></br>
                             {`Input: ${timesteps.toString()} Timesteps`}
                             <br></br>
