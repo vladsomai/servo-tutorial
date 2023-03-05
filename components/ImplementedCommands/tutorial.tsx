@@ -199,13 +199,13 @@ function Tutorial(props: TutorialProps) {
                         <p>The Log Window header contains 5 buttons:</p>
                         <ol>
                             <li>
-                                Connect/Disconnect: clearly informs the user
-                                whether he/she is currently connected to the
-                                servo motor.
+                                Connect/Disconnect: informs the user whether
+                                he/she is currently connected to the servo
+                                motor.
                                 <br /> When this button is green, you can send
                                 commands.
                                 <br /> When the button is red, you must connect
-                                in order to send any commands.
+                                to send any commands.
                             </li>
                             <li>
                                 DISABLE FETS: disables the MOSFETs transistors.
@@ -218,7 +218,7 @@ function Tutorial(props: TutorialProps) {
                             <li>
                                 ENABLE FETS: enables the MOSFETs transistors.
                                 Before issuing any movement command, the MOSFETs
-                                must be enabled in order for the motor to spin.
+                                must be enabled for the motor to spin.
                                 <br />
                                 Note: When you press the physical rotate button
                                 from the PCBA, the MOSFETs will be enabled by
@@ -242,6 +242,14 @@ function Tutorial(props: TutorialProps) {
                                 Window.
                             </li>
                         </ol>
+                        <p>
+                            Note: When you press DISABLE/ENABLE FETS or GET
+                            STATUS buttons, the actual command is sent to the
+                            currently selected alias, learn more about alias
+                            in the next section.
+                            <br /> When you navigate on our site, we preserve
+                            the state of the alias you selected.
+                        </p>
                         <hr></hr>
                         <h2>Find out your device alias</h2>
                         <p>
@@ -249,8 +257,8 @@ function Tutorial(props: TutorialProps) {
                             commands, you must find your motor alias.
                             <br />
                             The alias is simply an ASCII character that
-                            identifies your motor. Currently, we use E, X, Y and Z
-                            aliases.
+                            identifies your motor. Currently, we use E, X, Y and
+                            Z aliases.
                         </p>
                         <p>
                             Let&apos;s execute the DETECT DEVICES command with
@@ -313,9 +321,9 @@ function Tutorial(props: TutorialProps) {
                         <hr />
                         <h2>Custom motor movement</h2>
                         <p>
-                            All good you may say, but our main scope is to
-                            actually make some metal spin. Let&apos;s see how we
-                            can accomplish that together.
+                            All good you may say, but our main scope is to make
+                            some metal spin. Let&apos;s see how we can
+                            accomplish that together.
                         </p>
                         <p>
                             Using the TRAPEZOID MOVE command, we can make the
@@ -344,8 +352,8 @@ function Tutorial(props: TutorialProps) {
                             You can see below the actual conversions that are
                             made to translate the human-understandable units to
                             something that our MCU understands and executes, we
-                            advise you to check out our COMMANDS PROTOCOL page to
-                            learn more.
+                            advise you to check out our COMMANDS PROTOCOL page
+                            to learn more.
                         </p>
                         <Command2
                             {...props}
