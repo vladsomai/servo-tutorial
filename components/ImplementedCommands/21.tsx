@@ -176,7 +176,7 @@ export const Command21 = (props: ChaptersPropsType) => {
             ref={uniqueIdInputBox}
             type="text"
             placeholder="Unique ID in hexadecimal"
-            className="input input-bordered w-full max-w-[60%] 2xl:max-w-[50%] input-sm m-2"
+            className="input input-bordered w-full max-w-[50%] 2xl:max-w-[30%] input-sm m-2"
             onChange={handleUniqueID}
           />
           <input
