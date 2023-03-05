@@ -65,7 +65,7 @@ const Docs = () => {
                     <>
                         <p>
                             The code automatically changes when you select a
-                            different axis, change the parameters or navigate
+                            different axis/alias, change the parameters or navigate
                             through the commands.
                         </p>
                     </>

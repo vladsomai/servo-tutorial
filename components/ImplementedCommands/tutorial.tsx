@@ -20,6 +20,7 @@ function Tutorial(props: TutorialProps) {
         () => ({
             from: { opacity: 0 },
             to: { opacity: 1 },
+            config: { duration: 1000 },
         }),
         []
     );
@@ -245,8 +246,8 @@ function Tutorial(props: TutorialProps) {
                         <p>
                             Note: When you press DISABLE/ENABLE FETS or GET
                             STATUS buttons, the actual command is sent to the
-                            currently selected alias, learn more about alias
-                            in the next section.
+                            currently selected alias, learn more about alias in
+                            the next section.
                             <br /> When you navigate on our site, we preserve
                             the state of the alias you selected.
                         </p>
