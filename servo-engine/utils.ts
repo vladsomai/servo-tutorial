@@ -698,7 +698,7 @@ export const alterCodeSample = (_currentCommand: number, _currentAxis: string, c
         }
     })
 
-    const currentAxisASCIICode = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(_currentAxis == 'All axes' ? 255 : _currentAxis.charCodeAt(0), 1));
+    const currentAxisASCIICode = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(parseInt(_currentAxis), 1));
     const currentCommandInHex = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(_currentCommand, 1))
     let alteredCodeSample = ''
 

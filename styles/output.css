@@ -4767,6 +4767,10 @@ html {
   margin-top: 0.25rem;
 }
 
+.mb-0 {
+  margin-bottom: 0px;
+}
+
 .block {
   display: block;
 }
@@ -5118,8 +5122,8 @@ html {
   max-width: 20rem;
 }
 
-.max-w-\[60\%\] {
-  max-width: 60%;
+.max-w-\[50\%\] {
+  max-width: 50%;
 }
 
 .max-w-xl {
@@ -5148,14 +5152,6 @@ html {
 
 .max-w-7xl {
   max-width: 80rem;
-}
-
-.max-w-\[40\%\] {
-  max-width: 40%;
-}
-
-.max-w-\[50\%\] {
-  max-width: 50%;
 }
 
 .flex-none {
@@ -6391,6 +6387,10 @@ html {
   padding-left: 0.5rem;
 }
 
+.pb-0 {
+  padding-bottom: 0px;
+}
+
 .text-left {
   text-align: left;
 }
@@ -6705,6 +6705,11 @@ html {
 .text-gray-200 {
   --tw-text-opacity: 1;
   color: rgb(229 231 235 / var(--tw-text-opacity));
+}
+
+.text-warning {
+  --tw-text-opacity: 1;
+  color: hsl(var(--wa) / var(--tw-text-opacity));
 }
 
 .underline {
@@ -8704,16 +8709,12 @@ input[type="number"]::-webkit-outer-spin-button {
     width: 50%;
   }
 
-  .\32xl\:max-w-\[50\%\] {
-    max-width: 50%;
+  .\32xl\:max-w-\[30\%\] {
+    max-width: 30%;
   }
 
   .\32xl\:max-w-\[17\%\] {
     max-width: 17%;
-  }
-
-  .\32xl\:max-w-\[30\%\] {
-    max-width: 30%;
   }
 
   .\32xl\:text-7xl {

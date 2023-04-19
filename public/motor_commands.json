@@ -244,7 +244,7 @@
       },
       {
         "Description": "u8_alias: The alias of the device that has this unique ID.",
-        "TooltipDisplayFormat": "%c"
+        "TooltipDisplayFormat": "%d"
       },
       {
         "Description": "crc32: A CRC32 value for this packet. This is used to verify that the response is correct. However, currently this is hardcoded as 0x04030201",
@@ -262,8 +262,8 @@
         "TooltipDisplayFormat": "%x"
       },
       {
-        "Description": "u8_alias: The alias (short one byte ID) such as X, Y, Z, E, etc. Cannot be R because this is reserved for a response message.",
-        "TooltipDisplayFormat": "%c"
+        "Description": "u8_alias: The alias (short one byte ID) ranging from 0 to 253. Cannot be 254 or 255 because those are reserved.",
+        "TooltipDisplayFormat": "%d"
       }
     ],
     "Output": "Success_response"

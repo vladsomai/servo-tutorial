@@ -8,6 +8,7 @@ import { ChaptersPropsType } from "./0_1";
 import SelectAxis, { SelectAxisPropsType } from "../selectAxis";
 import { CommandWindowProps } from "../command-window";
 import { Command20 } from "./20";
+import { Command21 } from "./21";
 import { Command2 } from "./2";
 
 export interface TutorialProps
@@ -193,9 +194,14 @@ function Tutorial(props: TutorialProps) {
                             ASCII, decimal, or strings to quickly translate the
                             hexadecimal to something more human-understandable.
                             <br />
-                            Note: The Log Window always displays data in
-                            little-endian format. That&apos;s the format we use
-                            to send and receive data.
+                        </p>
+                        <p className="font-extrabold text-warning inline">
+                            Note:{" "}
+                        </p>
+                        <p className="inline">
+                            The Log Window always displays data in little-endian
+                            format. That&apos;s the format we use to send and
+                            receive data.
                         </p>
                         <p>The Log Window header contains 5 buttons:</p>
                         <ol>
@@ -212,19 +218,25 @@ function Tutorial(props: TutorialProps) {
                                 DISABLE FETS: disables the MOSFETs transistors.
                                 Those transistors are used to control whether
                                 the motor itself can receive current. <br />
-                                Note: The motor has the MOSFETs disabled by
-                                default when your power it on or after issuing a
-                                system reset command.
+                                <p className="font-extrabold text-warning inline">
+                                    Note:{" "}
+                                </p>
+                                The motor has the MOSFETs disabled by default
+                                when your power it on or after issuing a system
+                                reset command.
                             </li>
                             <li>
                                 ENABLE FETS: enables the MOSFETs transistors.
                                 Before issuing any movement command, the MOSFETs
                                 must be enabled for the motor to spin.
                                 <br />
-                                Note: When you press the physical rotate button
-                                from the PCBA, the MOSFETs will be enabled by
-                                the firmware and it will remain enabled until
-                                power off or system reset.
+                                <p className="font-extrabold text-warning inline">
+                                    Note:{" "}
+                                </p>
+                                When you press the physical rotate button from
+                                the PCBA, the MOSFETs will be enabled by the
+                                firmware and it will remain enabled until power
+                                off or system reset.
                             </li>
                             <li>
                                 GET STATUS: Sends the command that receives the
@@ -243,11 +255,14 @@ function Tutorial(props: TutorialProps) {
                                 Window.
                             </li>
                         </ol>
-                        <p>
-                            Note: When you press DISABLE/ENABLE FETS or GET
-                            STATUS buttons, the actual command is sent to the
-                            currently selected alias, learn more about alias in
-                            the next section.
+                        <p className="font-extrabold text-warning inline">
+                            Note:{" "}
+                        </p>
+                        <p className="inline">
+                            When you press DISABLE/ENABLE FETS or GET STATUS
+                            buttons, the actual command is sent to the currently
+                            selected alias, learn more about alias in the next
+                            section.
                             <br /> When you navigate on our site, we preserve
                             the state of the alias you selected.
                         </p>
@@ -257,13 +272,14 @@ function Tutorial(props: TutorialProps) {
                             Before you can use the docs to test supported
                             commands, you must find your motor alias.
                             <br />
-                            The alias is simply an ASCII character that
-                            identifies your motor. Currently, we use E, X, Y and
-                            Z aliases.
+                            The alias is simply a number ranging from 0 to 253
+                            that you can set to identify your motor.
                         </p>
                         <p>
                             Let&apos;s execute the DETECT DEVICES command with
-                            the alias dropdown box set to &apos;All axes&apos;
+                            the alias input box set to &apos;255&apos;. That
+                            means we will send the detect devices command to all
+                            devices connected to the serial port.
                         </p>
                         <Command20
                             {...props}
@@ -285,25 +301,94 @@ function Tutorial(props: TutorialProps) {
                             alias, and a CRC32 payload that is not currently
                             supported.
                             <br />
-                            Hover over the alias byte to see its ASCII
+                            Hover over the alias byte to see its decimal
                             representation, keep it in mind because we will use
                             it in our future exploration.
                         </p>
                         <hr />
+
+                        <h2>Set device alias</h2>
+                        <div className="my-5">
+                            <p>
+                                Using &quot;Detect devices&quot; command you was
+                                able to find out your motor&apos;s Unique ID and
+                                the current alias.
+                            </p>
+                            <p>
+                                The Unique ID replied by &quot;Detect
+                                devices&quot; can be copy-pasted directly from
+                                the log window as is.
+                            </p>
+                            <p>
+                                The &quot;Alias&quot; of your motor was replied
+                                by &quot;Detect devices&quot;, hover over the
+                                alias byte to see the decimal representation and
+                                set that alias to the left-most input box below.
+                            </p>
+                            <p>
+                                Set the new alias to any value ranging from 0 to
+                                253 and press execute.
+                            </p>
+                            <p className="font-extrabold text-warning mb-0 pb-0">
+                                Note:
+                            </p>
+                            <ul className="my-0">
+                                <li className="my-0">
+                                    <p className="my-0">
+                                        Alias 254 is reserved for response
+                                        messages and cannot be used.
+                                    </p>
+                                </li>
+                                <li className="my-0">
+                                    <p className="my-0">
+                                        Alias 255 is reserved for sending a
+                                        command to all connected aliases and
+                                        cannot be used. When you want to use
+                                        multiple motors in a chain, sending a
+                                        command with the 255 alias will send
+                                        that command to all devices chained
+                                        together.
+                                    </p>
+                                </li>
+                                <li className="my-0">
+                                    <p className="my-0">
+                                        Make sure you reset the motor using
+                                        &quot;System reset&quot; command before
+                                        and after issuing the &quot;Set device
+                                        alias&quot; command.
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                        <Command21
+                            {...props}
+                            getAxisSelection={props.getAxisSelection}
+                            sendDataToSerialPort={props.sendDataToSerialPort}
+                            LogAction={props.LogAction}
+                            constructCommand={props.constructCommand}
+                        >
+                            <SelectAxis
+                                LogAction={props.LogAction}
+                                axisSelectionValue={props.axisSelectionValue}
+                                setAxisSelectionValue={
+                                    props.setAxisSelectionValue
+                                }
+                            />
+                        </Command21>
+                        <hr />
+
                         <h2>Ping your alias</h2>
                         <p>
                             You can send some arbitrary data to the motor using
                             the PING COMMAND, it shall reply exactly the same
                             data you send.
                             <br />
-                            Select the alias you just identified with the DETECT
-                            DEVICES command and change the current value to
-                            &apos;HelloWorld&apos;.
+                            Use the alias you just set and change the current
+                            value to &apos;HelloWorld&apos;.
                             <br />
                             Hover over the response to verify the reply matches
                             your input.
                         </p>
-
                         <Command31
                             {...props}
                             getAxisSelection={props.getAxisSelection}

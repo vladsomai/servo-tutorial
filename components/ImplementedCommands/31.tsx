@@ -57,7 +57,6 @@ export const Command31 = (props: ChaptersPropsType) => {
             const selectedAxis = props.getAxisSelection();
             if (selectedAxis == "") return;
 
-            console.log(value.codeExamplePayload.Bytes);
             if (value.codeExamplePayload.Bytes.length / 2 != 10) {
                 props.LogAction(
                     ErrorTypes.NO_ERR,
