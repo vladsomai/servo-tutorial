@@ -76,7 +76,7 @@ export const Command21 = (props: ChaptersPropsType) => {
         const newAlias = convertAxisSelectionValue(aliasInputBox.current.value);
 
         if (isNaN(newAlias)) {
-            // aliasInputBox.current.value = "0";
+            aliasInputBox.current.value = "0";
             props.LogAction(
                 ErrorTypes.ERR1001,
                 "Alias must either be a valid ASCII character or a number ranging from 0 to 253!"
