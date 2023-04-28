@@ -263,7 +263,7 @@
       },
       {
         "Description": "u8_alias: The alias (short one byte ID) ranging from 0 to 253. Cannot be 254 or 255 because those are reserved.",
-        "TooltipDisplayFormat": "%d"
+        "TooltipDisplayFormat": "%d,%c"
       }
     ],
     "Output": "Success_response"
