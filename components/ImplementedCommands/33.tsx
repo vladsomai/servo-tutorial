@@ -1,6 +1,18 @@
 import { ChaptersPropsType } from "./0_1";
+import { useContext, useEffect } from "react";
+import { GlobalContext } from "../../pages/_app";
 
 export const Command33 = (props: ChaptersPropsType) => {
+    const value = useContext(GlobalContext);
+
+    useEffect(
+        (setbytes = value.codeExamplePayload.setBytes) => {
+            setbytes("");
+            return () => setbytes();
+        },
+        [value.codeExamplePayload.setBytes]
+    );
+
     const execute_command = () => {
         const selectedAxis = props.getAxisSelection();
         if (selectedAxis == "") return;
@@ -8,6 +20,7 @@ export const Command33 = (props: ChaptersPropsType) => {
         const rawData = props.constructCommand(selectedAxis, "");
         props.sendDataToSerialPort(rawData);
     };
+
     return (
         <>
             <div className="w-full text-center mb-5">

@@ -40,14 +40,10 @@ export const Command31 = (props: ChaptersPropsType) => {
         onPingBoxModified();
     }, [onPingBoxModified]);
 
-    // useEffect(() => {
-    //     value.codeExamplePayload.setBytes()
-    // }, []);
-
     useEffect(
         (setbytes = value.codeExamplePayload.setBytes) => {
             handlePingbox();
-            return () => setbytes(initialText);
+            return () => setbytes("");
         },
         [value.codeExamplePayload.setBytes, handlePingbox]
     );
