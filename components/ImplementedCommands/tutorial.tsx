@@ -251,6 +251,10 @@ function Tutorial(props: TutorialProps) {
                                 <Link href="/docs/16">here</Link>.
                             </li>
                             <li>
+                                RESET: press this button to reset the current
+                                axis / alias.
+                            </li>
+                            <li>
                                 CLEAR: press this button to clear the Log
                                 Window.
                             </li>
