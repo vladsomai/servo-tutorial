@@ -14,6 +14,7 @@ import {
     stringToUint8Array,
     ErrorTypes,
     getCurrentBrowser,
+    Char,
 } from "../servo-engine/utils";
 import {
     InputOutputObjects,
@@ -185,7 +186,12 @@ const Main = (props: MainWindowProps) => {
             setAxisCode(0);
             axisCodeRef.current = 0;
         } else {
-            const axis = parseInt(axisSelectionValue);
+            let axis = parseInt(axisSelectionValue);
+
+            if (axisSelectionValue.length == 1) {
+                axis = new Char(axisSelectionValue).getDecimalASCII_Code();
+            }
+         
             axisCodeRef.current = axis;
             setAxisCode(axis);
         }

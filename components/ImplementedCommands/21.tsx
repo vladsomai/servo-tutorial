@@ -3,6 +3,7 @@ import {
     Char,
     ErrorTypes,
     Uint8ArrayToString,
+    convertAxisSelectionValue,
     transfNumberToUint8Arr,
 } from "../../servo-engine/utils";
 import { ChaptersPropsType } from "./0_1";
@@ -67,8 +68,48 @@ export const Command21 = (props: ChaptersPropsType) => {
     const handleAlias = () => {
         if (!aliasInputBox.current) return;
 
+        if (aliasInputBox.current.value == "") {
+            aliasInputBox.current.value = "";
+            return;
+        }
+
+        const newAlias = convertAxisSelectionValue(aliasInputBox.current.value);
+
+        if (isNaN(newAlias)) {
+            // aliasInputBox.current.value = "0";
+            props.LogAction(
+                ErrorTypes.ERR1001,
+                "Alias must either be a valid ASCII character or a number ranging from 0 to 253!"
+            );
+            return;
+        }
+
+        if (newAlias === 254) {
+            aliasInputBox.current.value = "0";
+            props.LogAction(
+                ErrorTypes.ERR1001,
+                "Alias 254 is reserved for response messages!"
+            );
+            return;
+        }
+
+        if (newAlias < 0) {
+            aliasInputBox.current.value = "0";
+            props.LogAction(
+                ErrorTypes.ERR1001,
+                "Supported axes range from 0 to 253!"
+            );
+        } else if (newAlias > 253) {
+            aliasInputBox.current.value = "253";
+
+            props.LogAction(
+                ErrorTypes.ERR1001,
+                "Supported axes range from 0 to 253!"
+            );
+        }
+
         const tempHexaAlias = Uint8ArrayToString(
-            transfNumberToUint8Arr(parseInt(aliasInputBox.current.value), 1)
+            transfNumberToUint8Arr(newAlias, 1)
         );
 
         setHexAlias(tempHexaAlias);
@@ -84,7 +125,7 @@ export const Command21 = (props: ChaptersPropsType) => {
                 ErrorTypes.NO_ERR,
                 `Cannot use ${selectedAxis} as the target alias!`
             );
-            return
+            return;
         }
 
         if (

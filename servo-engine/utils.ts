@@ -405,6 +405,8 @@ export const getNoOfBytesFromType = () => {
  */
 export const getDisplayFormat = (format: string, hexString: string, typeWithDescription: string = "") => {
 
+    const formatArr = format.split(',');
+
     if (typeWithDescription.length) {
         // version_number
         const indexOfColumn = typeWithDescription.indexOf(":");
@@ -415,58 +417,65 @@ export const getDisplayFormat = (format: string, hexString: string, typeWithDesc
     }
 
     let res = '';
-    let convertedTo = " Result converted to ";
+    const preText = " Result converted to "
+    let convertedTo = '';
+    let result: string[] = []
+    for (format of formatArr) {
+        convertedTo = ''
+        switch (format) {
+            case '%c':
+                convertedTo += "char: "
+                res = '\'' + hexStringToASCII(
+                    hexString
+                ) + '\''
+                break
+            case '%s':
+                convertedTo += "string: "
+                res = '\'' + hexStringToASCII(
+                    hexString
+                ) + '\''
+                break
+            case '%d':
+                convertedTo += "decimal: "
+                res = hexStringToInt32(
+                    hexString, false
+                ).toString()
+                break
+            case '%u':
+                convertedTo += "unsigned decimal: "
+                res = hexStringToInt32(
+                    hexString, true
+                ).toString()
+                break
+            case '%b':
+                const number = hexStringToInt32(hexString, true);
+                const binaryStr = dec2bin(number as number)
+                convertedTo += "binary: "
+                res = binaryStr
+                break
+            case '%uvn':
+                convertedTo += "version number: "
+                res = getVersionNumber(
+                    hexString
+                )
+                break
+            case '%x':
+                convertedTo += "hexadecimal: "
+                res = '0x' + littleEndianToBigEndian(hexString)
+                break
+            default:
+                res = '0'
+                break
+        }
 
-    switch (format) {
-        case '%c':
-            convertedTo += "char: "
-            res = '\'' + hexStringToASCII(
-                hexString
-            ) + '\''
-            break
-        case '%s':
-            convertedTo += "string: "
-            res = '\'' + hexStringToASCII(
-                hexString
-            ) + '\''
-            break
-        case '%d':
-            convertedTo += "decimal: "
-            res = hexStringToInt32(
-                hexString, false
-            ).toString()
-            break
-        case '%u':
-            convertedTo += "unsigned decimal: "
-            res = hexStringToInt32(
-                hexString, true
-            ).toString()
-            break
-        case '%b':
-            const number = hexStringToInt32(hexString, true);
-            const binaryStr = dec2bin(number as number)
-            convertedTo += "binary: "
-            res = binaryStr
-            break
-        case '%uvn':
-            convertedTo += "version number: "
-            res = getVersionNumber(
-                hexString
-            )
-            break
-        case '%x':
-            convertedTo += "hexadecimal: "
-            res = '0x' + littleEndianToBigEndian(hexString)
-            break
-        default:
-            res = '0'
-            break
+        if (res == '0') {
+            return ''
+        }
+
+        result.push(preText + convertedTo + res)
     }
 
-    if (res == '0') {
-        return ''
-    }
-    return convertedTo + res;
+    return result;
 }
 
 function dec2bin(dec: number) {
@@ -697,7 +706,6 @@ export const alterCodeSample = (_currentCommand: number, _currentAxis: string, c
             }
         }
     })
-
     const currentAxisASCIICode = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(parseInt(_currentAxis), 1));
     const currentCommandInHex = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(_currentCommand, 1))
     let alteredCodeSample = ''
@@ -799,4 +807,13 @@ export const alterCodeSample = (_currentCommand: number, _currentAxis: string, c
     }
 
     return alteredCodeSample;
+}
+
+export function convertAxisSelectionValue(axisSelectionValue: string): number {
+    let selectedAxis = parseInt(axisSelectionValue);
+
+    if (axisSelectionValue.length == 1) {
+        selectedAxis = new Char(axisSelectionValue).getDecimalASCII_Code();
+    }
+    return selectedAxis
 }

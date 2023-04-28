@@ -301,9 +301,9 @@ function Tutorial(props: TutorialProps) {
                             alias, and a CRC32 payload that is not currently
                             supported.
                             <br />
-                            Hover over the alias byte to see its decimal
-                            representation, keep it in mind because we will use
-                            it in our future exploration.
+                            Hover over the alias byte to see its ASCII and
+                            decimal representation, keep it in mind because we
+                            will use it in our future exploration.
                         </p>
                         <hr />
 
@@ -322,12 +322,16 @@ function Tutorial(props: TutorialProps) {
                             <p>
                                 The &quot;Alias&quot; of your motor was replied
                                 by &quot;Detect devices&quot;, hover over the
-                                alias byte to see the decimal representation and
-                                set that alias to the left-most input box below.
+                                alias byte to see the ASCII or decimal
+                                representation and set that alias to the
+                                left-most input box below.
                             </p>
                             <p>
-                                Set the new alias to any value ranging from 0 to
-                                253 and press execute.
+                                You can set a new alias to a valid ASCII
+                                character, some examples: A, B, P, l, d.
+                                <br />
+                                Or set the new alias to any value ranging from 0
+                                to 253 and press execute.
                             </p>
                             <p className="font-extrabold text-warning mb-0 pb-0">
                                 Note:
@@ -356,6 +360,16 @@ function Tutorial(props: TutorialProps) {
                                         &quot;System reset&quot; command before
                                         and after issuing the &quot;Set device
                                         alias&quot; command.
+                                    </p>
+                                </li>
+                                <li className="my-0">
+                                    <p className="my-0">
+                                        If you want to set the new alias to a
+                                        decimal value ranging from &quot;0&quot;
+                                        to &quot;9&quot; you must specify it as
+                                        &quot;00&quot; or &quot;09&quot;
+                                        Otherwise it will be considered an ASCII
+                                        character.
                                     </p>
                                 </li>
                             </ul>

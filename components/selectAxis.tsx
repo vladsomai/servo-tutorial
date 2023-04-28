@@ -1,6 +1,10 @@
 import { useRef } from "react";
 import { MotorAxes, MotorAxisType } from "../servo-engine/motor-axes";
-import { ErrorTypes } from "../servo-engine/utils";
+import {
+    Char,
+    ErrorTypes,
+    convertAxisSelectionValue,
+} from "../servo-engine/utils";
 
 export type SelectAxisPropsType = {
     LogAction: (errorType: string, log: string) => void;
@@ -18,8 +22,17 @@ const SelectAxis = (props: SelectAxisPropsType) => {
                 props.setAxisSelectionValue("");
                 return;
             }
+            const inputBoxText = selectionRef.current.value;
 
-            const selectedAxis = parseInt(selectionRef.current.value);
+            const selectedAxis = convertAxisSelectionValue(inputBoxText);
+            if (isNaN(selectedAxis)) {
+                props.setAxisSelectionValue("0");
+                props.LogAction(
+                    ErrorTypes.ERR1001,
+                    "Alias must either be a valid ASCII character or a number ranging from 0 to 253!"
+                );
+                return;
+            }
 
             if (selectedAxis === 254) {
                 props.setAxisSelectionValue("0");
@@ -52,12 +65,11 @@ const SelectAxis = (props: SelectAxisPropsType) => {
         <input
             ref={selectionRef}
             placeholder="Alias"
-            max={255}
-            min={0}
-            className="input input-bordered input-sm max-w-xs"
+            className="input input-bordered input-sm max-w-xs w-20"
             value={props.axisSelectionValue}
             onChange={onSelectionChange}
-            type="number"
+            type="text"
+            accept=""
         />
     );
 };

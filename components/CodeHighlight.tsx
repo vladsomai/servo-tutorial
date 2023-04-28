@@ -10,6 +10,7 @@ import 'prismjs/components/prism-javascript.min.js'
 import { firmwareUpgradePyCode } from '../servo-engine/CodeExamples/Python'
 import {
   alterCodeSample,
+  convertAxisSelectionValue,
   languages,
   SupportedCodeExamples,
 } from '../servo-engine/utils'
@@ -47,9 +48,11 @@ export default function Code({ currentCommand, currentAxis }: CodeProps) {
   }, [language, code])
 
   useEffect(() => {
+
+    const selectedAxis = convertAxisSelectionValue(currentAxis)
     const alteredCode = alterCodeSample(
       currentCommand,
-      currentAxis,
+      selectedAxis.toString(),
       language,
       value.codeExamplePayload.Bytes,
     )

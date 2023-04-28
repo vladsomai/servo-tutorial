@@ -244,7 +244,7 @@
       },
       {
         "Description": "u8_alias: The alias of the device that has this unique ID.",
-        "TooltipDisplayFormat": "%d"
+        "TooltipDisplayFormat": "%d,%c"
       },
       {
         "Description": "crc32: A CRC32 value for this packet. This is used to verify that the response is correct. However, currently this is hardcoded as 0x04030201",

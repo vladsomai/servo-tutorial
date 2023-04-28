@@ -38,6 +38,13 @@ const Log = (props: {
 
         props.sendDataToSerialPort(command);
     };
+    const reset = () => {
+        const selectedAxis = props.getAxisCode;
+
+        const command = new Uint8Array([selectedAxis, 27, 0]);
+
+        props.sendDataToSerialPort(command, true, false);
+    };
     useEffect(() => {
         if (logWindow && logWindow.current) {
             logWindow.current.scrollTop =
@@ -105,6 +112,12 @@ const Log = (props: {
                                 onClick={() => getStatus()}
                             >
                                 {"Get status"}
+                            </button>
+                            <button
+                                className="btn btn-xs rounded-b-none border-0 bg-slate-800 tracking-widest z-10 hidden xl:block"
+                                onClick={() => reset()}
+                            >
+                                {"Reset"}
                             </button>
                             <button
                                 className="btn btn-xs rounded-b-none border-0 bg-slate-800 tracking-widest z-10"
