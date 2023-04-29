@@ -120,7 +120,7 @@ export const Command21 = (props: ChaptersPropsType) => {
         const selectedAxis = props.getAxisSelection();
         if (selectedAxis == "") return;
 
-        if (selectedAxis == "255" || selectedAxis == "254") {
+        if (selectedAxis == "254") {
             props.LogAction(
                 ErrorTypes.NO_ERR,
                 `Cannot use ${selectedAxis} as the target alias!`
