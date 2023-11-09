@@ -248,8 +248,8 @@ const Feedback: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Feedback | Robots Mobots</title>
-        <meta content="Feedback page | Robots Mobots" name="description" />
+        <title>Feedback | Gearotons</title>
+        <meta content="Feedback page | Gearotons" name="description" />
       </Head>
 
       <animated.div

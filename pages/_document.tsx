@@ -11,17 +11,17 @@ class MyDocument extends Document {
       <Html lang="en">
         <Head>
           <meta
-            content="Robots Mobots servo motor tutorial"
+            content="Gearotons servo motor tutorial"
             name="application-name"
           />
           <meta name="author" content="https://svgdev.net"></meta>
           <meta
             name="keywords"
-            content="servo motor, CNC, 3D printer motor, servo tutorial, robots mobots"
+            content="servo motor, CNC, 3D printer motor, servo tutorial, Gearotons"
           ></meta>
           <meta
             name="description"
-            content="This website will help you understand how to use a servo motor designed by Robots Mobots"
+            content="This website will help you understand how to use a servo motor designed by Gearotons"
           ></meta>
           <meta charSet="utf-8" />
           <meta name="theme-color" content="dark"></meta>

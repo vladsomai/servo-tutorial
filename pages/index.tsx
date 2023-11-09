@@ -121,7 +121,7 @@ const Home: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Home | Robots Mobots</title>
+        <title>Home | Gearotons</title>
       </Head>
       <animated.div className="" style={styleSpring}>
         <div className="flex justify-center items-center w-full">

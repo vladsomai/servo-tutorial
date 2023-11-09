@@ -98,7 +98,7 @@ const Docs = () => {
         <>
             <Head>
                 <title>
-                    {`Command ${currentCommandDictionary?.CommandEnum} | Robots Mobots`}
+                    {`Command ${currentCommandDictionary?.CommandEnum} | Gearotons`}
                 </title>
             </Head>
             {currentCommandDictionary != null ? (

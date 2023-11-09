@@ -29,7 +29,7 @@ function Tutorial(props: TutorialProps) {
     return (
         <>
             <Head>
-                <title>Tutorial | Robots Mobots</title>
+                <title>Tutorial | Gearotons</title>
             </Head>
             <animated.div
                 className="flex flex-col justify-center items-center  mt-16"
@@ -43,7 +43,7 @@ function Tutorial(props: TutorialProps) {
                             following:
                         </p>
                         <ol>
-                            <li>Robots Mobots Servo motor</li>
+                            <li>Gearotons Servo motor</li>
                             <li>12V Power supply</li>
                             <li>USB to RS-485 adapter</li>
                             <li>

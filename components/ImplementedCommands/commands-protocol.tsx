@@ -14,7 +14,7 @@ const CommandsProtocol = (props: MainWindowProps) => {
     return (
         <>
             <Head>
-                <title>Commands protocol | Robots Mobots</title>
+                <title>Commands protocol | Gearotons</title>
             </Head>
 
             <animated.div
