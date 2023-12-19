@@ -28,7 +28,7 @@ export const CommandsProtocolChapter = {
 }
 
 export const Tutorial = {
-    "CommandString": "Tutorial",
+    "CommandString": "Quick start",
     "CommandEnum": NonCommands.get("Tutorial"),
     "Description": "",
     "Input": "",

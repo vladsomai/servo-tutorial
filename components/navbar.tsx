@@ -33,7 +33,7 @@ const Navbar = () => {
                         href="/docs/1002"
                         className="text-xl btn btn-primary rounded-full"
                     >
-                        Tutorial
+                        Quick start
                     </Link>
                     <Link
                         href="/docs/1001"

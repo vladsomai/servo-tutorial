@@ -4,7 +4,7 @@ import CommandsProtocol from "./ImplementedCommands/commands-protocol";
 import Image from "next/image";
 import { useContext } from "react";
 import { GlobalContext } from "../pages/_app";
-import { animated, useSpring, config, useTransition } from "@react-spring/web";
+import { animated, useSpring, config } from "@react-spring/web";
 import { ResetCmd, DisableCmd, EnableCmd } from "./modalComponents";
 import InfoImg from "../public/info-circle-fill.svg";
 
@@ -88,7 +88,6 @@ const Command = (props: TutorialProps, children: ReactElement) => {
                 className={`overflow-auto relative px-5 w-6/12`}
             >
                 <FeedbackButton />
-
                 <Tutorial {...props} />
             </animated.div>
         );

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, MutableRefObject } from "react";
 import {
+    Device,
     ErrorTypes,
     getDisplayFormat,
     getNoOfBytesFromDescription,
@@ -16,6 +17,7 @@ import {
 import errorCodes from "../public/status_error_codes.json" assert { type: "json" };
 import { Tooltip } from "flowbite-react";
 import TooltipDescription from "./tooltipDescription";
+import TooltipDescriptionDetectDevices from "./tooltipDescriptionDetectDevices";
 
 export interface LogLineServoCommandType extends LogType, MainWindowProps {
     currentCommand: MutableRefObject<number>;
@@ -118,7 +120,20 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
             let NoOfBytes = 0;
             let currentParameterStart = 6;
             let currentParameterEnd = 0;
+
+            let command20Counter = 0;
+            let detectedDevice: Device = { UniqueID: "", Alias: "" };
+
             for (const command of props.MotorCommands.current) {
+                //loop through all possible commands
+
+                if (isSendCommand) {
+                    if (props.currentCommand.current == 20) {
+                        //when sending detect devices command, we will reset the global context
+                        globalContext.detectedDevices.setDevices([]);
+                    }
+                }
+
                 if (command.CommandEnum == props.currentCommand.current) {
                     if (isSendCommand && typeof command.Input != "string") {
                         for (const input of command.Input) {
@@ -234,11 +249,44 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
                                 getStatusAtFatalErrorCode.current = true;
                             }
 
-                            const tooltipDescription = (
-                                <TooltipDescription
-                                    Description={currentPayloadDescription}
-                                />
-                            );
+                            let tooltipDescription: JSX.Element;
+
+                            if (props.currentCommand.current == 20) {
+                                command20Counter++;
+                                if (command20Counter == 1) {
+                                    detectedDevice.UniqueID = currentParameter;
+                                }
+                                if (command20Counter == 2) {
+                                    detectedDevice.Alias = currentParameter;
+
+                                    globalContext.detectedDevices.setDevices([
+                                        ...globalContext.detectedDevices
+                                            .Devices,
+                                        detectedDevice,
+                                    ]);
+                                }
+                            }
+
+                            if (
+                                props.currentCommand.current == 20 &&
+                                command20Counter == 1
+                            ) {
+                                //only the unique ID for detect devices has a copy button
+                                //and it uses a different tooltip description
+                                tooltipDescription = (
+                                    <TooltipDescriptionDetectDevices
+                                        UniqueID={detectedDevice.UniqueID}
+                                        Description={currentPayloadDescription}
+                                    />
+                                );
+                            } else {
+                                //all commands use the same tooltip description type..
+                                tooltipDescription = (
+                                    <TooltipDescription
+                                        Description={currentPayloadDescription}
+                                    />
+                                );
+                            }
 
                             receivingPayload.push({
                                 Description: tooltipDescription,
@@ -394,16 +442,17 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
                                     <Tooltip
                                         content={byte.Description}
                                         placement="top"
-                                        className=" w-auto max-w-md text-slate-200 bg-gray-600 font-extrabold border-opacity-0 "
+                                        className=" w-auto max-w-md font-extrabold border-opacity-0 "
                                         animation="duration-150"
                                         role="tooltip"
                                         style="light"
+                                        trigger="click"
                                     >
-                                        <p
-                                            className={`inline break-all cursor-text ${byte.Color}`}
+                                        <button
+                                            className={`inline break-all ${byte.Color}`}
                                         >
                                             {byte.Value}
-                                        </p>
+                                        </button>
                                     </Tooltip>
                                 </div>
                             );

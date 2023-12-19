@@ -22,7 +22,7 @@
     "js": "^0.1.0",
     "jszip": "^3.10.1",
     "next": "^13.1.6",
-    "node-sass": "^7.0.3",
+    "node-sass": "^9.0.0",
     "prismjs": "^1.29.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -31,7 +31,7 @@
     "react-spring": "^9.5.2",
     "sass": "^1.56.1",
     "serialport": "^10.4.0",
-    "sharp": "^0.31.3",
+    "sharp": "^0.33.1",
     "styled-components": "^5.3.6"
   },
   "devDependencies": {

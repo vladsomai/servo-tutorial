@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { GlobalContext } from '../pages/_app'
 
 const Modal = () => {
-  const value = useContext(GlobalContext)
+  const globalContext = useContext(GlobalContext)
 
   return (
     <>
@@ -19,9 +19,9 @@ const Modal = () => {
             ✕
           </label>
           <h1 className="text-2xl tracking-widest font-bold">
-            {value.modal.Title}
+            {globalContext.modal.Title}
           </h1>
-          <div className="py-4">{value.modal.Description}</div>
+          <div className="py-4">{globalContext.modal.Description}</div>
         </label>
       </label>
     </>

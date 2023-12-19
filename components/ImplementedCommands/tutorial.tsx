@@ -10,6 +10,9 @@ import { CommandWindowProps } from "../command-window";
 import { Command20 } from "./20";
 import { Command21 } from "./21";
 import { Command2 } from "./2";
+import { useContext } from "react";
+import { GlobalContext } from "../../pages/_app";
+import { hexStringToASCII } from "../../servo-engine/utils";
 
 export interface TutorialProps
     extends CommandWindowProps,
@@ -17,6 +20,8 @@ export interface TutorialProps
         SelectAxisPropsType {}
 
 function Tutorial(props: TutorialProps) {
+    const globalContext = useContext(GlobalContext);
+
     const [styleSpring] = useSpring(
         () => ({
             from: { opacity: 0 },
@@ -29,7 +34,7 @@ function Tutorial(props: TutorialProps) {
     return (
         <>
             <Head>
-                <title>Tutorial | Gearotons</title>
+                <title>Quick start | Gearotons</title>
             </Head>
             <animated.div
                 className="flex flex-col justify-center items-center  mt-16"
@@ -305,12 +310,11 @@ function Tutorial(props: TutorialProps) {
                             alias, and a CRC32 payload that is not currently
                             supported.
                             <br />
-                            Hover over the alias byte to see its ASCII and
-                            decimal representation, keep it in mind because we
-                            will use it in our future exploration.
+                            Click on the alias byte to see its ASCII and decimal
+                            representation, keep it in mind because we will use
+                            it in our future exploration.
                         </p>
                         <hr />
-
                         <h2>Set device alias</h2>
                         <div className="my-5">
                             <p>
@@ -325,7 +329,7 @@ function Tutorial(props: TutorialProps) {
                             </p>
                             <p>
                                 The &quot;Alias&quot; of your motor was replied
-                                by &quot;Detect devices&quot;, hover over the
+                                by &quot;Detect devices&quot;, click on the
                                 alias byte to see the ASCII or decimal
                                 representation and set that alias to the
                                 left-most input box below.
@@ -378,23 +382,34 @@ function Tutorial(props: TutorialProps) {
                                 </li>
                             </ul>
                         </div>
-                        <Command21
-                            {...props}
-                            getAxisSelection={props.getAxisSelection}
-                            sendDataToSerialPort={props.sendDataToSerialPort}
-                            LogAction={props.LogAction}
-                            constructCommand={props.constructCommand}
-                        >
-                            <SelectAxis
-                                LogAction={props.LogAction}
-                                axisSelectionValue={props.axisSelectionValue}
-                                setAxisSelectionValue={
-                                    props.setAxisSelectionValue
-                                }
-                            />
-                        </Command21>
+                        {globalContext.detectedDevices.Devices.map(
+                            (item, index) => (
+                                <Command21
+                                    UniqueID={item.UniqueID}
+                                    Alias={hexStringToASCII(item.Alias)}
+                                    key={index}
+                                    {...props}
+                                    getAxisSelection={props.getAxisSelection}
+                                    sendDataToSerialPort={
+                                        props.sendDataToSerialPort
+                                    }
+                                    LogAction={props.LogAction}
+                                    constructCommand={props.constructCommand}
+                                >
+                                    <SelectAxis
+                                        key={index}
+                                        LogAction={props.LogAction}
+                                        axisSelectionValue={
+                                            props.axisSelectionValue
+                                        }
+                                        setAxisSelectionValue={
+                                            props.setAxisSelectionValue
+                                        }
+                                    />
+                                </Command21>
+                            )
+                        )}
                         <hr />
-
                         <h2>Ping your alias</h2>
                         <p>
                             You can send some arbitrary data to the motor using
@@ -404,7 +419,7 @@ function Tutorial(props: TutorialProps) {
                             Use the alias you just set and change the current
                             value to &apos;HelloWorld&apos;.
                             <br />
-                            Hover over the response to verify the reply matches
+                            Click on the response to verify the reply matches
                             your input.
                         </p>
                         <Command31

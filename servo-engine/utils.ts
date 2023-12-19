@@ -817,3 +817,8 @@ export function convertAxisSelectionValue(axisSelectionValue: string): number {
     }
     return selectedAxis
 }
+
+export interface Device {
+    UniqueID: string,
+    Alias: string
+}

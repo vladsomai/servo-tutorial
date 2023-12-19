@@ -59,6 +59,8 @@ import { Command32 } from "./ImplementedCommands/32";
 import { Command33 } from "./ImplementedCommands/33";
 import { Command254 } from "./ImplementedCommands/254";
 import { useRouter } from "next/router";
+import { GlobalContext } from "../pages/_app";
+import { Command41 } from "./ImplementedCommands/41";
 
 export type MainWindowProps = {
     currentChapter: number;
@@ -191,7 +193,7 @@ const Main = (props: MainWindowProps) => {
             if (axisSelectionValue.length == 1) {
                 axis = new Char(axisSelectionValue).getDecimalASCII_Code();
             }
-         
+
             axisCodeRef.current = axis;
             setAxisCode(axis);
         }
@@ -1037,6 +1039,22 @@ const Main = (props: MainWindowProps) => {
                     setAxisSelectionValue={setAxisSelectionValue}
                 />
             </Command33>
+        );
+    } else if (props.currentCommandDictionary.CommandEnum == 41) {
+        currentCommandLayout = (
+            <Command41
+                {...props}
+                getAxisSelection={getAxisSelection}
+                sendDataToSerialPort={sendDataToSerialPort}
+                LogAction={LogAction}
+                constructCommand={constructCommand}
+            >
+                <SelectAxis
+                    LogAction={LogAction}
+                    axisSelectionValue={axisSelectionValue}
+                    setAxisSelectionValue={setAxisSelectionValue}
+                />
+            </Command41>
         );
     } else if (props.currentCommandDictionary.CommandEnum == 254)
         currentCommandLayout = (

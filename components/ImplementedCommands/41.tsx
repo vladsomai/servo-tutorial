@@ -1,31 +1,24 @@
 import { useRef, useContext, useState, useEffect } from "react";
 import {
-    Char,
     ErrorTypes,
-    Uint8ArrayToString,
-    convertAxisSelectionValue,
-    transfNumberToUint8Arr,
 } from "../../servo-engine/utils";
 import { ChaptersPropsType } from "./0_1";
 import { GlobalContext } from "../../pages/_app";
 
-export interface Command21PropsType extends ChaptersPropsType {
+export interface Command41PropsType extends ChaptersPropsType {
     UniqueID?: string;
     Alias?: string;
 }
 
-export const Command21 = (props: Command21PropsType) => {
+export const Command41 = (props: Command41PropsType) => {
     const value = useContext(GlobalContext);
 
     useEffect(() => {
         if (uniqueIdInputBox.current && props.UniqueID) {
             uniqueIdInputBox.current.value = props.UniqueID;
         }
-
-        if (aliasInputBox.current && props.Alias) {
-            aliasInputBox.current.value = props.Alias;
-        }
     }, []);
+
     useEffect(
         (setBytes = value.codeExamplePayload.setBytes) => {
             return () => setBytes("");
@@ -34,10 +27,8 @@ export const Command21 = (props: Command21PropsType) => {
     );
 
     const [uniqueId, setUniqueId] = useState("0000000000000000");
-    const [hexAlias, setHexAlias] = useState("00");
 
     const uniqueIdInputBox = useRef<HTMLInputElement | null>(null);
-    const aliasInputBox = useRef<HTMLInputElement | null>(null);
     const AllowedChars = "0123456789ABCDEF";
     const handleUniqueID = () => {
         if (!uniqueIdInputBox.current) return;
@@ -76,58 +67,7 @@ export const Command21 = (props: Command21PropsType) => {
             completedVal += "0";
         }
         setUniqueId(completedVal);
-        value.codeExamplePayload.setBytes(completedVal + hexAlias);
-    };
-
-    const handleAlias = () => {
-        if (!aliasInputBox.current) return;
-
-        if (aliasInputBox.current.value == "") {
-            aliasInputBox.current.value = "";
-            return;
-        }
-
-        const newAlias = convertAxisSelectionValue(aliasInputBox.current.value);
-
-        if (isNaN(newAlias)) {
-            aliasInputBox.current.value = "0";
-            props.LogAction(
-                ErrorTypes.ERR1001,
-                "Alias must either be a valid ASCII character or a number ranging from 0 to 253!"
-            );
-            return;
-        }
-
-        if (newAlias === 254) {
-            aliasInputBox.current.value = "0";
-            props.LogAction(
-                ErrorTypes.ERR1001,
-                "Alias 254 is reserved for response messages!"
-            );
-            return;
-        }
-
-        if (newAlias < 0) {
-            aliasInputBox.current.value = "0";
-            props.LogAction(
-                ErrorTypes.ERR1001,
-                "Supported axes range from 0 to 253!"
-            );
-        } else if (newAlias > 253) {
-            aliasInputBox.current.value = "253";
-
-            props.LogAction(
-                ErrorTypes.ERR1001,
-                "Supported axes range from 0 to 253!"
-            );
-        }
-
-        const tempHexaAlias = Uint8ArrayToString(
-            transfNumberToUint8Arr(newAlias, 1)
-        );
-
-        setHexAlias(tempHexaAlias);
-        value.codeExamplePayload.setBytes(uniqueId + tempHexaAlias);
+        value.codeExamplePayload.setBytes(completedVal);
     };
 
     const execute_command = () => {
@@ -142,23 +82,7 @@ export const Command21 = (props: Command21PropsType) => {
             return;
         }
 
-        if (
-            aliasInputBox.current &&
-            aliasInputBox &&
-            uniqueIdInputBox.current &&
-            uniqueIdInputBox
-        ) {
-            if (
-                aliasInputBox.current.value == "255" ||
-                aliasInputBox.current.value == "254"
-            ) {
-                props.LogAction(
-                    ErrorTypes.ERR1001,
-                    `You cannot set the alias to ${aliasInputBox.current.value} because it is reserved.`
-                );
-                return;
-            }
-
+        if (uniqueIdInputBox.current && uniqueIdInputBox) {
             if (uniqueIdInputBox.current.value.length != 16) {
                 props.LogAction(
                     ErrorTypes.NO_ERR,
@@ -169,7 +93,7 @@ export const Command21 = (props: Command21PropsType) => {
 
             const rawData = props.constructCommand(
                 selectedAxis,
-                uniqueIdInputBox.current.value + hexAlias,
+                uniqueIdInputBox.current.value,
                 21
             );
 
@@ -190,19 +114,12 @@ export const Command21 = (props: Command21PropsType) => {
                         className="input input-bordered w-full max-w-[50%] 2xl:max-w-[30%] input-sm m-2"
                         onChange={handleUniqueID}
                     />
-                    <input
-                        ref={aliasInputBox}
-                        type="text"
-                        placeholder="New alias"
-                        className="input input-bordered w-[25%] 2xl:max-w-[17%] input-sm m-2"
-                        onChange={handleAlias}
-                    />
                 </div>
                 <button
                     className="btn btn-primary btn-sm mt-2"
                     onClick={execute_command}
                 >
-                    set alias
+                    identify
                 </button>
             </div>
         </>
