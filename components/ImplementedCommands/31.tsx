@@ -5,7 +5,7 @@ import { GlobalContext } from "../../pages/_app";
 
 export const Command31 = (props: ChaptersPropsType) => {
     const textPayloadInputBox = useRef<HTMLInputElement | null>(null);
-    const value = useContext(GlobalContext);
+    const globalContext = useContext(GlobalContext);
     const initialText = "0123456789";
 
     const convertTextToASCII = (textPayload: string) => {
@@ -17,7 +17,7 @@ export const Command31 = (props: ChaptersPropsType) => {
     };
 
     const onPingBoxModified = useCallback(
-        (setBytes = value.codeExamplePayload.setBytes) => {
+        (setBytes = globalContext.codeExamplePayload.setBytes) => {
             if (!textPayloadInputBox.current) return;
 
             const textPayload = textPayloadInputBox.current.value;
@@ -33,7 +33,7 @@ export const Command31 = (props: ChaptersPropsType) => {
             }
             setBytes(textCompleted);
         },
-        [value.codeExamplePayload.setBytes]
+        [globalContext.codeExamplePayload.setBytes]
     );
     
     const handlePingbox = useCallback(() => {
@@ -41,11 +41,11 @@ export const Command31 = (props: ChaptersPropsType) => {
     }, [onPingBoxModified]);
 
     useEffect(
-        (setbytes = value.codeExamplePayload.setBytes) => {
+        (setbytes = globalContext.codeExamplePayload.setBytes) => {
             handlePingbox();
             return () => setbytes("");
         },
-        [value.codeExamplePayload.setBytes, handlePingbox]
+        [globalContext.codeExamplePayload.setBytes, handlePingbox]
     );
 
     const ping_command = () => {
@@ -53,7 +53,7 @@ export const Command31 = (props: ChaptersPropsType) => {
             const selectedAxis = props.getAxisSelection();
             if (selectedAxis == "") return;
 
-            if (value.codeExamplePayload.Bytes.length / 2 != 10) {
+            if (globalContext.codeExamplePayload.Bytes.length / 2 != 10) {
                 props.LogAction(
                     ErrorTypes.NO_ERR,
                     "Please update a new value in the input box!"
@@ -63,7 +63,7 @@ export const Command31 = (props: ChaptersPropsType) => {
 
             const rawData = props.constructCommand(
                 selectedAxis,
-                value.codeExamplePayload.Bytes,
+                globalContext.codeExamplePayload.Bytes,
                 31
             );
             props.sendDataToSerialPort(rawData, true, true);
