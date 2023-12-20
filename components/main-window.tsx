@@ -254,9 +254,10 @@ const Main = (props: MainWindowProps) => {
                 if (hexString.slice(0, 2) == "FF") {
                     enableTimoutLogging = false;
                 }
-
-                if (hexString.slice(2, 4) == "14") {
-                    //command 20 responds randomly, enable timeout logging if cmd 20 no metter the selected axes
+                const cmdStr = hexString.slice(2, 4);
+                if (cmdStr == "14" || cmdStr == "29") {
+                    //command 20 responds randomly,
+                    //enable timeout logging if cmd 20 and 41 no metter the selected axes
                     enableTimoutLogging = true;
                 }
 

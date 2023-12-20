@@ -1,7 +1,5 @@
 import { useRef, useContext, useState, useEffect } from "react";
-import {
-    ErrorTypes,
-} from "../../servo-engine/utils";
+import { ErrorTypes } from "../../servo-engine/utils";
 import { ChaptersPropsType } from "./0_1";
 import { GlobalContext } from "../../pages/_app";
 
@@ -96,8 +94,7 @@ export const Command41 = (props: Command41PropsType) => {
                 uniqueIdInputBox.current.value,
                 41
             );
-
-            props.sendDataToSerialPort(rawData, true, false);
+            props.sendDataToSerialPort(rawData, true, true);
         }
     };
 
