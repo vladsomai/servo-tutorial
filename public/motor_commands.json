@@ -492,7 +492,7 @@
     {
         "CommandString": "Identify",
         "CommandEnum": 41,
-        "Description": "Identify your motor by sending this command. The motor's green LED will flash fast 3 times.",
+        "Description": "Identify your motor by sending this command. The motor's green LED will flash 3 times.",
         "Input": [
             {
                 "Description": "u64_unique_id: Unique ID of the target device.",

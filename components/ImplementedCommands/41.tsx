@@ -94,7 +94,7 @@ export const Command41 = (props: Command41PropsType) => {
             const rawData = props.constructCommand(
                 selectedAxis,
                 uniqueIdInputBox.current.value,
-                21
+                41
             );
 
             props.sendDataToSerialPort(rawData, true, false);

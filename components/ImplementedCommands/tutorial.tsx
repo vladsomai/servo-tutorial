@@ -13,6 +13,7 @@ import { Command2 } from "./2";
 import { useContext } from "react";
 import { GlobalContext } from "../../pages/_app";
 import { hexStringToASCII } from "../../servo-engine/utils";
+import { Command41 } from "./41";
 
 export interface TutorialProps
     extends CommandWindowProps,
@@ -314,6 +315,40 @@ function Tutorial(props: TutorialProps) {
                             representation, keep it in mind because we will use
                             it in our future exploration.
                         </p>
+                        <hr />
+                        <h2>Identify your device</h2>
+                        <p>
+                            Sending the Identify command, the motor will flash
+                            its green LED three times. The command must be send
+                            using the 255 alias and the Unique ID of the motor
+                            you want to identify, allowing you to set a
+                            particular alias for that motor in the next section.{" "}
+                        </p>
+                        {globalContext.detectedDevices.Devices.map(
+                            (item, index) => (
+                                <Command41
+                                    UniqueID={item.UniqueID}
+                                    key={index}
+                                    {...props}
+                                    getAxisSelection={props.getAxisSelection}
+                                    sendDataToSerialPort={
+                                        props.sendDataToSerialPort
+                                    }
+                                    LogAction={props.LogAction}
+                                    constructCommand={props.constructCommand}
+                                >
+                                    <SelectAxis
+                                        LogAction={props.LogAction}
+                                        axisSelectionValue={
+                                            props.axisSelectionValue
+                                        }
+                                        setAxisSelectionValue={
+                                            props.setAxisSelectionValue
+                                        }
+                                    />
+                                </Command41>
+                            )
+                        )}
                         <hr />
                         <h2>Set device alias</h2>
                         <div className="my-5">
