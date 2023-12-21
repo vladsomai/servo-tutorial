@@ -117,7 +117,7 @@ function Tutorial(props: TutorialProps) {
                         </p>
                         <div className="w-full flex justify-center">
                             <Image
-                                className="w-[300px] h-auto"
+                                className="w-[600px] h-auto"
                                 loading="eager"
                                 src={"/motor-to-rs485.png"}
                                 sizes="100vw"

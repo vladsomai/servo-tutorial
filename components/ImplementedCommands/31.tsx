@@ -35,7 +35,7 @@ export const Command31 = (props: ChaptersPropsType) => {
         },
         [globalContext.codeExamplePayload.setBytes]
     );
-    
+
     const handlePingbox = useCallback(() => {
         onPingBoxModified();
     }, [onPingBoxModified]);
@@ -52,18 +52,18 @@ export const Command31 = (props: ChaptersPropsType) => {
         if (textPayloadInputBox && textPayloadInputBox.current) {
             const selectedAxis = props.getAxisSelection();
             if (selectedAxis == "") return;
-
-            if (globalContext.codeExamplePayload.Bytes.length / 2 != 10) {
+            const textPayload = textPayloadInputBox.current.value;
+            if (textPayload.length != 10) {
                 props.LogAction(
-                    ErrorTypes.NO_ERR,
-                    "Please update a new value in the input box!"
+                    ErrorTypes.ERR1001,
+                    "You must input exactly 10 characters."
                 );
-                return;
+                return
             }
 
             const rawData = props.constructCommand(
                 selectedAxis,
-                globalContext.codeExamplePayload.Bytes,
+                convertTextToASCII(textPayload),
                 31
             );
             props.sendDataToSerialPort(rawData, true, true);

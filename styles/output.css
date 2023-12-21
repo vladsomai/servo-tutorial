@@ -5281,6 +5281,10 @@ html {
   width: 100%;
 }
 
+.w-\[600px\] {
+  width: 600px;
+}
+
 .max-w-2xl {
   max-width: 42rem;
 }
