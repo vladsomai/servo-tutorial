@@ -292,6 +292,7 @@ function Tutorial(props: TutorialProps) {
                             devices connected to the serial port.
                         </p>
                         <Command20
+                            MountedByQuickStart={true}
                             {...props}
                             getAxisSelection={props.getAxisSelection}
                             sendDataToSerialPort={props.sendDataToSerialPort}
@@ -315,53 +316,31 @@ function Tutorial(props: TutorialProps) {
                             representation, keep it in mind because we will use
                             it in our future exploration.
                         </p>
+                        <p>
+                            The Unique ID replied by &quot;Detect devices&quot;
+                            can be copy-pasted directly from the log window as
+                            is.
+                        </p>
                         <hr />
+
                         <h2>Identify your device</h2>
                         <p>
-                            Sending the Identify command, the motor will flash
-                            its green LED three times. The command must be send
-                            using the 255 alias and the Unique ID of the motor
-                            you want to identify, allowing you to set a
-                            particular alias for that motor in the next section.{" "}
+                            Using the &quot;Detect devices&quot; command you were
+                            able to find out your motor&apos;s Unique ID and the
+                            current alias.
                         </p>
-                        {globalContext.detectedDevices.Devices.map(
-                            (item, index) => (
-                                <Command41
-                                    UniqueID={item.UniqueID}
-                                    key={index}
-                                    {...props}
-                                    getAxisSelection={props.getAxisSelection}
-                                    sendDataToSerialPort={
-                                        props.sendDataToSerialPort
-                                    }
-                                    LogAction={props.LogAction}
-                                    constructCommand={props.constructCommand}
-                                >
-                                    <SelectAxis
-                                        LogAction={props.LogAction}
-                                        axisSelectionValue={
-                                            props.axisSelectionValue
-                                        }
-                                        setAxisSelectionValue={
-                                            props.setAxisSelectionValue
-                                        }
-                                    />
-                                </Command41>
-                            )
-                        )}
-                        <hr />
+                        <p>
+                            By sending the Identify command, you can identify
+                            each motor by its unique ID. The motor will flash
+                            its green LED three times. The command must be sent
+                            using the Unique ID of the motor you want to
+                            identify, allowing you to set a particular alias for
+                            that motor afterward. This command is helpful in case you
+                            have multiple motors in a daisy chain and you want to
+                            name them differently.
+                        </p>
                         <h2>Set device alias</h2>
                         <div className="my-5">
-                            <p>
-                                Using &quot;Detect devices&quot; command you was
-                                able to find out your motor&apos;s Unique ID and
-                                the current alias.
-                            </p>
-                            <p>
-                                The Unique ID replied by &quot;Detect
-                                devices&quot; can be copy-pasted directly from
-                                the log window as is.
-                            </p>
                             <p>
                                 The &quot;Alias&quot; of your motor was replied
                                 by &quot;Detect devices&quot;, click on the
@@ -419,29 +398,69 @@ function Tutorial(props: TutorialProps) {
                         </div>
                         {globalContext.detectedDevices.Devices.map(
                             (item, index) => (
-                                <Command21
-                                    UniqueID={item.UniqueID}
-                                    Alias={hexStringToASCII(item.Alias)}
+                                <div
+                                    className="flex items-center justify-start"
                                     key={index}
-                                    {...props}
-                                    getAxisSelection={props.getAxisSelection}
-                                    sendDataToSerialPort={
-                                        props.sendDataToSerialPort
-                                    }
-                                    LogAction={props.LogAction}
-                                    constructCommand={props.constructCommand}
                                 >
-                                    <SelectAxis
-                                        key={index}
-                                        LogAction={props.LogAction}
-                                        axisSelectionValue={
-                                            props.axisSelectionValue
-                                        }
-                                        setAxisSelectionValue={
-                                            props.setAxisSelectionValue
-                                        }
-                                    />
-                                </Command21>
+                                    <div className="w-[85%] 2xl:w-[65%]">
+                                        <Command21
+                                            MountedByQuickStart={true}
+                                            UniqueID={item.UniqueID}
+                                            Alias={hexStringToASCII(item.Alias)}
+                                            key={index}
+                                            {...props}
+                                            getAxisSelection={
+                                                props.getAxisSelection
+                                            }
+                                            sendDataToSerialPort={
+                                                props.sendDataToSerialPort
+                                            }
+                                            LogAction={props.LogAction}
+                                            constructCommand={
+                                                props.constructCommand
+                                            }
+                                        >
+                                            <SelectAxis
+                                                key={index}
+                                                LogAction={props.LogAction}
+                                                axisSelectionValue={
+                                                    props.axisSelectionValue
+                                                }
+                                                setAxisSelectionValue={
+                                                    props.setAxisSelectionValue
+                                                }
+                                            />
+                                        </Command21>
+                                    </div>
+                                    <div className="">
+                                        <Command41
+                                            MountedByQuickStart={true}
+                                            UniqueID={item.UniqueID}
+                                            key={index}
+                                            {...props}
+                                            getAxisSelection={
+                                                props.getAxisSelection
+                                            }
+                                            sendDataToSerialPort={
+                                                props.sendDataToSerialPort
+                                            }
+                                            LogAction={props.LogAction}
+                                            constructCommand={
+                                                props.constructCommand
+                                            }
+                                        >
+                                            <SelectAxis
+                                                LogAction={props.LogAction}
+                                                axisSelectionValue={
+                                                    props.axisSelectionValue
+                                                }
+                                                setAxisSelectionValue={
+                                                    props.setAxisSelectionValue
+                                                }
+                                            />
+                                        </Command41>
+                                    </div>
+                                </div>
                             )
                         )}
                         <hr />

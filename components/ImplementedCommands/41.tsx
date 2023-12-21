@@ -6,6 +6,7 @@ import { GlobalContext } from "../../pages/_app";
 export interface Command41PropsType extends ChaptersPropsType {
     UniqueID?: string;
     Alias?: string;
+    MountedByQuickStart?: boolean; //quickstart will not show the input boxes for this command
 }
 
 export const Command41 = (props: Command41PropsType) => {
@@ -69,7 +70,10 @@ export const Command41 = (props: Command41PropsType) => {
     };
 
     const execute_command = () => {
-        const selectedAxis = props.getAxisSelection();
+        const selectedAxis = props.MountedByQuickStart
+            ? "255"
+            : props.getAxisSelection();
+
         if (selectedAxis == "") return;
 
         if (selectedAxis == "254") {
@@ -101,7 +105,11 @@ export const Command41 = (props: Command41PropsType) => {
     return (
         <>
             <div className="w-full text-center mb-5">
-                <div className="flex flex-col xl:flex-row justify-center items-center">
+                <div
+                    className={`flex flex-col xl:flex-row justify-center items-center mb-2 ${
+                        props.MountedByQuickStart ? "hidden" : ""
+                    }`}
+                >
                     <div className="m-2">{props.children}</div>
 
                     <input
@@ -113,7 +121,7 @@ export const Command41 = (props: Command41PropsType) => {
                     />
                 </div>
                 <button
-                    className="btn btn-primary btn-sm mt-2"
+                    className="btn btn-primary btn-sm"
                     onClick={execute_command}
                 >
                     identify

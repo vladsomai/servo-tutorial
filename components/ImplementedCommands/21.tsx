@@ -12,6 +12,7 @@ import { GlobalContext } from "../../pages/_app";
 export interface Command21PropsType extends ChaptersPropsType {
     UniqueID?: string;
     Alias?: string;
+    MountedByQuickStart?: boolean;
 }
 
 export const Command21 = (props: Command21PropsType) => {
@@ -26,6 +27,7 @@ export const Command21 = (props: Command21PropsType) => {
             aliasInputBox.current.value = props.Alias;
         }
     }, []);
+    
     useEffect(
         (setBytes = value.codeExamplePayload.setBytes) => {
             return () => setBytes("");
@@ -131,7 +133,10 @@ export const Command21 = (props: Command21PropsType) => {
     };
 
     const execute_command = () => {
-        const selectedAxis = props.getAxisSelection();
+        const selectedAxis = props.MountedByQuickStart
+            ? "255"
+            : props.getAxisSelection();
+
         if (selectedAxis == "") return;
 
         if (selectedAxis == "254") {
@@ -179,27 +184,37 @@ export const Command21 = (props: Command21PropsType) => {
 
     return (
         <>
-            <div className="w-full text-center mb-5">
-                <div className="flex flex-col xl:flex-row justify-center items-center">
-                    <div className="m-2">{props.children}</div>
+            <div
+                className={`w-full text-center mb-5 items-center ${
+                    !props.MountedByQuickStart ? "flex flex-col " : "flex"
+                }`}
+            >
+                <div className={`flex flex-col xl:flex-row ${props.MountedByQuickStart?"justify-end":"justify-center mb-2"} items-center w-[80%]`}>
+                    <div
+                        className={`m-2 ${
+                            props.MountedByQuickStart ? "hidden" : ""
+                        }`}
+                    >
+                        {props.children}
+                    </div>
 
                     <input
                         ref={uniqueIdInputBox}
                         type="text"
                         placeholder="Unique ID in hexadecimal"
-                        className="input input-bordered w-full max-w-[50%] 2xl:max-w-[30%] input-sm m-2"
+                        className="input input-bordered w-full max-w-[50%] 2xl:max-w-[35%] input-sm m-2 grow"
                         onChange={handleUniqueID}
                     />
                     <input
                         ref={aliasInputBox}
                         type="text"
                         placeholder="New alias"
-                        className="input input-bordered w-[25%] 2xl:max-w-[17%] input-sm m-2"
+                        className="input input-bordered w-[25%] 2xl:max-w-[17%] input-sm m-2 grow-0"
                         onChange={handleAlias}
                     />
                 </div>
                 <button
-                    className="btn btn-primary btn-sm mt-2"
+                    className="btn btn-primary btn-sm max-w-[6rem] mx-2"
                     onClick={execute_command}
                 >
                     set alias
