@@ -131,7 +131,7 @@ const Home: NextPageWithLayout = () => {
                         <div className="text-3xl xl:text-6xl mb-10 w-full">
                             <p className="feedbackTextColor mb-5">Welcome,</p>
                             <p className="text-lg xl:text-xl  text-justify">
-                                Weee are a start-up, provider of high-quality
+                                We are a start-up, provider of high-quality
                                 servo motors for a variety of applications. Our
                                 servo motors are designed to meet the needs of
                                 today&apos;s advanced robotics, 3D printing, and
@@ -141,7 +141,7 @@ const Home: NextPageWithLayout = () => {
                                 for their unique requirements.
                             </p>
                         </div>
-                        <div className="relative w-full h-full flex justify-center text-center items-center mb-[15vh] 2xl:mb-0 ">
+                        <div className="relative w-full h-full flex justify-center text-center items-center  ">
                             <div
                                 ref={loadingDiv}
                                 className="absolute w-full h-full flex flex-col justify-center items-center bg-base-100"
@@ -153,7 +153,7 @@ const Home: NextPageWithLayout = () => {
                             </div>
                             <canvas
                                 ref={canvasRef}
-                                className={`focus:outline-none rounded-2xl bg-slate-800 w-full h-full`}
+                                className={`focus:outline-none rounded-2xl bg-slate-800 w-full h-full mb-[15vh]`}
                             ></canvas>
                         </div>
                     </div>

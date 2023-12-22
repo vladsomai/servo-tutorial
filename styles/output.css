@@ -4958,6 +4958,18 @@ html {
   margin-top: 1vh;
 }
 
+.mb-\[55vh\] {
+  margin-bottom: 55vh;
+}
+
+.mb-52 {
+  margin-bottom: 13rem;
+}
+
+.mb-\[10vh\] {
+  margin-bottom: 10vh;
+}
+
 .\!block {
   display: block !important;
 }
@@ -5122,6 +5134,10 @@ html {
 
 .h-px {
   height: 1px;
+}
+
+.h-\[100vh\] {
+  height: 100vh;
 }
 
 .w-1\/12 {
@@ -5602,6 +5618,10 @@ html {
 
 .overflow-hidden {
   overflow: hidden;
+}
+
+.overflow-scroll {
+  overflow: scroll;
 }
 
 .overflow-x-auto {
@@ -8955,6 +8975,10 @@ input[type="number"]::-webkit-outer-spin-button {
 
   .\32xl\:mt-\[1\%\] {
     margin-top: 1%;
+  }
+
+  .\32xl\:mb-\[5vh\] {
+    margin-bottom: 5vh;
   }
 
   .\32xl\:h-\[40\%\] {
