@@ -809,10 +809,13 @@ export const alterCodeSample = (_currentCommand: number, _currentAxis: string, c
     return alteredCodeSample;
 }
 
+//This method will convert a string to a char when string is of length 1 or,
+//convert to a decimal when input length is > 1
 export function convertAxisSelectionValue(axisSelectionValue: string): number {
     let selectedAxis = parseInt(axisSelectionValue);
 
     if (axisSelectionValue.length == 1) {
+        //convert to char if the input is only one character
         selectedAxis = new Char(axisSelectionValue).getDecimalASCII_Code();
     }
     return selectedAxis

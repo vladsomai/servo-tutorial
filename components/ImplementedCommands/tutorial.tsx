@@ -406,7 +406,7 @@ function Tutorial(props: TutorialProps) {
                                         <Command21
                                             MountedByQuickStart={true}
                                             UniqueID={item.UniqueID}
-                                            Alias={hexStringToASCII(item.Alias)}
+                                            Alias={item.Alias}
                                             key={index}
                                             {...props}
                                             getAxisSelection={

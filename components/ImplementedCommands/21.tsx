@@ -4,6 +4,8 @@ import {
     ErrorTypes,
     Uint8ArrayToString,
     convertAxisSelectionValue,
+    hexStringToASCII,
+    hexStringToInt32,
     transfNumberToUint8Arr,
 } from "../../servo-engine/utils";
 import { ChaptersPropsType } from "./0_1";
@@ -23,11 +25,34 @@ export const Command21 = (props: Command21PropsType) => {
             uniqueIdInputBox.current.value = props.UniqueID;
         }
 
-        if (aliasInputBox.current && props.Alias) {
-            aliasInputBox.current.value = props.Alias;
+        if (aliasInputBox.current && props.Alias != null) {
+            let aliasStr = props.Alias;
+
+            const aliasNumber = hexStringToInt32(aliasStr, true);
+
+            if (aliasNumber < 10) {
+                //decimal value of alias raning 0 to 9
+                aliasStr = "0" + aliasNumber.toString();
+            } else if (
+                (aliasNumber >= 48 && aliasNumber <= 57) ||
+                (aliasNumber >= 65 && aliasNumber <= 90) ||
+                (aliasNumber >= 97 && aliasNumber <= 122)
+            ) {
+                //ascii characters starting from 48 to 57 are ascii numbers
+                //65 to 90 capital letters
+                //97 to 122 small letters
+
+                //print them as ascii
+                aliasStr = hexStringToASCII(aliasStr);
+            } else {
+                //when thats not the case, show the decimal value of that char
+                //this should cover all non-printable ascii chars
+                aliasStr = aliasNumber.toString();
+            }
+            aliasInputBox.current.value = aliasStr;
         }
     }, []);
-    
+
     useEffect(
         (setBytes = value.codeExamplePayload.setBytes) => {
             return () => setBytes("");
@@ -90,7 +115,6 @@ export const Command21 = (props: Command21PropsType) => {
         }
 
         const newAlias = convertAxisSelectionValue(aliasInputBox.current.value);
-
         if (isNaN(newAlias)) {
             aliasInputBox.current.value = "0";
             props.LogAction(
@@ -189,7 +213,13 @@ export const Command21 = (props: Command21PropsType) => {
                     !props.MountedByQuickStart ? "flex flex-col " : "flex"
                 }`}
             >
-                <div className={`flex flex-col xl:flex-row ${props.MountedByQuickStart?"justify-end":"justify-center mb-2"} items-center w-[80%]`}>
+                <div
+                    className={`flex flex-col xl:flex-row ${
+                        props.MountedByQuickStart
+                            ? "justify-end"
+                            : "justify-center mb-2"
+                    } items-center w-[80%]`}
+                >
                     <div
                         className={`m-2 ${
                             props.MountedByQuickStart ? "hidden" : ""
