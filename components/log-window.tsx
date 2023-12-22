@@ -19,7 +19,11 @@ const Log = (props: {
     disconnectFromSerialPort: Function;
     isConnected: boolean;
     getAxisCode: number;
-    constructCommand: (_axis: string, _payload: string) => Uint8Array;
+    constructCommand: (
+        _payload: string,
+        _currentCommand?: number,
+        _axis?: string,
+    ) => Uint8Array;
 }) => {
     const logWindow = useRef<HTMLDivElement | null>(null);
     const currentCommand = useRef<number>(0);

@@ -70,9 +70,7 @@ export const Command41 = (props: Command41PropsType) => {
     };
 
     const execute_command = () => {
-        const selectedAxis = props.MountedByQuickStart
-            ? "255"
-            : props.getAxisSelection();
+        const selectedAxis = props.getAxisSelection();
 
         if (selectedAxis == "") return;
 
@@ -93,11 +91,20 @@ export const Command41 = (props: Command41PropsType) => {
                 return;
             }
 
-            const rawData = props.constructCommand(
-                selectedAxis,
-                uniqueIdInputBox.current.value,
-                41
-            );
+            let rawData: Uint8Array;
+            if (props.MountedByQuickStart) {
+                rawData = props.constructCommand(
+                    uniqueIdInputBox.current.value,
+                    41,
+                    "255"
+                );
+            } else {
+                rawData = props.constructCommand(
+                    uniqueIdInputBox.current.value,
+                    41
+                );
+            }
+
             props.sendDataToSerialPort(rawData, true, true);
         }
     };

@@ -6,13 +6,16 @@ export interface Command20PropsType extends ChaptersPropsType {
 
 export const Command20 = (props: Command20PropsType) => {
     const execute_command = () => {
-        const selectedAxis = props.MountedByQuickStart
-        ? "255"
-        : props.getAxisSelection();
-        
+        const selectedAxis = props.getAxisSelection();
         if (selectedAxis == "") return;
 
-        const rawData = props.constructCommand(selectedAxis, "", 20);
+        let rawData: Uint8Array;
+        if (props.MountedByQuickStart) {
+            rawData = props.constructCommand("", 20, "255");
+        } else {
+            rawData = props.constructCommand("", 20);
+        }
+
         props.sendDataToSerialPort(rawData);
     };
     return (

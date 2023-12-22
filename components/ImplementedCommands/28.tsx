@@ -43,7 +43,6 @@ export const Command28 = (props: ChaptersPropsType) => {
     }
 
     const rawData = props.constructCommand(
-      selectedAxis,
       value.codeExamplePayload.Bytes,
     )
     props.sendDataToSerialPort(rawData)

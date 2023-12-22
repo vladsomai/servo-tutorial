@@ -62,7 +62,6 @@ export const Command31 = (props: ChaptersPropsType) => {
             }
 
             const rawData = props.constructCommand(
-                selectedAxis,
                 convertTextToASCII(textPayload),
                 31
             );

@@ -209,7 +209,6 @@ export const Command2 = (props: ChaptersPropsType) => {
             }
 
             const rawData = props.constructCommand(
-                selectedAxis,
                 microstepsHexa + timestepsHexa,
                 2
             );

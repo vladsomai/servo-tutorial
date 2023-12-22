@@ -11,7 +11,7 @@ export const Command8 = (props: ResetCommandType) => {
     if (selectedAxis == '') return
 
     props.setMaster_time_start(Date.now())
-    const rawData = props.constructCommand(selectedAxis, '')
+    const rawData = props.constructCommand('')
     props.sendDataToSerialPort(rawData)
   }
 

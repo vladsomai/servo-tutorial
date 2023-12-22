@@ -193,8 +193,7 @@ export const Command14 = (props: ChaptersPropsType) => {
       }
 
       const rawData = props.constructCommand(
-        selectedAxis,
-        microstepsHexa + timestepsHexa,
+           microstepsHexa + timestepsHexa,
       )
       props.sendDataToSerialPort(rawData)
     }

@@ -106,46 +106,55 @@ export const Command21 = (props: Command21PropsType) => {
         value.codeExamplePayload.setBytes(completedVal + hexAlias);
     };
 
-    const handleAlias = () => {
-        if (!aliasInputBox.current) return;
+    function isAliasValid(newAlias: number): boolean {
+        if (!aliasInputBox.current) return false;
 
         if (aliasInputBox.current.value == "") {
             aliasInputBox.current.value = "";
-            return;
+            return false;
         }
 
-        const newAlias = convertAxisSelectionValue(aliasInputBox.current.value);
         if (isNaN(newAlias)) {
             aliasInputBox.current.value = "0";
             props.LogAction(
                 ErrorTypes.ERR1001,
                 "Alias must either be a valid ASCII character or a number ranging from 0 to 253!"
             );
-            return;
-        }
-
-        if (newAlias === 254) {
-            aliasInputBox.current.value = "0";
-            props.LogAction(
-                ErrorTypes.ERR1001,
-                "Alias 254 is reserved for response messages!"
-            );
-            return;
+            return false;
         }
 
         if (newAlias < 0) {
-            aliasInputBox.current.value = "0";
+            //do not allow negative numbers
             props.LogAction(
                 ErrorTypes.ERR1001,
-                "Supported axes range from 0 to 253!"
+                "Supported aliases range from 0 to 253!"
             );
-        } else if (newAlias > 253) {
-            aliasInputBox.current.value = "253";
+            return false;
+        }
 
+        if (
+            aliasInputBox.current.value == "255" ||
+            aliasInputBox.current.value == "254" ||
+            aliasInputBox.current.value == "82" ||
+            aliasInputBox.current.value == "R"
+        ) {
             props.LogAction(
                 ErrorTypes.ERR1001,
-                "Supported axes range from 0 to 253!"
+                `You cannot set the alias to ${aliasInputBox.current.value} because it is reserved.`
             );
+            return false;
+        }
+
+        return true;
+    }
+
+    const handleAlias = () => {
+        if (!aliasInputBox.current) return false;
+
+        const newAlias = convertAxisSelectionValue(aliasInputBox.current.value);
+
+        if (!isAliasValid(newAlias)) {
+            return;
         }
 
         const tempHexaAlias = Uint8ArrayToString(
@@ -157,9 +166,7 @@ export const Command21 = (props: Command21PropsType) => {
     };
 
     const execute_command = () => {
-        const selectedAxis = props.MountedByQuickStart
-            ? "255"
-            : props.getAxisSelection();
+        const selectedAxis = props.getAxisSelection();
 
         if (selectedAxis == "") return;
 
@@ -177,14 +184,11 @@ export const Command21 = (props: Command21PropsType) => {
             uniqueIdInputBox.current &&
             uniqueIdInputBox
         ) {
-            if (
-                aliasInputBox.current.value == "255" ||
-                aliasInputBox.current.value == "254"
-            ) {
-                props.LogAction(
-                    ErrorTypes.ERR1001,
-                    `You cannot set the alias to ${aliasInputBox.current.value} because it is reserved.`
-                );
+            const newAlias = convertAxisSelectionValue(
+                aliasInputBox.current.value
+            );
+
+            if (!isAliasValid(newAlias)) {
                 return;
             }
 
@@ -196,11 +200,20 @@ export const Command21 = (props: Command21PropsType) => {
                 return;
             }
 
-            const rawData = props.constructCommand(
-                selectedAxis,
-                uniqueIdInputBox.current.value + hexAlias,
-                21
-            );
+            let rawData: Uint8Array;
+
+            if (props.MountedByQuickStart) {
+                rawData = props.constructCommand(
+                    uniqueIdInputBox.current.value + hexAlias,
+                    21,
+                    "255"
+                );
+            } else {
+                rawData = props.constructCommand(
+                    uniqueIdInputBox.current.value + hexAlias,
+                    21
+                );
+            }
 
             props.sendDataToSerialPort(rawData, true, false);
         }

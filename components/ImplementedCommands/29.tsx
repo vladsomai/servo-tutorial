@@ -401,8 +401,7 @@ export const Command29 = (props: MultiMoveChapterProps) => {
     }
 
     const rawData = props.constructCommand(
-      selectedAxis,
-      value.codeExamplePayload.Bytes,
+        value.codeExamplePayload.Bytes,
     )
     props.sendDataToSerialPort(rawData)
   }

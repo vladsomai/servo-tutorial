@@ -5,7 +5,7 @@ export const Command24 = (props: ChaptersPropsType) => {
     const selectedAxis = props.getAxisSelection()
     if (selectedAxis == '') return
 
-    const rawData = props.constructCommand(selectedAxis, '')
+    const rawData = props.constructCommand('')
     props.sendDataToSerialPort(rawData)
   }
   return (

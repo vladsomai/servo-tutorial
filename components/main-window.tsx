@@ -15,6 +15,7 @@ import {
     ErrorTypes,
     getCurrentBrowser,
     Char,
+    hexStringToInt32,
 } from "../servo-engine/utils";
 import {
     InputOutputObjects,
@@ -22,7 +23,6 @@ import {
     NonCommands,
 } from "../servo-engine/motor-commands";
 import { LogType } from "../components/log-window";
-import { MotorAxes } from "../servo-engine/motor-axes";
 import SelectAxis from "./selectAxis";
 import { Command1 } from "./ImplementedCommands/0_1";
 import { Command2 } from "./ImplementedCommands/2";
@@ -433,15 +433,15 @@ const Main = (props: MainWindowProps) => {
   Parameters to the function are only the axis and the payload, the rest of the bytes will be automatically deduced from the given arguments.
 
   ############### How the command is constructed ###############
-  First byte: Targeted axis of the command
   Second byte: Command for the axis (what action should the axis do?)
   Third byte: Length of the payload
   Payload bytes: arguments that will be applied to the command. Each command has different arguments, in case no arguments are needed you must specify the Third byte as 0x00
+  First byte, optional, hex string of the axis 
   */
     const constructCommand = (
-        _axis: string,
         _payload: string,
-        _currentCommand?: number
+        _currentCommand?: number,
+        _axis?: string //hex string
     ): Uint8Array => {
         //allocate the raw array
         const axisSize = 1;
@@ -451,7 +451,11 @@ const Main = (props: MainWindowProps) => {
             axisSize + commandSize + lengthByteSize
         );
 
-        initialRawBytes.set([axisCode]);
+        let axisCodeLocal = axisCode;
+        if (_axis != null) {
+            axisCodeLocal = parseInt(_axis);
+        }
+        initialRawBytes.set([axisCodeLocal]);
 
         if (_currentCommand != undefined) {
             initialRawBytes.set([_currentCommand], 1);

@@ -123,7 +123,7 @@ export const Command3 = (props: ChaptersPropsType) => {
         )
       }
 
-      const rawData = props.constructCommand(selectedAxis, commVelocityHexa)
+      const rawData = props.constructCommand(commVelocityHexa)
       props.sendDataToSerialPort(rawData)
     }
   }

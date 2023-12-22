@@ -55,8 +55,7 @@ export const Command7 = (props: ChaptersPropsType) => {
       let textRawPayload = Uint8ArrayToString(rawPayload)
 
       const rawData = props.constructCommand(
-        selectedAxis,
-        textRawPayload.toUpperCase(),
+          textRawPayload.toUpperCase(),
       )
       props.sendDataToSerialPort(rawData)
     }

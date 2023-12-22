@@ -27,7 +27,7 @@ export const Command10 = (props: ResetCommandType) => {
 
     let textPayload = Uint8ArrayToString(rawPayload)
 
-    const rawData = props.constructCommand(selectedAxis, textPayload)
+    const rawData = props.constructCommand(textPayload)
     props.sendDataToSerialPort(rawData)
   }
   return (

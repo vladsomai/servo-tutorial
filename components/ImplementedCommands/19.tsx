@@ -216,8 +216,7 @@ export const Command19 = (props: ChaptersPropsType) => {
       }
 
       const rawData = props.constructCommand(
-        selectedAxis,
-        commAccelerationHexa + timestepsHexa,
+            commAccelerationHexa + timestepsHexa,
       )
       props.sendDataToSerialPort(rawData)
     }

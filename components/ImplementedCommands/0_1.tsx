@@ -10,9 +10,9 @@ export interface ChaptersPropsType extends MainWindowProps {
     ) => void;
     LogAction: (errorType: string, log: string) => void;
     constructCommand: (
-        _axis: string,
         _payload: string,
-        _currentCommand?: number
+        _currentCommand?: number,
+        _axis?: string,
     ) => Uint8Array;
     getAxisSelection: () => string;
     children: ReactElement;
@@ -26,7 +26,7 @@ export const Command1 = (props: ChaptersPropsType) => {
             return;
         }
 
-        const rawData = props.constructCommand(selectedAxis, "");
+        const rawData = props.constructCommand("");
 
         props.sendDataToSerialPort(rawData);
     };
