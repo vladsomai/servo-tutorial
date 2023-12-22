@@ -12,7 +12,6 @@ import { Command21 } from "./21";
 import { Command2 } from "./2";
 import { useContext } from "react";
 import { GlobalContext } from "../../pages/_app";
-import { hexStringToASCII } from "../../servo-engine/utils";
 import { Command41 } from "./41";
 
 export interface TutorialProps
@@ -193,12 +192,12 @@ function Tutorial(props: TutorialProps) {
                         <h2>Log Window</h2>
                         <p>
                             The log window is tailored to make our clients have
-                            a better user experience, you can hover with the
-                            mouse over the sent and received bytes in the Log
-                            Window to quickly understand what each byte means.
-                            Some received bytes are dynamically converted to
-                            ASCII, decimal, or strings to quickly translate the
-                            hexadecimal to something more human-understandable.
+                            a better user experience, you can click on the sent
+                            and received bytes in the Log Window to quickly
+                            understand what each byte means. Some received bytes
+                            are dynamically converted to ASCII, decimal, or
+                            strings to quickly translate the hexadecimal to
+                            something more human-understandable.
                             <br />
                         </p>
                         <p className="font-extrabold text-warning inline">
@@ -249,9 +248,9 @@ function Tutorial(props: TutorialProps) {
                                 current status of the motor. <br />
                                 e.g. In case the red LED from the motor flashes,
                                 you can press this button to read what is the
-                                current state by hovering over the received
-                                output bytes, thus helping you diagnose issues
-                                faster or understand what happened.
+                                current state by clicking on the received output
+                                bytes, thus helping you diagnose issues faster
+                                or understand what happened.
                                 <br />
                                 Read more about the GET STATUS command{" "}
                                 <Link href="/docs/16">here</Link>.
@@ -325,9 +324,9 @@ function Tutorial(props: TutorialProps) {
 
                         <h2>Identify your device</h2>
                         <p>
-                            Using the &quot;Detect devices&quot; command you were
-                            able to find out your motor&apos;s Unique ID and the
-                            current alias.
+                            Using the &quot;Detect devices&quot; command you
+                            were able to find out your motor&apos;s Unique ID
+                            and the current alias.
                         </p>
                         <p>
                             By sending the Identify command, you can identify
@@ -335,9 +334,9 @@ function Tutorial(props: TutorialProps) {
                             its green LED three times. The command must be sent
                             using the Unique ID of the motor you want to
                             identify, allowing you to set a particular alias for
-                            that motor afterward. This command is helpful in case you
-                            have multiple motors in a daisy chain and you want to
-                            name them differently.
+                            that motor afterward. This command is helpful in
+                            case you have multiple motors in a daisy chain and
+                            you want to name them differently.
                         </p>
                         <h2>Set device alias</h2>
                         <div className="my-5">

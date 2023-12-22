@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useMemo, useState } from "react";
+import { ReactElement, useEffect, useRef } from "react";
 import { MainWindowProps } from "./main-window";
 import CommandsProtocol from "./ImplementedCommands/commands-protocol";
 import Image from "next/image";
@@ -15,7 +15,6 @@ import {
 import Code from "./CodeHighlight";
 import Tutorial, { TutorialProps } from "./ImplementedCommands/tutorial";
 import FeedbackButton from "./feedbackButton";
-import { ChaptersPropsType } from "./ImplementedCommands/0_1";
 
 export interface CommandWindowProps extends MainWindowProps {
     sendDataToSerialPort: (
@@ -34,6 +33,15 @@ const Command = (props: TutorialProps, children: ReactElement) => {
     const commandsWithShortcuts = [0, 1, 27];
     const globalContext = useContext(GlobalContext);
     const iconSize = 25;
+    const commandWindowDiv = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        commandWindowDiv.current?.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "smooth",
+        });
+    }, [props.currentCommandDictionary.CommandEnum]);
 
     const shortcuts = (currentCommand: number) => {
         let title = "This command supports shortcuts";
@@ -108,6 +116,7 @@ const Command = (props: TutorialProps, children: ReactElement) => {
         return (
             <animated.div
                 style={styleSpring}
+                ref={commandWindowDiv}
                 className={`overflow-auto relative px-5 w-6/12`}
             >
                 {commandsWithShortcuts.includes(
