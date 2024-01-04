@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import { MainWindowProps } from "./main-window";
 import CommandsProtocol from "./ImplementedCommands/commands-protocol";
 import Image from "next/image";
@@ -34,13 +34,45 @@ const Command = (props: TutorialProps, children: ReactElement) => {
     const globalContext = useContext(GlobalContext);
     const iconSize = 25;
     const commandWindowDiv = useRef<HTMLDivElement | null>(null);
+    const [scrollPosition, setScrollPosition] = useState(new Map());
 
     useEffect(() => {
+        if (!commandWindowDiv || !commandWindowDiv.current) return () => {};
+
+        commandWindowDiv.current.onscroll = () => {
+            //copy the existing map
+            const currentPositionMapping = new Map(scrollPosition);
+
+            //upload the new value
+            currentPositionMapping.set(
+                props.currentCommandDictionary.CommandEnum,
+                commandWindowDiv.current?.scrollTop
+            );
+
+            setScrollPosition(currentPositionMapping);
+        };
+
+        const copyReactNode = commandWindowDiv.current;
+        return () => {
+            copyReactNode.onscroll = null;
+        };
+    }, [props.currentCommandDictionary.CommandEnum]);
+
+    useEffect(() => {
+        let scrollPositionForCurrentChapter = scrollPosition.get(
+            props.currentCommandDictionary.CommandEnum
+        );
+
+        if (scrollPositionForCurrentChapter == undefined) {
+            scrollPositionForCurrentChapter = 0;
+        }
+
         commandWindowDiv.current?.scrollTo({
-            top: 0,
+            top: scrollPositionForCurrentChapter,
             left: 0,
             behavior: "smooth",
         });
+
     }, [props.currentCommandDictionary.CommandEnum]);
 
     const shortcuts = (currentCommand: number) => {
@@ -92,6 +124,7 @@ const Command = (props: TutorialProps, children: ReactElement) => {
     )
         return (
             <animated.div
+                ref={commandWindowDiv}
                 style={styleSpring}
                 className={`overflow-auto relative px-5 w-6/12`}
             >
@@ -104,7 +137,7 @@ const Command = (props: TutorialProps, children: ReactElement) => {
         NonCommands.get("Commands protocol")
     )
         return (
-            <div className={`overflow-auto relative`}>
+            <div className={`overflow-auto relative`} ref={commandWindowDiv}>
                 <CommandsProtocol
                     MotorCommands={props.MotorCommands}
                     currentCommandDictionary={props.currentCommandDictionary}

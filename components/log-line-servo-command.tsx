@@ -2,9 +2,15 @@ import { useEffect, useRef, useState, MutableRefObject } from "react";
 import {
     Device,
     ErrorTypes,
+    Uint8ArrayToString,
+    crc32,
     getDisplayFormat,
     getNoOfBytesFromDescription,
+    hexStringToInt32,
+    littleEndianToBigEndian,
     stringToUint8Array,
+    tranfASCIIStringToUint8Arr,
+    uint32ToUint8Arr,
 } from "../servo-engine/utils";
 import { LogType } from "./log-window";
 import { MainWindowProps } from "./main-window";
@@ -21,6 +27,7 @@ import TooltipDescriptionDetectDevices from "./tooltipDescriptionDetectDevices";
 
 export interface LogLineServoCommandType extends LogType, MainWindowProps {
     currentCommand: MutableRefObject<number>;
+    LogAction: (errorType: string, log: string) => void;
 }
 
 export interface CommandBytesType {
@@ -265,14 +272,21 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
                                         detectedDevice,
                                     ]);
                                 }
+                                if (command20Counter == 3) {
+                                    validateDetectedDevice(
+                                        detectedDevice.UniqueID,
+                                        detectedDevice.Alias,
+                                        currentParameter //this is the crc response(4byte))
+                                    );
+                                }
                             }
 
                             if (
                                 props.currentCommand.current == 20 &&
                                 command20Counter == 1
                             ) {
-                                //only the unique ID for detect devices has a copy button
-                                //and it uses a different tooltip description
+                                //this is the unique ID from detect devices and it has a copy button
+                                //it uses a different tooltip description
                                 tooltipDescription = (
                                     <TooltipDescriptionDetectDevices
                                         UniqueID={detectedDevice.UniqueID}
@@ -407,6 +421,25 @@ const LogLineServoCommand = (props: LogLineServoCommandType) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.log]);
+
+    function validateDetectedDevice(
+        UniqueID: string,
+        Alias: string,
+        CRC: string
+    ) {
+        const data = stringToUint8Array(UniqueID + Alias);
+        const crcResult = crc32(data);
+        const crcArr = uint32ToUint8Arr(crcResult);
+        const crcArrStr = Uint8ArrayToString(crcArr);
+        const crcArrStrEnd = littleEndianToBigEndian(crcArrStr);
+        
+        if (CRC == crcArrStrEnd) {
+            props.LogAction(ErrorTypes.NO_ERR, "CRC is valid!");
+        } else {
+            console.log("Invalid!");
+            props.LogAction(ErrorTypes.ERR1001, "CRC32 is invalid, reset all devices and send the command again.");
+        }
+    }
 
     return (
         <>

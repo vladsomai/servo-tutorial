@@ -114,14 +114,12 @@ const Main = (props: MainWindowProps) => {
 
     const connectToSerialPort = async (BaudRate: number = 230400) => {
         const currentBrowser = getCurrentBrowser();
-        if (currentBrowser != "Chrome") {
-            if (currentBrowser != "Edge") {
-                LogAction(
-                    ErrorTypes.NO_ERR,
-                    "Only Chrome and Edge browsers are supported!"
-                );
-                return;
-            }
+        if (currentBrowser != "Chrome" && currentBrowser != "Edge") {
+            LogAction(
+                ErrorTypes.NO_ERR,
+                "Only Chrome and Edge browsers are supported!"
+            );
+            return;
         }
 
         try {
@@ -1107,6 +1105,7 @@ const Main = (props: MainWindowProps) => {
                         isConnected={isConnected}
                         getAxisCode={axisCode}
                         constructCommand={constructCommand}
+                        LogAction={LogAction}
                     />
                 )}
             </div>

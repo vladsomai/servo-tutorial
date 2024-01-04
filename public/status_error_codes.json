@@ -1,138 +1,162 @@
 [
-  {
-    "ErrorCode": 0,
-    "Description": "No error"
-  },
-  {
-    "ErrorCode": 1,
-    "Description": "Time went backwards"
-  },
-  {
-    "ErrorCode": 2,
-    "Description": "Flash unlock fail"
-  },
-  {
-    "ErrorCode": 3,
-    "Description": "Flash write fail"
-  },
-  {
-    "ErrorCode": 4,
-    "Description": "Too many bytes"
-  },
-  {
-    "ErrorCode": 5,
-    "Description": "Command overflow"
-  },
-  {
-    "ErrorCode": 6,
-    "Description": "Command too long"
-  },
-  {
-    "ErrorCode": 7,
-    "Description": "Not in open loop"
-  },
-  {
-    "ErrorCode": 8,
-    "Description": "Queue not empty"
-  },
-  {
-    "ErrorCode": 9,
-    "Description": "Hall sensor error"
-  },
-  {
-    "ErrorCode": 10,
-    "Description": "Calibration overflow"
-  },
-  {
-    "ErrorCode": 11,
-    "Description": "Not enough minima or maxima"
-  },
-  {
-    "ErrorCode": 12,
-    "Description": "Vibration four step"
-  },
-  {
-    "ErrorCode": 13,
-    "Description": "Not in closed loop"
-  },
-  {
-    "ErrorCode": 14,
-    "Description": "Overvoltage"
-  },
-  {
-    "ErrorCode": 15,
-    "Description": "Acceleration too high"
-  },
-  {
-    "ErrorCode": 16,
-    "Description": "Velocity too high"
-  },
-  {
-    "ErrorCode": 17,
-    "Description": "Queue is full"
-  },
-  {
-    "ErrorCode": 18,
-    "Description": "Run out of queue items"
-  },
-  {
-    "ErrorCode": 19,
-    "Description": "Motor busy"
-  },
-  {
-    "ErrorCode": 20,
-    "Description": "Position out of range"
-  },
-  {
-    "ErrorCode": 21,
-    "Description": "Hall position out of range"
-  },
-  {
-    "ErrorCode": 22,
-    "Description": "Current sensor failed"
-  },
-  {
-    "ErrorCode": 23,
-    "Description": "Max pwm voltage too high"
-  },
-  {
-    "ErrorCode": 24,
-    "Description": "Multi-move more than 32 moves"
-  },
-  {
-    "ErrorCode": 25,
-    "Description": "Safety limit exceeded"
-  },
-  {
-    "ErrorCode": 26,
-    "Description": "Turn point out of safety zone"
-  },
-  {
-    "ErrorCode": 27,
-    "Description": "Predicted position out of safety zone"
-  },
-  {
-    "ErrorCode": 28,
-    "Description": "Predicted velocity too high"
-  },
-  {
-    "ErrorCode": 29,
-    "Description": "debug1"
-  },
-  {
-    "ErrorCode": 30,
-    "Description": "Control loop took too long"
-  },
-  {
-    "ErrorCode": 31,
-    "Description": "Index out of range"
-  },
-  {
-    "ErrorCode": 32,
-    "Description": "Can't pulse when intervals are active"
-  },
-  {
-    "ErrorCode": 33,
-    "Description": "Invalid run mode"
-  }
+    {
+        "ErrorCode": 0,
+        "Description": "No error"
+    },
+    {
+        "ErrorCode": 1,
+        "Description": "Time went backwards"
+    },
+    {
+        "ErrorCode": 2,
+        "Description": "Flash unlock fail"
+    },
+    {
+        "ErrorCode": 3,
+        "Description": "Flash write fail"
+    },
+    {
+        "ErrorCode": 4,
+        "Description": "Too many bytes"
+    },
+    {
+        "ErrorCode": 5,
+        "Description": "Command overflow"
+    },
+    {
+        "ErrorCode": 6,
+        "Description": "Command too long"
+    },
+    {
+        "ErrorCode": 7,
+        "Description": "Not in open loop"
+    },
+    {
+        "ErrorCode": 8,
+        "Description": "Queue not empty"
+    },
+    {
+        "ErrorCode": 9,
+        "Description": "Hall sensor error"
+    },
+    {
+        "ErrorCode": 10,
+        "Description": "Calibration overflow"
+    },
+    {
+        "ErrorCode": 11,
+        "Description": "Not enough minima or maxima"
+    },
+    {
+        "ErrorCode": 12,
+        "Description": "Vibration four step"
+    },
+    {
+        "ErrorCode": 13,
+        "Description": "Not in closed loop"
+    },
+    {
+        "ErrorCode": 14,
+        "Description": "Overvoltage"
+    },
+    {
+        "ErrorCode": 15,
+        "Description": "Acceleration too high"
+    },
+    {
+        "ErrorCode": 16,
+        "Description": "Velocity too high"
+    },
+    {
+        "ErrorCode": 17,
+        "Description": "Queue is full"
+    },
+    {
+        "ErrorCode": 18,
+        "Description": "Run out of queue items"
+    },
+    {
+        "ErrorCode": 19,
+        "Description": "Motor busy"
+    },
+    {
+        "ErrorCode": 20,
+        "Description": "Position out of range"
+    },
+    {
+        "ErrorCode": 21,
+        "Description": "Hall position out of range"
+    },
+    {
+        "ErrorCode": 22,
+        "Description": "Current sensor failed"
+    },
+    {
+        "ErrorCode": 23,
+        "Description": "Max pwm voltage too high"
+    },
+    {
+        "ErrorCode": 24,
+        "Description": "Multi-move more than 32 moves"
+    },
+    {
+        "ErrorCode": 25,
+        "Description": "Safety limit exceeded"
+    },
+    {
+        "ErrorCode": 26,
+        "Description": "Turn point out of safety zone"
+    },
+    {
+        "ErrorCode": 27,
+        "Description": "Predicted position out of safety zone"
+    },
+    {
+        "ErrorCode": 28,
+        "Description": "Predicted velocity too high"
+    },
+    {
+        "ErrorCode": 29,
+        "Description": "debug1"
+    },
+    {
+        "ErrorCode": 30,
+        "Description": "Control loop took too long"
+    },
+    {
+        "ErrorCode": 31,
+        "Description": "Index out of range"
+    },
+    {
+        "ErrorCode": 32,
+        "Description": "Can't pulse when intervals are active"
+    },
+    {
+        "ErrorCode": 33,
+        "Description": "Invalid run mode"
+    },
+    {
+        "ErrorCode": 34,
+        "Description": "Parameter out of range"
+    },
+    {
+        "ErrorCode": 35,
+        "Description": "disable MOSFETs first"
+    },
+    {
+        "ErrorCode": 36,
+        "Description": "Framing error"
+    },
+    {
+        "ErrorCode": 37,
+        "Description": "Overrun error"
+    },
+    {
+        "ErrorCode": 38,
+        "Description": "Noise error"
+    },
+    {
+        "ErrorCode": 39,
+        "Description": "Go to closed loop failed"
+    }
 ]

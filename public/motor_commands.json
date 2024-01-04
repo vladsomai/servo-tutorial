@@ -253,7 +253,7 @@
                 "TooltipDisplayFormat": "%d,%c"
             },
             {
-                "Description": "crc32: A CRC32 value for this packet. This is used to verify that the response is correct. However, currently this is hardcoded as 0x04030201",
+                "Description": "crc32: A CRC32 value for this packet. This is used to verify that the response is correct.",
                 "TooltipDisplayFormat": ""
             }
         ]
@@ -379,7 +379,7 @@
     {
         "CommandString": "Multi-move",
         "CommandEnum": 29,
-        "Description": "Multi-move command",
+        "Description": "Multi-move command allows you to compose multiple moves one after eachother. The last move must set the motor's velocity to 0 for a period of time(e.g. 0.1s) to allow the motor to stop, otherwise the motor will enter in an error state.",
         "Input": [
             {
                 "Description": "u8: Specify how many moves are being communicated in this one shot.",

@@ -169,8 +169,11 @@ export class ByteStringType {
     }
 }
 
-//Input: "FF00A2"
-//Output: [0xFF,0,0xA2]
+/**
+ * Returns a Uint8Array representing the bytes from the hex string 
+ * @param Input: "FF00A2" hex number as string to be converted to Uint8Array
+ * @param Output: [0xFF,0,0xA2] 
+ */
 export const stringToUint8Array = (_value: string): Uint8Array => {
     const message = _value;
 
@@ -393,11 +396,6 @@ export const getNoOfBytesFromDescription = (typeWithDescription: string): number
     return noOfBytes;
 }
 
-export const getNoOfBytesFromType = () => {
-
-}
-
-
 /**
  * Returns a string with the hexString converted to the format 
  * @param format format string
@@ -607,6 +605,9 @@ const getVersionNumber = (hexString: string): string => {
     return res.substring(0, res.lastIndexOf('.'))
 }
 
+/**
+ * This method inverts the hex bytes 
+ */
 export const littleEndianToBigEndian = (hexString: string): string => {
     let res = ''
     for (let i = hexString.length; i >= 0; i -= 2) {

@@ -24,6 +24,7 @@ const Log = (props: {
         _currentCommand?: number,
         _axis?: string,
     ) => Uint8Array;
+    LogAction: (errorType: string, log: string) => void;
 }) => {
     const logWindow = useRef<HTMLDivElement | null>(null);
     const currentCommand = useRef<number>(0);
@@ -160,6 +161,7 @@ const Log = (props: {
                                         {...props.mainWindow}
                                         {...log}
                                         currentCommand={currentCommand}
+                                        LogAction={props.LogAction}
                                     />
                                 </div>
                             );
