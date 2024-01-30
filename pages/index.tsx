@@ -39,7 +39,13 @@ class CustomLoadingScreen implements ILoadingScreen {
 }
 
 class Playground {
-    public static CreateScene(canvas: HTMLCanvasElement): {
+    public static CreateScene(
+        canvas: HTMLCanvasElement,
+        sceneFileName: string,
+        cameraAlpha: number,
+        cameraBeta: number,
+        cameraRadius: number
+    ): {
         scene: BABYLON.Scene;
         engine: BABYLON.Engine;
     } {
@@ -56,34 +62,21 @@ class Playground {
         );
         camera.attachControl(canvas, true);
 
-        let light2 = new BABYLON.PointLight(
-            "light1",
-            new BABYLON.Vector3(100, -100, 100),
-            scene
-        );
-        light2.intensity = 0.1;
+        BABYLON.SceneLoader.Append("/", sceneFileName, scene, function (scene) {
+            scene.createDefaultCamera(true, true, true);
+            let helper = scene.createDefaultEnvironment({
+                enableGroundMirror: true,
+                groundYBias: 0.01,
+            });
+            helper?.setMainColor(BABYLON.Color3.FromInts(15, 23, 42));
 
-        let light = new BABYLON.HemisphericLight(
-            "light1",
-            new BABYLON.Vector3(1, 1, 1),
-            scene
-        );
-        light.intensity = 4;
-
-        BABYLON.SceneLoader.Append(
-            "/",
-            "motor_with_textures.glb",
-            scene,
-            function (scene) {
-                // // Create a default arc rotate camera and light.
-                scene.createDefaultCameraOrLight(true, true, true);
-                //@ts-ignore
-                scene.activeCamera!.alpha += -Math.PI / 3;
-
-                //@ts-ignore
-                scene.activeCamera!.radius += -7;
-            }
-        );
+            //@ts-ignore
+            scene.activeCamera!.alpha += cameraAlpha;
+            //@ts-ignore
+            scene.activeCamera!.beta += cameraBeta; 
+            //@ts-ignore
+            scene.activeCamera!.radius += cameraRadius; 
+        });
 
         engine.runRenderLoop(function () {
             scene?.render();
@@ -94,17 +87,44 @@ class Playground {
 }
 
 const Home: NextPageWithLayout = () => {
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const canvasMotor1Ref = useRef<HTMLCanvasElement | null>(null);
+    const canvasMotor3Ref = useRef<HTMLCanvasElement | null>(null);
     const loadingDiv = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         CustomLoadingScreen.setLoadingDiv(loadingDiv.current);
         const { scene, engine } = Playground.CreateScene(
-            canvasRef.current as HTMLCanvasElement
-        );
+            canvasMotor1Ref.current as HTMLCanvasElement,
+            "motor1.glb",
+            -Math.PI / 3,
+            -Math.PI / 10,
+            -0.25
+            );
+
         function handleResize() {
             engine.resize();
         }
+
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
+    useEffect(() => {
+        CustomLoadingScreen.setLoadingDiv(loadingDiv.current);
+        const { scene, engine } = Playground.CreateScene(
+            canvasMotor3Ref.current as HTMLCanvasElement,
+            "motor3.glb",
+            -Math.PI / 0.8,
+            -Math.PI / 10,
+            -0.1
+        );
+
+        function handleResize() {
+            engine.resize();
+        }
+
         window.addEventListener("resize", handleResize);
         return () => {
             window.removeEventListener("resize", handleResize);
@@ -141,18 +161,23 @@ const Home: NextPageWithLayout = () => {
                                 for their unique requirements.
                             </p>
                         </div>
-                        <div className="relative w-full h-full flex justify-center text-center items-center  ">
+                        <div className="relative w-full h-full flex flex-col justify-center text-center items-center  ">
                             <div
                                 ref={loadingDiv}
                                 className="absolute w-full h-full flex flex-col justify-center items-center bg-base-100"
                             >
                                 <progress className="progress progress-primary w-56"></progress>
                                 <h1 className="text-3xl mt-5">
-                                    Loading 3D asset...
+                                    Loading 3D assets...
                                 </h1>
                             </div>
+                            {/* <h1 className="text-6xl mb-5">Our servo motors</h1> */}
                             <canvas
-                                ref={canvasRef}
+                                ref={canvasMotor3Ref}
+                                className={`focus:outline-none rounded-2xl bg-slate-800 w-full h-full mb-[15vh]`}
+                            ></canvas>
+                            <canvas
+                                ref={canvasMotor1Ref}
                                 className={`focus:outline-none rounded-2xl bg-slate-800 w-full h-full mb-[15vh]`}
                             ></canvas>
                         </div>
