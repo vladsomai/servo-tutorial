@@ -164,7 +164,7 @@ const Home: NextPageWithLayout = () => {
                         <div className="relative w-full h-full flex flex-col justify-center text-center items-center  ">
                             <div
                                 ref={loadingDiv}
-                                className="absolute w-full h-full flex flex-col justify-center items-center bg-base-100"
+                                className="absolute w-full h-full flex flex-col justify-start items-center bg-base-100"
                             >
                                 <progress className="progress progress-primary w-56"></progress>
                                 <h1 className="text-3xl mt-5">
