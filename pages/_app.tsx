@@ -30,9 +30,18 @@ export type GlobalStateType = {
         setShow: Function;
     };
 
-    codeExamplePayload: {
-        Bytes: string;
-        setBytes: Function;
+    codeExample: {
+        cCode: string;
+        setClangCode: Function;
+        webCode: string;
+        setWebCode: Function;
+        pythonCode: string;
+        setPythonCode: Function;
+    };
+
+    currentAxisCode: {
+        axisCode: number;
+        setAxisCode: Function;
     };
 
     detectedDevices: {
@@ -63,9 +72,18 @@ const DefaultGlobalState: GlobalStateType = {
         setShow: () => {},
     },
 
-    codeExamplePayload: {
-        Bytes: "",
-        setBytes: () => {},
+    codeExample: {
+        cCode: "",
+        setClangCode: () => {},
+        webCode: "",
+        setWebCode: () => {},
+        pythonCode: "",
+        setPythonCode: () => {},
+    },
+
+    currentAxisCode: {
+        axisCode: 255,
+        setAxisCode: () => {},
     },
 
     detectedDevices: {
@@ -107,8 +125,11 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     const [_alertTitle, _setAlertTitle] = useState("");
     const [_alertDescription, _setAlertDescription] = useState(<></>);
     const [_alertShow, _setAlertShow] = useState(false);
-    const [_bytes, _setBytes] = useState("");
     const [_devices, _setDevices] = useState([]);
+    const [_cCode, _setClangCode] = useState("");
+    const [_webCode, _setWebCode] = useState("");
+    const [_pythonCode, _setPythonCode] = useState("");
+    const [_axisCode, _setAxisCode] = useState(255);
 
     const GlobalState: GlobalStateType = {
         theme: {
@@ -132,7 +153,19 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
             setShow: _setAlertShow,
         },
 
-        codeExamplePayload: { Bytes: _bytes, setBytes: _setBytes },
+        codeExample: {
+            cCode: _cCode,
+            setClangCode: _setClangCode,
+            webCode: _webCode,
+            setWebCode: _setWebCode,
+            pythonCode: _pythonCode,
+            setPythonCode: _setPythonCode,
+        },
+
+        currentAxisCode: {
+            axisCode: _axisCode,
+            setAxisCode: _setAxisCode,
+        },
 
         detectedDevices: {
             Devices: _devices,

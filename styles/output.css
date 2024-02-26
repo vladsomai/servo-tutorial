@@ -4815,6 +4815,11 @@ html {
   margin-bottom: 0.25rem;
 }
 
+.my-10 {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
 .my-3 {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
@@ -4862,8 +4867,8 @@ html {
   margin-bottom: 1.5rem;
 }
 
-.mb-\[15vh\] {
-  margin-bottom: 15vh;
+.mb-\[40vh\] {
+  margin-bottom: 40vh;
 }
 
 .ml-0 {
@@ -4900,6 +4905,10 @@ html {
 
 .mr-1 {
   margin-right: 0.25rem;
+}
+
+.mr-10 {
+  margin-right: 2.5rem;
 }
 
 .mr-2 {
@@ -5070,12 +5079,20 @@ html {
   height: 2.3rem;
 }
 
+.h-\[200px\] {
+  height: 200px;
+}
+
 .h-\[30\%\] {
   height: 30%;
 }
 
 .h-\[3vh\] {
   height: 3vh;
+}
+
+.h-\[500px\] {
+  height: 500px;
 }
 
 .h-\[50px\] {
@@ -5262,6 +5279,10 @@ html {
 
 .w-\[80\%\] {
   width: 80%;
+}
+
+.w-\[80vw\] {
+  width: 80vw;
 }
 
 .w-\[85\%\] {
@@ -8779,6 +8800,10 @@ input[type="number"]::-webkit-outer-spin-button {
   .md\:mx-2 {
     margin-left: 0.5rem;
     margin-right: 0.5rem;
+  }
+
+  .md\:mb-\[25vh\] {
+    margin-bottom: 25vh;
   }
 
   .md\:mr-6 {

@@ -1,0 +1,61 @@
+export const pythonCode = `#!/usr/local/bin/python3
+import serial
+import platform
+import struct
+
+# Define your serial port
+PORT = "COM7" 
+
+# Define all the parameters for this command
+alias = 255
+velocity_rpm = 0
+move_time_seconds = 0
+motor_command = 26
+motor_command_length = 8
+
+# Define all the constants for this command
+MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION = 645120
+MOVE_TIME_MOTOR_UNITS_PER_SECOND = 31250
+
+if platform.system() == 'Windows':
+    PORT_PREFIX = '\\\\\\\\.\\\\'
+else:
+    PORT_PREFIX = ''
+
+try:
+    serialPort = serial.Serial(PORT_PREFIX + PORT, 230400, timeout = 1)
+except:
+    print('Could not open serial port.')
+    exit()
+print(f"Successfully opened the serial port: {serialPort.name}")
+
+#convert input values to motor units
+internal_velocity = int(velocity_rpm / 60) * (MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION / MOVE_TIME_MOTOR_UNITS_PER_SECOND) * (2 ** 32)
+communication_velocity = int(internal_velocity / (2 ** 12))
+print(f"Communication velocity: {communication_velocity}")
+
+move_time_motor_units = int(move_time_seconds * MOVE_TIME_MOTOR_UNITS_PER_SECOND)
+print(f"Timesteps: {move_time_motor_units}")
+
+# Format of the command: uchar, uchar, uchar, int, uint
+# Reference: https://docs.python.org/3/library/struct.html#format-characters
+command_format = '<BBBiI'
+
+bytes = struct.pack(command_format, alias, motor_command, motor_command_length,
+                    communication_velocity, move_time_motor_units)
+
+for d in bytes:
+    print("0x%02X %d" % (d, d))
+
+serialPort.write(bytes)
+
+data = serialPort.read(1000)
+print("Received %d bytes" % (len(data)))
+print(data)
+
+for d in data:
+    print("0x%02X %d" % (d, d))
+
+serialPort.close()
+
+`

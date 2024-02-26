@@ -14,6 +14,22 @@
         "Output": "Success_response"
     },
     {
+        "CommandString": "Trapezoid move",
+        "CommandEnum": 2,
+        "Description": "Move immediately to the given position using the currently set speed (the speed is set by a separate command)",
+        "Input": [
+            {
+                "Description": "i32: The displacement to travel. Can be positive or negative.",
+                "TooltipDisplayFormat": "%d"
+            },
+            {
+                "Description": "u32: The time over which to do the move.",
+                "TooltipDisplayFormat": "%u"
+            }
+        ],
+        "Output": "Success_response"
+    },
+    {
         "CommandString": "Set maximum velocity",
         "CommandEnum": 3,
         "Description": "Sets maximum velocity (this is not used at this time)",
@@ -77,6 +93,18 @@
         "Output": "Success_response"
     },
     {
+        "CommandString": "Get current time",
+        "CommandEnum": 9,
+        "Description": "Gets the current absolute time",
+        "Input": "None",
+        "Output": [
+            {
+                "Description": "u48: The current absolute time",
+                "TooltipDisplayFormat": "%u"
+            }
+        ]
+    },
+    {
         "CommandString": "Time sync",
         "CommandEnum": 10,
         "Description": "Sends the master time to the motor so that it can sync its own clock (do this 10 times per second).",
@@ -93,18 +121,6 @@
             },
             {
                 "Description": "u16: The contents of the RCC-ICSCR register (holds the HSICAL and HSITRIM settings).",
-                "TooltipDisplayFormat": "%u"
-            }
-        ]
-    },
-    {
-        "CommandString": "Get current time",
-        "CommandEnum": 9,
-        "Description": "Gets the current absolute time",
-        "Input": "None",
-        "Output": [
-            {
-                "Description": "u48: The current absolute time",
                 "TooltipDisplayFormat": "%u"
             }
         ]
@@ -506,22 +522,6 @@
         "CommandEnum": 254,
         "Description": "Used for testing of some calculations that predict of the motion will go out of the set safety limits",
         "Input": "None",
-        "Output": "Success_response"
-    },
-    {
-        "CommandString": "Trapezoid move",
-        "CommandEnum": 2,
-        "Description": "Move immediately to the given position using the currently set speed (the speed is set by a separate command)",
-        "Input": [
-            {
-                "Description": "i32: The displacement to travel. Can be positive or negative.",
-                "TooltipDisplayFormat": "%d"
-            },
-            {
-                "Description": "u32: The time over which to do the move.",
-                "TooltipDisplayFormat": "%u"
-            }
-        ],
         "Output": "Success_response"
     }
 ]

@@ -664,25 +664,29 @@ export const getCurrentBrowser = (): 'Opera' | 'Edge' | 'Chrome' | 'Safari' | 'F
     }
 }
 
-import { javascriptCode } from "./CodeExamples/JavaScript";
-import { pythonCode } from "./CodeExamples/Python";
-import { cCode } from "./CodeExamples/C";
+import { cCode } from "../components/Commands/0_1/code-samples/c-code-sample";
+import { pythonCode } from "../components/Commands/0_1/code-samples/python-code-sample";
+import { webCode } from "../components/Commands/0_1/code-samples/web-code-sample";
 
 
-export type languages = "python" | "c" | "javascript"
+export const javascriptLanguage = 'javascript'
+export const pythonLanguage = 'python'
+export const cLanguage = 'c'
+
+export type languages = typeof pythonLanguage | typeof cLanguage | typeof javascriptLanguage
 
 export const SupportedCodeExamples = {
     "Python": {
-        "prismLanguage": "python",
+        "prismLanguage": pythonLanguage,
         "code": pythonCode
     },
     "C": {
-        "prismLanguage": "c",
+        "prismLanguage": cLanguage,
         "code": cCode
     },
     "JavaScript": {
-        "prismLanguage": "javascript",
-        "code": javascriptCode
+        "prismLanguage": javascriptLanguage,
+        "code": webCode
     }
 }
 

@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { animated, useSpring } from "react-spring";
 import LogLineServoCommand from "./log-line-servo-command";
 import { MainWindowProps } from "./main-window";
+import { GlobalContext } from "../pages/_app";
 
 export type LogType = {
     lineNumber: number;
@@ -18,33 +19,33 @@ const Log = (props: {
     connectToSerialPort: Function;
     disconnectFromSerialPort: Function;
     isConnected: boolean;
-    getAxisCode: number;
     constructCommand: (
         _payload: string,
         _currentCommand?: number,
-        _axis?: string,
+        _axis?: string
     ) => Uint8Array;
     LogAction: (errorType: string, log: string) => void;
 }) => {
+    const globalContext = useContext(GlobalContext);
     const logWindow = useRef<HTMLDivElement | null>(null);
     const currentCommand = useRef<number>(0);
 
     const disable_enable_MOSFETS = (enable: boolean) => {
-        const selectedAxis = props.getAxisCode;
+        const selectedAxis = globalContext.currentAxisCode.axisCode;
 
         const command = new Uint8Array([selectedAxis, enable ? 1 : 0, 0]);
 
         props.sendDataToSerialPort(command);
     };
     const getStatus = () => {
-        const selectedAxis = props.getAxisCode;
+        const selectedAxis = globalContext.currentAxisCode.axisCode;
 
         const command = new Uint8Array([selectedAxis, 16, 0]);
 
         props.sendDataToSerialPort(command);
     };
     const reset = () => {
-        const selectedAxis = props.getAxisCode;
+        const selectedAxis = globalContext.currentAxisCode.axisCode;
 
         const command = new Uint8Array([selectedAxis, 27, 0]);
 
@@ -56,6 +57,10 @@ const Log = (props: {
                 logWindow.current.scrollHeight - logWindow.current.clientHeight;
         }
     }, [props.logs]);
+
+    useEffect(() => {
+        globalContext.detectedDevices.setDevices([]);
+    }, []);
 
     const [styleSpring] = useSpring(
         () => ({

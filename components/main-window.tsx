@@ -5,6 +5,7 @@ import {
     useCallback,
     ReactElement,
     MutableRefObject,
+    useContext,
 } from "react";
 import React from "react";
 import Log from "./log-window";
@@ -15,7 +16,6 @@ import {
     ErrorTypes,
     getCurrentBrowser,
     Char,
-    hexStringToInt32,
 } from "../servo-engine/utils";
 import {
     InputOutputObjects,
@@ -23,44 +23,44 @@ import {
     NonCommands,
 } from "../servo-engine/motor-commands";
 import { LogType } from "../components/log-window";
-import SelectAxis from "./selectAxis";
-import { Command1 } from "./ImplementedCommands/0_1";
-import { Command2 } from "./ImplementedCommands/2";
-import { Command3 } from "./ImplementedCommands/3";
-import { Command4 } from "./ImplementedCommands/4";
-import { Command5 } from "./ImplementedCommands/5";
-import { Command6 } from "./ImplementedCommands/6";
-import { Command7 } from "./ImplementedCommands/7";
-import { Command8 } from "./ImplementedCommands/8";
-import { Command9 } from "./ImplementedCommands/9";
-import { Command10 } from "./ImplementedCommands/10";
-import { Command11 } from "./ImplementedCommands/11";
-import { Command12 } from "./ImplementedCommands/12";
-import { Command13 } from "./ImplementedCommands/13";
-import { Command14 } from "./ImplementedCommands/14";
-import { Command15 } from "./ImplementedCommands/15";
-import { Command16 } from "./ImplementedCommands/16";
-import { Command17 } from "./ImplementedCommands/17";
-import { Command18 } from "./ImplementedCommands/18";
-import { Command19 } from "./ImplementedCommands/19";
-import { Command20 } from "./ImplementedCommands/20";
-import { Command21 } from "./ImplementedCommands/21";
-import { Command22 } from "./ImplementedCommands/22";
-import { Command23 } from "./ImplementedCommands/23";
-import { Command24 } from "./ImplementedCommands/24";
-import { Command25 } from "./ImplementedCommands/25";
-import { Command26 } from "./ImplementedCommands/26";
-import { Command27 } from "./ImplementedCommands/27";
-import { Command28 } from "./ImplementedCommands/28";
-import { Command29, MoveCommand } from "./ImplementedCommands/29";
-import { Command30 } from "./ImplementedCommands/30";
-import { Command31 } from "./ImplementedCommands/31";
-import { Command32 } from "./ImplementedCommands/32";
-import { Command33 } from "./ImplementedCommands/33";
-import { Command254 } from "./ImplementedCommands/254";
+import SelectAxis from "./select-axis";
+import { Command1 } from "./Commands/0_1/0_1";
+import { Command2 } from "./Commands/2/2";
+import { Command3 } from "./Commands/3/3";
+import { Command4 } from "./Commands/4/4";
+import { Command5 } from "./Commands/5/5";
+import { Command6 } from "./Commands/6/6";
+import { Command7 } from "./Commands/7/7";
+import { Command8 } from "./Commands/8/8";
+import { Command9 } from "./Commands/9/9";
+import { Command10 } from "./Commands/10/10";
+import { Command11 } from "./Commands/11/11";
+import { Command12 } from "./Commands/12/12";
+import { Command13 } from "./Commands/13/13";
+import { Command14 } from "./Commands/14/14";
+import { Command15 } from "./Commands/15/15";
+import { Command16 } from "./Commands/16/16";
+import { Command17 } from "./Commands/17/17";
+import { Command18 } from "./Commands/18/18";
+import { Command19 } from "./Commands/19/19";
+import { Command20 } from "./Commands/20/20";
+import { Command21 } from "./Commands/21/21";
+import { Command22 } from "./Commands/22/22";
+import { Command23 } from "./Commands/23/23";
+import { Command24 } from "./Commands/24/24";
+import { Command25 } from "./Commands/25/25";
+import { Command26 } from "./Commands/26/26";
+import { Command27 } from "./Commands/27/27";
+import { Command28 } from "./Commands/28/28";
+import { Command29, MoveCommand } from "./Commands/29/29";
+import { Command30 } from "./Commands/30/30";
+import { Command31 } from "./Commands/31/31";
+import { Command32 } from "./Commands/32/32";
+import { Command33 } from "./Commands/33/33";
+import { Command41 } from "./Commands/41/41";
+import { Command254 } from "./Commands/254/254";
 import { useRouter } from "next/router";
 import { GlobalContext } from "../pages/_app";
-import { Command41 } from "./ImplementedCommands/41";
 
 export type MainWindowProps = {
     currentChapter: number;
@@ -69,6 +69,7 @@ export type MainWindowProps = {
 };
 
 const Main = (props: MainWindowProps) => {
+    const globalContext = useContext(GlobalContext);
     const disconnectTimeout = useRef<NodeJS.Timeout>();
     const portSer = useRef<SerialPort | null>(null);
     const reader = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null);
@@ -76,7 +77,6 @@ const Main = (props: MainWindowProps) => {
     const logsRef = useRef<LogType[]>([]);
     const [isConnected, setIsConnected] = useState<boolean>(false);
     const [axisSelectionValue, setAxisSelectionValue] = useState<string>("255");
-    const [axisCode, setAxisCode] = useState<number>(255);
     const axisCodeRef = useRef<number>(255);
 
     const timerHandle = useRef<NodeJS.Timeout>();
@@ -135,6 +135,7 @@ const Main = (props: MainWindowProps) => {
             await portSer.current.open({ baudRate: BaudRate });
             readDataFromSerialPortUntilClosed();
             setIsConnected(true);
+
             LogAction(
                 ErrorTypes.NO_ERR,
                 "Connected with baudrate " + BaudRate.toString() + "!"
@@ -183,17 +184,18 @@ const Main = (props: MainWindowProps) => {
 
     useEffect(() => {
         if (axisSelectionValue == "") {
-            setAxisCode(0);
+            globalContext.currentAxisCode.setAxisCode(0);
             axisCodeRef.current = 0;
         } else {
             let axis = parseInt(axisSelectionValue);
 
             if (axisSelectionValue.length == 1) {
+                //when only one char was introduced in the alias box, get the ascii code of that char
                 axis = new Char(axisSelectionValue).getDecimalASCII_Code();
             }
 
             axisCodeRef.current = axis;
-            setAxisCode(axis);
+            globalContext.currentAxisCode.setAxisCode(axis);
         }
     }, [axisSelectionValue]);
 
@@ -250,12 +252,16 @@ const Main = (props: MainWindowProps) => {
                 }
 
                 if (hexString.slice(0, 2) == "FF") {
+                    //do not log time out when sending a command to alias 0xFF / 255
                     enableTimoutLogging = false;
                 }
+
                 const cmdStr = hexString.slice(2, 4);
-                if (cmdStr == "14" || cmdStr == "29") {
-                    //command 20 responds randomly,
-                    //enable timeout logging if cmd 20 and 41 no metter the selected axes
+                if (cmdStr == "14" || cmdStr == "29" || cmdStr == "15") {
+                    //command 0x14 / 20 responds randomly,
+                    //command 0x29 / 41 responds always, this command is based on UniqueId
+                    //command 0x15 / 21 responds always, this command is based on UniqueId
+                    //enable timeout logging if this is the case no metter the selected axes
                     enableTimoutLogging = true;
                 }
 
@@ -449,7 +455,7 @@ const Main = (props: MainWindowProps) => {
             axisSize + commandSize + lengthByteSize
         );
 
-        let axisCodeLocal = axisCode;
+        let axisCodeLocal = globalContext.currentAxisCode.axisCode;
         if (_axis != null) {
             axisCodeLocal = parseInt(_axis);
         }
@@ -1103,7 +1109,6 @@ const Main = (props: MainWindowProps) => {
                         connectToSerialPort={connectToSerialPort}
                         disconnectFromSerialPort={disconnectFromSerialPort}
                         isConnected={isConnected}
-                        getAxisCode={axisCode}
                         constructCommand={constructCommand}
                         LogAction={LogAction}
                     />

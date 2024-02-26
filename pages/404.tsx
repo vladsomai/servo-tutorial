@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import Layout from '../components/layout'
-import type { ReactElement, ReactNode } from 'react'
+import type { ReactElement } from 'react'
 import type { NextPageWithLayout } from './_app'
 import Link from 'next/link'
 

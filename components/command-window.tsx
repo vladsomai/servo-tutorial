@@ -1,20 +1,20 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 import { MainWindowProps } from "./main-window";
-import CommandsProtocol from "./ImplementedCommands/commands-protocol";
+import CommandsProtocol from "./Commands/commands-protocol/commands-protocol";
 import Image from "next/image";
 import { useContext } from "react";
 import { GlobalContext } from "../pages/_app";
 import { animated, useSpring, config } from "@react-spring/web";
-import { ResetCmd, DisableCmd, EnableCmd } from "./modalComponents";
+import { ResetCmd, DisableCmd, EnableCmd } from "./modal-components";
 import InfoImg from "../public/info-circle-fill.svg";
 
 import {
     InputOutputObjects,
     NonCommands,
 } from "../servo-engine/motor-commands";
-import Code from "./CodeHighlight";
-import Tutorial, { TutorialProps } from "./ImplementedCommands/tutorial";
-import FeedbackButton from "./feedbackButton";
+import Code from "./code-examples";
+import Tutorial, { TutorialProps } from "./Commands/tutorial/tutorial";
+import FeedbackButton from "./feedback-button";
 
 export interface CommandWindowProps extends MainWindowProps {
     sendDataToSerialPort: (
@@ -275,7 +275,6 @@ const Command = (props: TutorialProps, children: ReactElement) => {
                 </div>
                 <Code
                     currentCommand={props.currentCommandDictionary.CommandEnum}
-                    currentAxis={props.axisSelectionValue}
                 />
             </animated.div>
         );

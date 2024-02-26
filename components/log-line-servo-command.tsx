@@ -19,11 +19,11 @@ import { GlobalContext } from "../pages/_app";
 import {
     troubleshootConnection,
     troubleshootIncompleteResponse,
-} from "./modalComponents";
+} from "./modal-components";
 import errorCodes from "../public/status_error_codes.json" assert { type: "json" };
 import { Tooltip } from "flowbite-react";
-import TooltipDescription from "./tooltipDescription";
-import TooltipDescriptionDetectDevices from "./tooltipDescriptionDetectDevices";
+import TooltipDescription from "./tooltip-description";
+import TooltipDescriptionDetectDevices from "./tooltip-description-detect-devices";
 
 export interface LogLineServoCommandType extends LogType, MainWindowProps {
     currentCommand: MutableRefObject<number>;

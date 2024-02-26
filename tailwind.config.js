@@ -9,7 +9,7 @@ module.exports = {
     "./pages/docs/*.tsx",
     "./pages/view/*.tsx",
     "./components/*.tsx",
-    "./components/ImplementedCommands/*.tsx",
+    "./components/Commands/**/*.tsx",
     "node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {

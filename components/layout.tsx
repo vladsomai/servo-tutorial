@@ -1,4 +1,3 @@
-import Navbar from './navbar'
 import Footer from './footer'
 import Modal from './modal'
 import Alert from './alert'
