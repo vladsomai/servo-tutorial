@@ -2,6 +2,7 @@ import {
     Dispatch,
     SetStateAction,
     SyntheticEvent,
+    useCallback,
     useContext,
     useEffect,
     useRef,
@@ -51,16 +52,6 @@ export const Command29 = (props: MultiMoveChapterProps) => {
     const globalContext = useContext(GlobalContext);
     const command29CodeExample = useRef(new Command29CodeExample());
 
-    useEffect(() => {
-        //on mount, run this effect
-        updateCodeExamples();
-    }, []);
-
-    useEffect(() => {
-        //when user changes the alias, run this effect
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
-
     const [payload, setPayload] = useState("");
     const [movementType, setMovementType] = useState("Velocity");
     const commandsDivElement = useRef<HTMLDivElement[] | null[]>([]); //will be used to add transitions
@@ -74,39 +65,56 @@ export const Command29 = (props: MultiMoveChapterProps) => {
     const timestepsHexa = useRef<string[]>([]);
     const movementComm = useRef<string[]>([]);
 
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(
-            command29CodeExample.current.getNewCommand29PythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                u32BitMovementTypes.current,
-                props.MoveCommands
-            )
-        );
+    const updateCodeExamples = useCallback(
+        (
+            axisCode: number,
+            commandNo: number,
+            movement_types: number,
+            moveCommands: MoveCommand[]
+        ) => {
+            globalContext.codeExample.setPythonCode(
+                command29CodeExample.current.getNewCommand29PythonCode(
+                    axisCode,
+                    commandNo,
+                    movement_types,
+                    moveCommands
+                )
+            );
 
-        globalContext.codeExample.setWebCode(
-            command29CodeExample.current.getNewCommand29WebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                u32BitMovementTypes.current,
-                props.MoveCommands
-            )
-        );
+            globalContext.codeExample.setWebCode(
+                command29CodeExample.current.getNewCommand29WebCode(
+                    axisCode,
+                    commandNo,
+                    movement_types,
+                    moveCommands
+                )
+            );
 
-        globalContext.codeExample.setClangCode(
-            command29CodeExample.current.getNewCommand29CCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                u32BitMovementTypes.current,
-                props.MoveCommands
-            )
-        );
-    }
+            globalContext.codeExample.setClangCode(
+                command29CodeExample.current.getNewCommand29CCode(
+                    axisCode,
+                    commandNo,
+                    movement_types,
+                    moveCommands
+                )
+            );
+        },
+        [globalContext.codeExample]
+    );
 
     useEffect(() => {
-        //when adding or removing commands, run this effect
-        updateCodeExamples();
-    }, [props.MoveCommands]);
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum,
+            u32BitMovementTypes.current,
+            props.MoveCommands
+        );
+    }, [
+        globalContext.currentAxisCode.axisCode,
+        props.currentCommandDictionary.CommandEnum,
+        updateCodeExamples,
+        props.MoveCommands,
+    ]);
 
     useEffect(
         (arr = props.MoveCommands) => {
@@ -403,7 +411,7 @@ export const Command29 = (props: MultiMoveChapterProps) => {
             //#endregion Movement bits
 
             const payloadStr = rawNoCommandsByte + rawMovementBits + list_2d;
-            setPayload(payloadStr)
+            setPayload(payloadStr);
         };
 
         updateCommands();

@@ -1,4 +1,4 @@
-import { useRef, useContext, useState, useEffect } from "react";
+import { useRef, useContext, useState, useEffect, useCallback } from "react";
 import { ErrorTypes } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
 import { GlobalContext } from "../../../pages/_app";
@@ -19,46 +19,47 @@ export const Command41 = (props: Command41PropsType) => {
 
     const command41CodeExample = useRef(new Command41CodeExample());
 
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(
-            command41CodeExample.current.getNewCommand41PythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                uniqueId
-            )
-        );
+    const updateCodeExamples = useCallback(
+        (axisCode: number, commandNo: number, unique_id: string) => {
+            globalContext.codeExample.setPythonCode(
+                command41CodeExample.current.getNewCommand41PythonCode(
+                    axisCode,
+                    commandNo,
+                    unique_id
+                )
+            );
 
-        globalContext.codeExample.setWebCode(
-            command41CodeExample.current.getNewCommand41WebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                uniqueId
-            )
-        );
+            globalContext.codeExample.setWebCode(
+                command41CodeExample.current.getNewCommand41WebCode(
+                    axisCode,
+                    commandNo,
+                    unique_id
+                )
+            );
 
-        globalContext.codeExample.setClangCode(
-            command41CodeExample.current.getNewCommand41CCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                uniqueId,
-            )
-        );
-    }
-
-    useEffect(() => {
-        //on mount, run this effect
-        updateCodeExamples();
-    }, []);
+            globalContext.codeExample.setClangCode(
+                command41CodeExample.current.getNewCommand41CCode(
+                    axisCode,
+                    commandNo,
+                    unique_id
+                )
+            );
+        },
+        [globalContext.codeExample]
+    );
 
     useEffect(() => {
-        //when user changes the alias, run this effect
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
-
-    useEffect(() => {
-        //when user changes the unique id, run this effect
-        updateCodeExamples();
-    }, [uniqueId]);
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum,
+            uniqueId
+        );
+    }, [
+        globalContext.currentAxisCode.axisCode,
+        props.currentCommandDictionary.CommandEnum,
+        updateCodeExamples,
+        uniqueId,
+    ]);
 
     const handleUniqueID = () => {
         if (!uniqueIdInputBox.current) return;
@@ -95,7 +96,7 @@ export const Command41 = (props: Command41PropsType) => {
             );
             return;
         }
-        
+
         if (currentVal.length % 2 != 0) return;
 
         let completedVal = currentVal;
@@ -131,7 +132,7 @@ export const Command41 = (props: Command41PropsType) => {
             let rawData: Uint8Array;
             if (props.MountedByQuickStart) {
                 if (props.UniqueID) {
-                    console.log(props.UniqueID)
+                    console.log(props.UniqueID);
                     rawData = props.constructCommand(props.UniqueID, 41, "255");
                 } else {
                     props.LogAction(

@@ -10,7 +10,7 @@ import { CommandWindowProps } from "../../command-window";
 import { Command20 } from "../20/20";
 import { Command21 } from "../21/21";
 import { Command2 } from "../2/2";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { GlobalContext } from "../../../pages/_app";
 import { Command41 } from "../41/41";
 

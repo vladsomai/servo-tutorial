@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useRef, useState, useContext, useCallback } from "react";
 import { GlobalContext } from "../../../pages/_app";
 import {
     RotationsToMicrosteps,
@@ -54,49 +54,59 @@ export const Command4 = (props: ChaptersPropsType) => {
         }
     };
 
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(
-            command2CodeExample.current.getNewCommand2PythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                positionValue,
-                timeValue
-            )
-        );
+    const updateCodeExamples = useCallback(
+        (
+            axisCode: number,
+            commandNo: number,
+            position: number,
+            time: number
+        ) => {
+            globalContext.codeExample.setPythonCode(
+                command2CodeExample.current.getNewCommand2PythonCode(
+                    axisCode,
+                    commandNo,
+                    position,
+                    time
+                )
+            );
 
-        globalContext.codeExample.setWebCode(
-            command2CodeExample.current.getNewCommand2WebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                positionValue,
-                timeValue
-            )
-        );
+            globalContext.codeExample.setWebCode(
+                command2CodeExample.current.getNewCommand2WebCode(
+                    axisCode,
+                    commandNo,
+                    position,
+                    time
+                )
+            );
 
-        globalContext.codeExample.setClangCode(
-            command2CodeExample.current.getNewCommand2CCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                positionValue,
-                timeValue
-            )
-        );
-    }
-
-    useEffect(() => {
-        //on mount, update the code example
-        updateCodeExamples();
-    }, []);
-
-    useEffect(() => {
-        //on axis code change, update the code example
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
+            globalContext.codeExample.setClangCode(
+                command2CodeExample.current.getNewCommand2CCode(
+                    axisCode,
+                    commandNo,
+                    position,
+                    time
+                )
+            );
+        },
+        [globalContext.codeExample]
+    );
 
     useEffect(() => {
-        //on time value change, update the code example
-        updateCodeExamples();
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum,
+            positionValue,
+            timeValue
+        );
+    }, [
+        globalContext.currentAxisCode.axisCode,
+        props.currentCommandDictionary.CommandEnum,
+        updateCodeExamples,
+        positionValue,
+        timeValue,
+    ]);
 
+    useEffect(() => {
         setTimestepsValue(SecondToTimesteps(timeValue));
     }, [timeValue]);
 
@@ -167,9 +177,6 @@ export const Command4 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        //on position value change, update the code example
-        updateCodeExamples();
-
         setMicrostepsValue(RotationsToMicrosteps(positionValue));
     }, [positionValue]);
 

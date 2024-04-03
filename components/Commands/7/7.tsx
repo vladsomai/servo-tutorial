@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { GlobalContext } from "../../../pages/_app";
 import { ChaptersPropsType } from "../0_1/0_1";
 import { ErrorTypes, Uint8ArrayToString } from "../../../servo-engine/utils";
@@ -14,46 +14,47 @@ export const Command7 = (props: ChaptersPropsType) => {
     const availableDataToCapture = useRef<number[]>([0, 1, 2, 3, 4]);
     const [dataToCapture, setDataToCapture] = useState<DataToCapture>(0);
 
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(
-            command7CodeExample.current.getNewCommand7PythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                dataToCapture
-            )
-        );
+    const updateCodeExamples = useCallback(
+        (axisCode: number, commandNo: number, dataParam: DataToCapture) => {
+            globalContext.codeExample.setPythonCode(
+                command7CodeExample.current.getNewCommand7PythonCode(
+                    axisCode,
+                    commandNo,
+                    dataParam
+                )
+            );
 
-        globalContext.codeExample.setWebCode(
-            command7CodeExample.current.getNewCommand7WebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                dataToCapture
-            )
-        );
+            globalContext.codeExample.setWebCode(
+                command7CodeExample.current.getNewCommand7WebCode(
+                    axisCode,
+                    commandNo,
+                    dataParam
+                )
+            );
 
-        globalContext.codeExample.setClangCode(
-            command7CodeExample.current.getNewCommand7CCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                dataToCapture
-            )
-        );
-    }
-
-    useEffect(() => {
-        //on mount, update the code example
-        updateCodeExamples();
-    }, []);
+            globalContext.codeExample.setClangCode(
+                command7CodeExample.current.getNewCommand7CCode(
+                    axisCode,
+                    commandNo,
+                    dataParam
+                )
+            );
+        },
+        [globalContext.codeExample]
+    );
 
     useEffect(() => {
-        //on axis code change, update the code example
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
-
-    useEffect(() => {
-        //on dataToCapture change, update the code example
-        updateCodeExamples();
-    }, [dataToCapture]);
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum,
+            dataToCapture
+        );
+    }, [
+        globalContext.currentAxisCode.axisCode,
+        props.currentCommandDictionary.CommandEnum,
+        updateCodeExamples,
+        dataToCapture,
+    ]);
 
     const handleChange = () => {
         if (!selectPayloadInputBox.current) return;

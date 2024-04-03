@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { GlobalContext } from "../../../pages/_app";
 import { ResetCommandType } from "../8/8";
 import { Uint8ArrayToString } from "../../../servo-engine/utils";
@@ -10,40 +10,40 @@ export const Command10 = (props: ResetCommandType) => {
 
     const [elapsedTime_us, setElapsedTime_us] = useState<BigInt>(BigInt(0));
 
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(
-            command10CodeExample.current.getNewCommand10PythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                elapsedTime_us
-            )
-        );
+    const updateCodeExamples = useCallback(
+        (axisCode: number, commandNo: number, elapsedTime: BigInt) => {
+            globalContext.codeExample.setPythonCode(
+                command10CodeExample.current.getNewCommand10PythonCode(
+                    axisCode,
+                    commandNo,
+                    elapsedTime
+                )
+            );
 
-        globalContext.codeExample.setWebCode(
-            command10CodeExample.current.getNewCommand10WebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                elapsedTime_us
-            )
-        );
+            globalContext.codeExample.setWebCode(
+                command10CodeExample.current.getNewCommand10WebCode(
+                    axisCode,
+                    commandNo,
+                    elapsedTime
+                )
+            );
 
-        globalContext.codeExample.setClangCode(
-            command10CodeExample.current.getNewCommand10CCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                elapsedTime_us
-            )
-        );
-    }
+            globalContext.codeExample.setClangCode(
+                command10CodeExample.current.getNewCommand10CCode(
+                    axisCode,
+                    commandNo,
+                    elapsedTime
+                )
+            );
+        },
+        [globalContext.codeExample]
+    );
 
     useEffect(() => {
-        //on mount, run this effect
-        updateCodeExamples();
-
         const intervalHandle = setInterval(() => {
             //run this every 1s to update the code examples with the elapsed time from reset
             const elapsedTimeFromReset_ms =
-                Date.now() - props.master_time_start;
+                Date.now() - props.master_time_start.current;
             const elapsedTimeFromReset_us = BigInt(
                 elapsedTimeFromReset_ms * 1000
             );
@@ -53,23 +53,27 @@ export const Command10 = (props: ResetCommandType) => {
         return () => {
             clearInterval(intervalHandle);
         };
-    }, []);
+    }, [props.master_time_start]);
 
     useEffect(() => {
-        //when user changes the alias, run this effect
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
-
-    useEffect(() => {
-        //this effect will run when elapsed time changes, default change is every 1s
-        updateCodeExamples();
-    }, [elapsedTime_us]);
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum,
+            elapsedTime_us
+        );
+    }, [
+        elapsedTime_us,
+        globalContext.currentAxisCode.axisCode,
+        props.currentCommandDictionary.CommandEnum,
+        updateCodeExamples
+    ]);
 
     const sync_time = () => {
         const selectedAxis = props.getAxisSelection();
         if (selectedAxis == "") return;
 
-        const elapsedTimeFromReset_ms = Date.now() - props.master_time_start;
+        const elapsedTimeFromReset_ms =
+            Date.now() - props.master_time_start.current;
         const elapsedTimeFromReset_us = BigInt(elapsedTimeFromReset_ms * 1000);
 
         let rawPayload_ArrayBuffer = new ArrayBuffer(8);

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useRef, useState, useContext, useCallback } from "react";
 import { GlobalContext } from "../../../pages/_app";
 
 import {
@@ -69,41 +69,48 @@ export const Command3 = (props: ChaptersPropsType) => {
         }
     };
 
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(
-            command3CodeExample.current.getNewCommand3PythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                velocityRPM
-            )
-        );
+    const updateCodeExamples = useCallback(
+        (axisCode: number, commandNo: number, velocity: number) => {
+            globalContext.codeExample.setPythonCode(
+                command3CodeExample.current.getNewCommand3PythonCode(
+                    axisCode,
+                    commandNo,
+                    velocity
+                )
+            );
 
-        globalContext.codeExample.setWebCode(
-            command3CodeExample.current.getNewCommand3WebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                velocityRPM
-            )
-        );
+            globalContext.codeExample.setWebCode(
+                command3CodeExample.current.getNewCommand3WebCode(
+                    axisCode,
+                    commandNo,
+                    velocity
+                )
+            );
 
-        globalContext.codeExample.setClangCode(
-            command3CodeExample.current.getNewCommand3CCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                velocityRPM
-            )
+            globalContext.codeExample.setClangCode(
+                command3CodeExample.current.getNewCommand3CCode(
+                    axisCode,
+                    commandNo,
+                    velocity
+                )
+            );
+        },
+        [globalContext.codeExample]
+    );
+    useEffect(() => {
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum,
+            velocityRPM
         );
-    }
+    }, [
+        globalContext.currentAxisCode.axisCode,
+        props.currentCommandDictionary.CommandEnum,
+        updateCodeExamples,
+        velocityRPM,
+    ]);
 
     useEffect(() => {
-        //on axis code change, update the code example
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
-
-    useEffect(() => {
-        //on velocity change, update the code example
-        updateCodeExamples();
-
         setInternalVelocity(RPM_ToInternalVelocity(velocityRPM));
     }, [velocityRPM]);
 

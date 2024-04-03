@@ -1,4 +1,11 @@
-import { SyntheticEvent, useEffect, useRef, useState, useContext } from "react";
+import {
+    SyntheticEvent,
+    useEffect,
+    useRef,
+    useState,
+    useContext,
+    useCallback,
+} from "react";
 import { crc32, ErrorTypes, sleep } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
 import Image from "next/image";
@@ -21,7 +28,7 @@ export const Command23 = (props: FirmwareCmdProps) => {
 
     const command23CodeExample = useRef(new Command23CodeExample());
 
-    function updateCodeExamples() {
+    const updateCodeExamples = useCallback(() => {
         globalContext.codeExample.setPythonCode(
             command23CodeExample.current.getNewCommand23PythonCode()
         );
@@ -33,17 +40,11 @@ export const Command23 = (props: FirmwareCmdProps) => {
         globalContext.codeExample.setClangCode(
             command23CodeExample.current.getNewCommand23CCode()
         );
-    }
+    }, [globalContext.codeExample]);
 
     useEffect(() => {
-        //on mount, run this effect
         updateCodeExamples();
-    }, []);
-
-    useEffect(() => {
-        //when user changes the alias, run this effect
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
+    }, [updateCodeExamples]);
 
     const [waitFirmwareUpgrade, setWaitFirmwareUpgrade] = useState(false);
     /*

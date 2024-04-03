@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { GlobalContext } from "../../../pages/_app";
 import {
     SecondToTimesteps,
@@ -34,44 +34,57 @@ export const Command19 = (props: ChaptersPropsType) => {
     const [commAccelerationHexa, setCommAccelerationHexa] =
         useState<string>("00000000");
 
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(
-            command19CodeExample.current.getNewCommand19PythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                AccelerationRPM,
-                timeValue
-            )
-        );
+    const updateCodeExamples = useCallback(
+        (
+            axisCode: number,
+            commandNo: number,
+            acceleration: number,
+            time: number
+        ) => {
+            globalContext.codeExample.setPythonCode(
+                command19CodeExample.current.getNewCommand19PythonCode(
+                    axisCode,
+                    commandNo,
+                    acceleration,
+                    time
+                )
+            );
 
-        globalContext.codeExample.setWebCode(
-            command19CodeExample.current.getNewCommand19WebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                AccelerationRPM,
-                timeValue
-            )
-        );
+            globalContext.codeExample.setWebCode(
+                command19CodeExample.current.getNewCommand19WebCode(
+                    axisCode,
+                    commandNo,
+                    acceleration,
+                    time
+                )
+            );
 
-        globalContext.codeExample.setClangCode(
-            command19CodeExample.current.getNewCommand19CCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                AccelerationRPM,
-                timeValue
-            )
-        );
-    }
+            globalContext.codeExample.setClangCode(
+                command19CodeExample.current.getNewCommand19CCode(
+                    axisCode,
+                    commandNo,
+                    acceleration,
+                    time
+                )
+            );
+        },
+        [globalContext.codeExample]
+    );
 
     useEffect(() => {
-        //on mount, update the code example
-        updateCodeExamples();
-    }, []);
-
-    useEffect(() => {
-        //on axis code change, update the code example
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum,
+            AccelerationRPM,
+            timeValue
+        );
+    }, [
+        globalContext.currentAxisCode.axisCode,
+        props.currentCommandDictionary.CommandEnum,
+        updateCodeExamples,
+        AccelerationRPM,
+        timeValue,
+    ]);
 
     const onTimeInputBoxChange = () => {
         if (timeInputBox && timeInputBox.current) {
@@ -94,9 +107,6 @@ export const Command19 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        //on time value change, update the code example
-        updateCodeExamples();
-
         setTimestepsValue(SecondToTimesteps(timeValue));
     }, [timeValue]);
 
@@ -168,9 +178,6 @@ export const Command19 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        //on acceleration change, update the code example
-        updateCodeExamples();
-
         setInternalAcceleration(
             RPMSquared_ToInternalAcceleration(AccelerationRPM)
         );

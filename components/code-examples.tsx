@@ -30,29 +30,33 @@ export default function Code({ currentCommand }: CodeProps) {
         Prism.highlightAll();
     }, [language, code]);
 
-    function setRenderedCode(languageParam: languages) {
-        switch (languageParam) {
-            case SupportedCodeExamples.C.prismLanguage:
-                setCode(globalContext.codeExample.cCode);
-                break;
-            case SupportedCodeExamples.Python.prismLanguage:
-                setCode(globalContext.codeExample.pythonCode);
-                break;
-            case SupportedCodeExamples.JavaScript.prismLanguage:
-                setCode(globalContext.codeExample.webCode);
-                break;
-            default:
-                setCode("");
-                break;
-        }
-    }
-
     useEffect(() => {
+        function setRenderedCode(languageParam: languages) {
+            switch (languageParam) {
+                case SupportedCodeExamples.C.prismLanguage:
+                    setCode(globalContext.codeExample.cCode);
+                    break;
+                case SupportedCodeExamples.Python.prismLanguage:
+                    setCode(globalContext.codeExample.pythonCode);
+                    break;
+                case SupportedCodeExamples.JavaScript.prismLanguage:
+                    setCode(globalContext.codeExample.webCode);
+                    break;
+                default:
+                    setCode("");
+                    break;
+            }
+        }
+
         setRenderedCode(language);
     }, [
         currentCommand,
         language, //when the language changes we should re-render the new code
-        globalContext.codeExample.pythonCode, //when the current python code sample changes, all other code samples should change
+
+        //also when the user changes the inputs for the command, we want to update the code samples.
+        globalContext.codeExample.pythonCode,
+        globalContext.codeExample.webCode,
+        globalContext.codeExample.cCode
     ]);
 
     const showC = () => {

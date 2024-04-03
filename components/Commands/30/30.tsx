@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useRef, useState, useContext, useCallback } from "react";
 import { GlobalContext } from "../../../pages/_app";
 import {
     RotationsToMicrosteps,
@@ -17,44 +17,42 @@ export const Command30 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
     const command30CodeExample = useRef(new Command30CodeExample());
 
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(
-            command30CodeExample.current.getNewCommand30PythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                lowerValue,
-                upperValue
-            )
-        );
+    const updateCodeExamples = useCallback(
+        (
+            axisCode: number,
+            commandNo: number,
+            lower_value: number,
+            upper_value: number
+        ) => {
+            globalContext.codeExample.setPythonCode(
+                command30CodeExample.current.getNewCommand30PythonCode(
+                    axisCode,
+                    commandNo,
+                    lower_value,
+                    upper_value
+                )
+            );
 
-        globalContext.codeExample.setWebCode(
-            command30CodeExample.current.getNewCommand30WebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                lowerValue,
-                upperValue
-            )
-        );
+            globalContext.codeExample.setWebCode(
+                command30CodeExample.current.getNewCommand30WebCode(
+                    axisCode,
+                    commandNo,
+                    lower_value,
+                    upper_value
+                )
+            );
 
-        globalContext.codeExample.setClangCode(
-            command30CodeExample.current.getNewCommand30CCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                lowerValue,
-                upperValue
-            )
-        );
-    }
-
-    useEffect(() => {
-        //on mount, update the code example
-        updateCodeExamples();
-    }, []);
-
-    useEffect(() => {
-        //on axis code change, update the code example
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
+            globalContext.codeExample.setClangCode(
+                command30CodeExample.current.getNewCommand30CCode(
+                    axisCode,
+                    commandNo,
+                    lower_value,
+                    upper_value
+                )
+            );
+        },
+        [globalContext.codeExample]
+    );
 
     const upperLimitInputBox = useRef<HTMLInputElement | null>(null);
     const lowerLimitInputBox = useRef<HTMLInputElement | null>(null);
@@ -113,9 +111,6 @@ export const Command30 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        //on upper value change, update the code example
-        updateCodeExamples();
-
         setUpperMicrosteps(RotationsToMicrosteps(upperValue));
     }, [upperValue]);
 
@@ -177,8 +172,6 @@ export const Command30 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        //on upper value change, update the code example
-        updateCodeExamples();
         setLowerMicrosteps(RotationsToMicrosteps(lowerValue));
     }, [lowerValue]);
 
@@ -194,6 +187,21 @@ export const Command30 = (props: ChaptersPropsType) => {
     }, [lowerMicrosteps, upperMicrostepsHexaValue]);
     //#endregion LOWER_LIMIT_CONVERSION
 
+    useEffect(() => {
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum,
+            lowerValue,
+            upperValue
+        );
+    }, [
+        globalContext.currentAxisCode.axisCode,
+        props.currentCommandDictionary.CommandEnum,
+        updateCodeExamples,
+        lowerValue,
+        upperValue,
+    ]);
+    
     const execute_command = () => {
         if (
             lowerLimitInputBox &&

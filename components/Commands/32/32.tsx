@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ChaptersPropsType } from "../0_1/0_1";
 import { ErrorTypes, Uint8ArrayToString } from "../../../servo-engine/utils";
 import { GlobalContext } from "../../../pages/_app";
@@ -10,46 +10,47 @@ export const Command32 = (props: ChaptersPropsType) => {
     const [inputPayload, setInputPayload] = useState<string>("0");
     const command32CodeExample = useRef(new Command32CodeExample());
 
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(
-            command32CodeExample.current.getNewCommand32PythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                inputPayload
-            )
-        );
+    const updateCodeExamples = useCallback(
+        (axisCode: number, commandNo: number, input: string) => {
+            globalContext.codeExample.setPythonCode(
+                command32CodeExample.current.getNewCommand32PythonCode(
+                    axisCode,
+                    commandNo,
+                    input
+                )
+            );
 
-        globalContext.codeExample.setWebCode(
-            command32CodeExample.current.getNewCommand32WebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                inputPayload
-            )
-        );
+            globalContext.codeExample.setWebCode(
+                command32CodeExample.current.getNewCommand32WebCode(
+                    axisCode,
+                    commandNo,
+                    input
+                )
+            );
 
-        globalContext.codeExample.setClangCode(
-            command32CodeExample.current.getNewCommand32CCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                inputPayload,
-            )
-        );
-    }
-    
-    useEffect(() => {
-        //on mount, update the code example
-        updateCodeExamples();
-    }, []);
+            globalContext.codeExample.setClangCode(
+                command32CodeExample.current.getNewCommand32CCode(
+                    axisCode,
+                    commandNo,
+                    input
+                )
+            );
+        },
+        [globalContext.codeExample]
+    );
 
     useEffect(() => {
-        //on axis code change, update the code example
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
-
-    useEffect(() => {
-        //on input change, update the code example
-        updateCodeExamples();
-    }, [inputPayload]);
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum,
+            inputPayload
+        );
+    }, [
+        globalContext.currentAxisCode.axisCode,
+        props.currentCommandDictionary.CommandEnum,
+        updateCodeExamples,
+        inputPayload,
+    ]);
 
     const capture_hall_sensor = () => {
         const inputSelection = parseInt(inputPayload);

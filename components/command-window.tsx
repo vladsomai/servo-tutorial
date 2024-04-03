@@ -20,7 +20,8 @@ export interface CommandWindowProps extends MainWindowProps {
     sendDataToSerialPort: (
         dataToSend: string | Uint8Array,
         enableSentLogging?: boolean,
-        enableTimoutLogging?: boolean
+        enableTimoutLogging?: boolean,
+        isFirwareShot?: boolean
     ) => void;
     connectToSerialPort: Function;
     disconnectFromSerialPort: Function;
@@ -34,14 +35,14 @@ const Command = (props: TutorialProps, children: ReactElement) => {
     const globalContext = useContext(GlobalContext);
     const iconSize = 25;
     const commandWindowDiv = useRef<HTMLDivElement | null>(null);
-    const [scrollPosition, setScrollPosition] = useState(new Map());
+    const scrollPositionRef = useRef(new Map());
 
     useEffect(() => {
         if (!commandWindowDiv || !commandWindowDiv.current) return () => {};
 
         commandWindowDiv.current.onscroll = () => {
             //copy the existing map
-            const currentPositionMapping = new Map(scrollPosition);
+            const currentPositionMapping = new Map(scrollPositionRef.current);
 
             //upload the new value
             currentPositionMapping.set(
@@ -49,7 +50,7 @@ const Command = (props: TutorialProps, children: ReactElement) => {
                 commandWindowDiv.current?.scrollTop
             );
 
-            setScrollPosition(currentPositionMapping);
+            scrollPositionRef.current = currentPositionMapping;
         };
 
         const copyReactNode = commandWindowDiv.current;
@@ -59,7 +60,7 @@ const Command = (props: TutorialProps, children: ReactElement) => {
     }, [props.currentCommandDictionary.CommandEnum]);
 
     useEffect(() => {
-        let scrollPositionForCurrentChapter = scrollPosition.get(
+        let scrollPositionForCurrentChapter = scrollPositionRef.current.get(
             props.currentCommandDictionary.CommandEnum
         );
 
@@ -72,7 +73,6 @@ const Command = (props: TutorialProps, children: ReactElement) => {
             left: 0,
             behavior: "smooth",
         });
-
     }, [props.currentCommandDictionary.CommandEnum]);
 
     const shortcuts = (currentCommand: number) => {

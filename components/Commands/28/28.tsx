@@ -1,4 +1,4 @@
-import { useRef, useContext, useState, useEffect } from "react";
+import { useRef, useContext, useState, useEffect, useCallback } from "react";
 import { GlobalContext } from "../../../pages/_app";
 import { ChaptersPropsType } from "../0_1/0_1";
 import {
@@ -12,34 +12,42 @@ export const Command28 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
     const command28CodeExample = useRef(new Command28CodeExample());
 
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(
-            command28CodeExample.current.getNewCommand28PythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                maxCurrent,
-                regenCurrent
-            )
-        );
+    const updateCodeExamples = useCallback(
+        (
+            axisCode: number,
+            commandNo: number,
+            max_current: number,
+            regen_current: number
+        ) => {
+            globalContext.codeExample.setPythonCode(
+                command28CodeExample.current.getNewCommand28PythonCode(
+                    axisCode,
+                    commandNo,
+                    max_current,
+                    regen_current
+                )
+            );
 
-        globalContext.codeExample.setWebCode(
-            command28CodeExample.current.getNewCommand28WebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                maxCurrent,
-                regenCurrent
-            )
-        );
+            globalContext.codeExample.setWebCode(
+                command28CodeExample.current.getNewCommand28WebCode(
+                    axisCode,
+                    commandNo,
+                    max_current,
+                    regen_current
+                )
+            );
 
-        globalContext.codeExample.setClangCode(
-            command28CodeExample.current.getNewCommand28CCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                maxCurrent,
-                regenCurrent
-            )
-        );
-    }
+            globalContext.codeExample.setClangCode(
+                command28CodeExample.current.getNewCommand28CCode(
+                    axisCode,
+                    commandNo,
+                    max_current,
+                    regen_current
+                )
+            );
+        },
+        [globalContext.codeExample]
+    );
 
     const maxCurrentInputBox = useRef<HTMLInputElement | null>(null);
     const regenerationInputBox = useRef<HTMLInputElement | null>(null);
@@ -54,27 +62,24 @@ export const Command28 = (props: ChaptersPropsType) => {
         useState<Uint8Array>();
 
     useEffect(() => {
-        //on mount, run this effect
-        updateCodeExamples();
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum,
+            maxCurrent,
+            regenCurrent
+        );
+    }, [
+        globalContext.currentAxisCode.axisCode,
+        props.currentCommandDictionary.CommandEnum,
+        updateCodeExamples,
+        maxCurrent,
+        regenCurrent,
+    ]);
 
+    useEffect(() => {
         setMaxCurrentUint8Arr(transfNumberToUint8Arr(defaultCurrent, 2));
         setRegenCurrentuInt8Arr(transfNumberToUint8Arr(defaultCurrent, 2));
     }, []);
-
-    useEffect(() => {
-        //when user changes the alias, run this effect
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
-
-    useEffect(() => {
-        //on current change, run this effect
-        updateCodeExamples();
-    }, [maxCurrent]);
-
-    useEffect(() => {
-        //on regen current change, run this effect
-        updateCodeExamples();
-    }, [regenCurrent]);
 
     const execute_command = () => {
         const selectedAxis = props.getAxisSelection();

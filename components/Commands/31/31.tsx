@@ -11,41 +11,47 @@ export const Command31 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
     const command31CodeExample = useRef(new Command31CodeExample());
 
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(
-            command31CodeExample.current.getNewCommand31PythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                textPayload,
-            )
-        );
+    const updateCodeExamples = useCallback(
+        (axisCode: number, commandNo: number, pingPayload: string) => {
+            globalContext.codeExample.setPythonCode(
+                command31CodeExample.current.getNewCommand31PythonCode(
+                    axisCode,
+                    commandNo,
+                    pingPayload
+                )
+            );
 
-        globalContext.codeExample.setWebCode(
-            command31CodeExample.current.getNewCommand31WebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                textPayload
-            )
-        );
+            globalContext.codeExample.setWebCode(
+                command31CodeExample.current.getNewCommand31WebCode(
+                    axisCode,
+                    commandNo,
+                    pingPayload
+                )
+            );
 
-        globalContext.codeExample.setClangCode(
-            command31CodeExample.current.getNewCommand31CCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                textPayload,
-            )
-        );
-    }
-
-    useEffect(() => {
-        //on mount, update the code example
-        updateCodeExamples();
-    }, []);
+            globalContext.codeExample.setClangCode(
+                command31CodeExample.current.getNewCommand31CCode(
+                    axisCode,
+                    commandNo,
+                    pingPayload
+                )
+            );
+        },
+        [globalContext.codeExample]
+    );
 
     useEffect(() => {
-        //on axis code change, update the code example
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum,
+            textPayload
+        );
+    }, [
+        globalContext.currentAxisCode.axisCode,
+        props.currentCommandDictionary.CommandEnum,
+        updateCodeExamples,
+        textPayload,
+    ]);
 
     const convertTextToASCII = (textPayload: string) => {
         let payload = "";
@@ -54,11 +60,6 @@ export const Command31 = (props: ChaptersPropsType) => {
         }
         return payload;
     };
-
-    useEffect(() => {
-        //when the ping input box changes, run this effect
-        updateCodeExamples();
-    }, [textPayload]);
 
     const ping_command = () => {
         if (textPayloadInputBox && textPayloadInputBox.current) {

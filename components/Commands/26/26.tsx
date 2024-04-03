@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useRef, useState, useContext, useCallback } from "react";
 import { GlobalContext } from "../../../pages/_app";
 import {
     InternalVelocityToCommVelocity,
@@ -23,44 +23,42 @@ export const Command26 = (props: ChaptersPropsType) => {
     const velocityInputBox = useRef<HTMLInputElement | null>(null);
     const timeInputBox = useRef<HTMLInputElement | null>(null);
 
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(
-            command26CodeExample.current.getNewCommand26PythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                velocityRPM,
-                timeValue
-            )
-        );
+    const updateCodeExamples = useCallback(
+        (
+            axisCode: number,
+            commandNo: number,
+            velocity: number,
+            time: number
+        ) => {
+            globalContext.codeExample.setPythonCode(
+                command26CodeExample.current.getNewCommand26PythonCode(
+                    axisCode,
+                    commandNo,
+                    velocity,
+                    time
+                )
+            );
 
-        globalContext.codeExample.setWebCode(
-            command26CodeExample.current.getNewCommand26WebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                velocityRPM,
-                timeValue
-            )
-        );
+            globalContext.codeExample.setWebCode(
+                command26CodeExample.current.getNewCommand26WebCode(
+                    axisCode,
+                    commandNo,
+                    velocity,
+                    time
+                )
+            );
 
-        globalContext.codeExample.setClangCode(
-            command26CodeExample.current.getNewCommand26CCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                velocityRPM,
-                timeValue
-            )
-        );
-    }
-
-    useEffect(() => {
-        //on mount, run this effect
-        updateCodeExamples();
-    }, []);
-
-    useEffect(() => {
-        //when user changes the alias, run this effect
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
+            globalContext.codeExample.setClangCode(
+                command26CodeExample.current.getNewCommand26CCode(
+                    axisCode,
+                    commandNo,
+                    velocity,
+                    time
+                )
+            );
+        },
+        [globalContext.codeExample]
+    );
 
     //#region TIME_CONVERSION
     const [timeValue, setTimeValue] = useState<number>(0);
@@ -94,9 +92,6 @@ export const Command26 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        //on time value change, update the code example
-        updateCodeExamples();
-
         setTimestepsValue(SecondToTimesteps(timeValue));
     }, [timeValue]);
 
@@ -166,9 +161,6 @@ export const Command26 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        //on velocity change, update the code example
-        updateCodeExamples();
-
         setInternalVelocity(RPM_ToInternalVelocity(velocityRPM));
     }, [velocityRPM]);
 
@@ -197,6 +189,21 @@ export const Command26 = (props: ChaptersPropsType) => {
         }
     }, [commVelocity, timestepsHexa]);
     //#endregion VELOCITY_CONVERSION
+
+    useEffect(() => {
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum,
+            velocityRPM,
+            timeValue
+        );
+    }, [
+        globalContext.currentAxisCode.axisCode,
+        props.currentCommandDictionary.CommandEnum,
+        updateCodeExamples,
+        velocityRPM,
+        timeValue,
+    ]);
 
     const execute_command = () => {
         if (

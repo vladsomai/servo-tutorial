@@ -60,7 +60,7 @@ const Log = (props: {
 
     useEffect(() => {
         globalContext.detectedDevices.setDevices([]);
-    }, []);
+    }, [globalContext.detectedDevices]);
 
     const [styleSpring] = useSpring(
         () => ({

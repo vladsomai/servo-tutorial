@@ -1,4 +1,4 @@
-import { useRef, useContext, useState, useEffect } from "react";
+import { useRef, useContext, useState, useEffect, useCallback } from "react";
 import {
     ErrorTypes,
     Uint8ArrayToString,
@@ -29,54 +29,57 @@ export const Command21 = (props: Command21PropsType) => {
     const aliasInputBox = useRef<HTMLInputElement | null>(null);
     const AllowedChars = "0123456789ABCDEF";
 
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(
-            command21CodeExample.current.getNewCommand21PythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                uniqueId,
-                aliasCode
-            )
+    const updateCodeExamples = useCallback(
+        (
+            axisCode: number,
+            commandNo: number,
+            unique_id: string,
+            alias_code: number
+        ) => {
+            globalContext.codeExample.setPythonCode(
+                command21CodeExample.current.getNewCommand21PythonCode(
+                    axisCode,
+                    commandNo,
+                    unique_id,
+                    alias_code
+                )
+            );
+
+            globalContext.codeExample.setWebCode(
+                command21CodeExample.current.getNewCommand21WebCode(
+                    axisCode,
+                    commandNo,
+                    unique_id,
+                    alias_code
+                )
+            );
+
+            globalContext.codeExample.setClangCode(
+                command21CodeExample.current.getNewCommand21CCode(
+                    axisCode,
+                    commandNo,
+                    unique_id,
+                    alias_code
+                )
+            );
+        },
+        [globalContext.codeExample]
+    );
+
+    useEffect(() => {
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum,
+            uniqueId,
+            aliasCode
         );
-
-        globalContext.codeExample.setWebCode(
-            command21CodeExample.current.getNewCommand21WebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                uniqueId,
-                aliasCode
-            )
-        );
-
-        globalContext.codeExample.setClangCode(
-            command21CodeExample.current.getNewCommand21CCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                uniqueId,
-                aliasCode
-            )
-        );
-    }
-
-    useEffect(() => {
-        //on mount, run this effect
-        updateCodeExamples();
-    }, []);
-
-    useEffect(() => {
-        //when user changes the alias, run this effect
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
-
-    useEffect(() => {
-        //on unique id change, run this effect
-        updateCodeExamples();
-    }, [uniqueId]);
-
-    useEffect(() => {
-        //on unique id change, run this effect
-        updateCodeExamples();
-    }, [hexAlias]);
+    }, [
+        globalContext.currentAxisCode.axisCode,
+        props.currentCommandDictionary.CommandEnum,
+        updateCodeExamples,
+        uniqueId,
+        aliasCode,
+    ]);
 
     useEffect(() => {
         if (uniqueIdInputBox.current && props.UniqueID) {
@@ -109,7 +112,7 @@ export const Command21 = (props: Command21PropsType) => {
             }
             aliasInputBox.current.value = aliasStr;
         }
-    }, []);
+    }, [props.Alias, props.UniqueID]);
 
     const handleUniqueID = () => {
         if (!uniqueIdInputBox.current) return;
@@ -117,8 +120,7 @@ export const Command21 = (props: Command21PropsType) => {
         const currentVal = uniqueIdInputBox.current.value;
         const lastChar = currentVal[currentVal.length - 1];
 
-        if (currentVal == "")
-        {
+        if (currentVal == "") {
             setUniqueId("");
             return;
         }

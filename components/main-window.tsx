@@ -85,9 +85,7 @@ const Main = (props: MainWindowProps) => {
     //State is lifted up from command 29 to save the state between chapter change
     const [MoveCommands, setMoveCommands] = useState<MoveCommand[]>([]);
 
-    const [master_time_start, setMaster_time_start] = useState<number>(0);
-    const setMaster_time_startWrapper = (time: number) =>
-        setMaster_time_start(time);
+    const master_time_start = useRef<number>(0);
     const lineNumber = useRef<number>(0);
 
     const LogAction = (errorType: string, log: string): void => {
@@ -197,7 +195,7 @@ const Main = (props: MainWindowProps) => {
             axisCodeRef.current = axis;
             globalContext.currentAxisCode.setAxisCode(axis);
         }
-    }, [axisSelectionValue]);
+    }, [axisSelectionValue, globalContext.currentAxisCode]);
 
     useEffect(() => {
         return () => {
@@ -639,7 +637,6 @@ const Main = (props: MainWindowProps) => {
                     LogAction={LogAction}
                     constructCommand={constructCommand}
                     master_time_start={master_time_start}
-                    setMaster_time_start={setMaster_time_startWrapper}
                 >
                     <SelectAxis
                         LogAction={LogAction}
@@ -675,7 +672,6 @@ const Main = (props: MainWindowProps) => {
                     LogAction={LogAction}
                     constructCommand={constructCommand}
                     master_time_start={master_time_start}
-                    setMaster_time_start={setMaster_time_startWrapper}
                 >
                     <SelectAxis
                         LogAction={LogAction}

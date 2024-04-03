@@ -1,6 +1,12 @@
 import { ErrorTypes } from "../../../servo-engine/utils";
 import { MainWindowProps } from "../../main-window";
-import { ReactElement, useContext, useEffect, useRef } from "react";
+import {
+    ReactElement,
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+} from "react";
 import { GlobalContext } from "../../../pages/_app";
 import { GenericCodeExample } from "../../../servo-engine/code-example-utils/code-utils";
 
@@ -25,39 +31,38 @@ export const Command1 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
     const genericCodeExample = useRef(new GenericCodeExample());
 
-    function updateCodeExamples() {
-        
-        globalContext.codeExample.setPythonCode(
-            genericCodeExample.current.getGenericPythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum
-            )
-        );
-
-        globalContext.codeExample.setWebCode(
-            genericCodeExample.current.getGenericWebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum
-            )
-        );
-
-        globalContext.codeExample.setClangCode(
-            genericCodeExample.current.getGenericCCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum
-            )
-        );
-    }
-
     useEffect(() => {
+        function updateCodeExamples(axisCode: number, commandNo: number) {
+            globalContext.codeExample.setPythonCode(
+                genericCodeExample.current.getGenericPythonCode(
+                    axisCode,
+                    commandNo
+                )
+            );
+
+            globalContext.codeExample.setWebCode(
+                genericCodeExample.current.getGenericWebCode(
+                    axisCode,
+                    commandNo
+                )
+            );
+
+            globalContext.codeExample.setClangCode(
+                genericCodeExample.current.getGenericCCode(axisCode, commandNo)
+            );
+        }
+
         //when user changes between command 0 and 1, run this effect
-        updateCodeExamples();
-    }, [props.currentCommandDictionary.CommandEnum]);
-
-    useEffect(() => {
         //when user changes the alias, run this effect
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum
+        );
+    }, [
+        props.currentCommandDictionary.CommandEnum,
+        globalContext.currentAxisCode.axisCode,
+        globalContext.codeExample
+    ]);
 
     const disable_enable_MOSFETS = () => {
         const selectedAxis = props.getAxisSelection();

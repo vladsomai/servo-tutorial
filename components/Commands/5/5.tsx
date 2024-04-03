@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { GlobalContext } from "../../../pages/_app";
 import {
     ErrorTypes,
@@ -70,46 +70,49 @@ export const Command5 = (props: ChaptersPropsType) => {
         }
     };
 
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(
-            command3CodeExample.current.getNewCommand5PythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                AccelerationRPM
-            )
-        );
+    const updateCodeExamples = useCallback(
+        (axisCode: number, commandNo: number, acceleration: number) => {
+            globalContext.codeExample.setPythonCode(
+                command3CodeExample.current.getNewCommand5PythonCode(
+                    axisCode,
+                    commandNo,
+                    acceleration
+                )
+            );
 
-        globalContext.codeExample.setWebCode(
-            command3CodeExample.current.getNewCommand5WebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                AccelerationRPM
-            )
-        );
+            globalContext.codeExample.setWebCode(
+                command3CodeExample.current.getNewCommand5WebCode(
+                    axisCode,
+                    commandNo,
+                    acceleration
+                )
+            );
 
-        globalContext.codeExample.setClangCode(
-            command3CodeExample.current.getNewCommand5CCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                AccelerationRPM
-            )
-        );
-    }
-
-    useEffect(() => {
-        //on mount, update the code example
-        updateCodeExamples();
-    }, []);
+            globalContext.codeExample.setClangCode(
+                command3CodeExample.current.getNewCommand5CCode(
+                    axisCode,
+                    commandNo,
+                    acceleration
+                )
+            );
+        },
+        [globalContext.codeExample]
+    );
 
     useEffect(() => {
-        //on axis code change, update the code example
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum,
+            AccelerationRPM
+        );
+    }, [
+        globalContext.currentAxisCode.axisCode,
+        props.currentCommandDictionary.CommandEnum,
+        updateCodeExamples,
+        AccelerationRPM,
+    ]);
 
     useEffect(() => {
-        //on acceleration change, update the code example
-        updateCodeExamples();
-
         setInternalAcceleration(
             RPMSquared_ToInternalAcceleration(AccelerationRPM)
         );

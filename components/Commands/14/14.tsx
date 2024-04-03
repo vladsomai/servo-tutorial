@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { GlobalContext } from "../../../pages/_app";
 import {
     RotationsToMicrosteps,
@@ -24,44 +24,42 @@ export const Command14 = (props: ChaptersPropsType) => {
     const positionInputBox = useRef<HTMLInputElement | null>(null);
     const timeInputBox = useRef<HTMLInputElement | null>(null);
 
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(
-            command2CodeExample.current.getNewCommand2PythonCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                positionValue,
-                timeValue
-            )
-        );
+    const updateCodeExamples = useCallback(
+        (
+            axisCode: number,
+            commandNo: number,
+            position: number,
+            time: number
+        ) => {
+            globalContext.codeExample.setPythonCode(
+                command2CodeExample.current.getNewCommand2PythonCode(
+                    axisCode,
+                    commandNo,
+                    position,
+                    time
+                )
+            );
 
-        globalContext.codeExample.setWebCode(
-            command2CodeExample.current.getNewCommand2WebCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                positionValue,
-                timeValue
-            )
-        );
+            globalContext.codeExample.setWebCode(
+                command2CodeExample.current.getNewCommand2WebCode(
+                    axisCode,
+                    commandNo,
+                    position,
+                    time
+                )
+            );
 
-        globalContext.codeExample.setClangCode(
-            command2CodeExample.current.getNewCommand2CCode(
-                globalContext.currentAxisCode.axisCode,
-                props.currentCommandDictionary.CommandEnum,
-                positionValue,
-                timeValue
-            )
-        );
-    }
-
-    useEffect(() => {
-        //on mount, run this effect
-        updateCodeExamples();
-    }, []);
-
-    useEffect(() => {
-        //when user changes the alias, run this effect
-        updateCodeExamples();
-    }, [globalContext.currentAxisCode.axisCode]);
+            globalContext.codeExample.setClangCode(
+                command2CodeExample.current.getNewCommand2CCode(
+                    axisCode,
+                    commandNo,
+                    position,
+                    time
+                )
+            );
+        },
+        [globalContext.codeExample]
+    );
 
     //#region TIME_CONVERSION
     const [timeValue, setTimeValue] = useState<number>(0);
@@ -93,9 +91,6 @@ export const Command14 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        //on time value change, update the code example
-        updateCodeExamples();
-
         setTimestepsValue(SecondToTimesteps(timeValue));
     }, [timeValue]);
 
@@ -166,9 +161,6 @@ export const Command14 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        //on position value change, update the code example
-        updateCodeExamples();
-
         setMicrostepsValue(RotationsToMicrosteps(positionValue));
     }, [positionValue]);
 
@@ -193,6 +185,22 @@ export const Command14 = (props: ChaptersPropsType) => {
         }
     }, [microsteps, timestepsHexa]);
     //#endregion POSITION_CONVERSION
+
+    useEffect(() => {
+        //when user changes the alias, run this effect
+        updateCodeExamples(
+            globalContext.currentAxisCode.axisCode,
+            props.currentCommandDictionary.CommandEnum,
+            positionValue,
+            timeValue
+        );
+    }, [
+        globalContext.currentAxisCode.axisCode,
+        props.currentCommandDictionary.CommandEnum,
+        updateCodeExamples,
+        positionValue,
+        timeValue,
+    ]);
 
     const execute_command = () => {
         if (
