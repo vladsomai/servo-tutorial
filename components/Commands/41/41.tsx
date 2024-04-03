@@ -2,13 +2,7 @@ import { useRef, useContext, useState, useEffect } from "react";
 import { ErrorTypes } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
 import { GlobalContext } from "../../../pages/_app";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
-import {
-    changeAliasPythonCode,
-    changeUniqueIdPythonCode,
-} from "../../../servo-engine/code-example-utils/python-code-utils";
+import { Command41CodeExample } from "./code-samples/code-sample";
 
 export interface Command41PropsType extends ChaptersPropsType {
     UniqueID?: string;
@@ -23,27 +17,35 @@ export const Command41 = (props: Command41PropsType) => {
     const uniqueIdInputBox = useRef<HTMLInputElement | null>(null);
     const AllowedChars = "0123456789ABCDEF";
 
-    function getNewPythonCode(): string {
-        let alteredPyCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
-        );
-
-        alteredPyCode = changeUniqueIdPythonCode(uniqueId, alteredPyCode);
-
-        return alteredPyCode;
-    }
+    const command41CodeExample = useRef(new Command41CodeExample());
 
     function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
+        globalContext.codeExample.setPythonCode(
+            command41CodeExample.current.getNewCommand41PythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                uniqueId
+            )
+        );
 
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setWebCode(
+            command41CodeExample.current.getNewCommand41WebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                uniqueId
+            )
+        );
+
+        globalContext.codeExample.setClangCode(
+            command41CodeExample.current.getNewCommand41CCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                uniqueId,
+            )
+        );
     }
 
     useEffect(() => {
-        console.log("mounted with id",props.UniqueID)
         //on mount, run this effect
         updateCodeExamples();
     }, []);
@@ -93,6 +95,7 @@ export const Command41 = (props: Command41PropsType) => {
             );
             return;
         }
+        
         if (currentVal.length % 2 != 0) return;
 
         let completedVal = currentVal;

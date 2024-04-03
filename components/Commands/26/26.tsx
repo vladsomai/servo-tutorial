@@ -14,39 +14,42 @@ import {
     ErrorTypes,
 } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
-import {
-    changeAliasPythonCode,
-    changeTimePythonCode,
-    changeVelocityPythonCode,
-} from "../../../servo-engine/code-example-utils/python-code-utils";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
+import { Command26CodeExample } from "./code-samples/code-sample";
 
 export const Command26 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
+    const command26CodeExample = useRef(new Command26CodeExample());
 
     const velocityInputBox = useRef<HTMLInputElement | null>(null);
     const timeInputBox = useRef<HTMLInputElement | null>(null);
 
-    function getNewPythonCode(): string {
-        let alteredPyCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
+    function updateCodeExamples() {
+        globalContext.codeExample.setPythonCode(
+            command26CodeExample.current.getNewCommand26PythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                velocityRPM,
+                timeValue
+            )
         );
 
-        alteredPyCode = changeVelocityPythonCode(velocityRPM, alteredPyCode);
-        alteredPyCode = changeTimePythonCode(timeValue, alteredPyCode);
+        globalContext.codeExample.setWebCode(
+            command26CodeExample.current.getNewCommand26WebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                velocityRPM,
+                timeValue
+            )
+        );
 
-        return alteredPyCode;
-    }
-
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
-
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setClangCode(
+            command26CodeExample.current.getNewCommand26CCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                velocityRPM,
+                timeValue
+            )
+        );
     }
 
     useEffect(() => {

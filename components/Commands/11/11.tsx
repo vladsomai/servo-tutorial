@@ -1,29 +1,33 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { GlobalContext } from "../../../pages/_app";
-import { changeAliasPythonCode } from "../../../servo-engine/code-example-utils/python-code-utils";
 import { ChaptersPropsType } from "../0_1/0_1";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
+import { GenericCodeExample } from "../../../servo-engine/code-example-utils/code-utils";
 
 export const Command11 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
-
-    function getNewPythonCode(): string {
-        const alteredAliasPythonCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
-        );
-
-        return alteredAliasPythonCode;
-    }
+    const genericCodeExample = useRef(new GenericCodeExample());
 
     function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
+        globalContext.codeExample.setPythonCode(
+            genericCodeExample.current.getGenericPythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum
+            )
+        );
 
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setWebCode(
+            genericCodeExample.current.getGenericWebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum
+            )
+        );
+
+        globalContext.codeExample.setClangCode(
+            genericCodeExample.current.getGenericCCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum
+            )
+        );
     }
 
     useEffect(() => {

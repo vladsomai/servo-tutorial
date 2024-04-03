@@ -9,14 +9,7 @@ import {
 } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
 import { GlobalContext } from "../../../pages/_app";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
-import {
-    changeAliasPythonCode,
-    changeNewAlisPythonCode,
-    changeUniqueIdPythonCode,
-} from "../../../servo-engine/code-example-utils/python-code-utils";
+import { Command21CodeExample } from "./code-samples/code-sample";
 
 export interface Command21PropsType extends ChaptersPropsType {
     UniqueID?: string;
@@ -26,6 +19,7 @@ export interface Command21PropsType extends ChaptersPropsType {
 
 export const Command21 = (props: Command21PropsType) => {
     const globalContext = useContext(GlobalContext);
+    const command21CodeExample = useRef(new Command21CodeExample());
 
     const [uniqueId, setUniqueId] = useState("0000000000000000");
     const [hexAlias, setHexAlias] = useState("00");
@@ -35,24 +29,33 @@ export const Command21 = (props: Command21PropsType) => {
     const aliasInputBox = useRef<HTMLInputElement | null>(null);
     const AllowedChars = "0123456789ABCDEF";
 
-    function getNewPythonCode(): string {
-        let alteredPyCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
+    function updateCodeExamples() {
+        globalContext.codeExample.setPythonCode(
+            command21CodeExample.current.getNewCommand21PythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                uniqueId,
+                aliasCode
+            )
         );
 
-        alteredPyCode = changeUniqueIdPythonCode(uniqueId, alteredPyCode);
-        alteredPyCode = changeNewAlisPythonCode(aliasCode, alteredPyCode)
+        globalContext.codeExample.setWebCode(
+            command21CodeExample.current.getNewCommand21WebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                uniqueId,
+                aliasCode
+            )
+        );
 
-        return alteredPyCode;
-    }
-
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
-
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setClangCode(
+            command21CodeExample.current.getNewCommand21CCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                uniqueId,
+                aliasCode
+            )
+        );
     }
 
     useEffect(() => {
@@ -114,7 +117,11 @@ export const Command21 = (props: Command21PropsType) => {
         const currentVal = uniqueIdInputBox.current.value;
         const lastChar = currentVal[currentVal.length - 1];
 
-        if (currentVal == "") return;
+        if (currentVal == "")
+        {
+            setUniqueId("");
+            return;
+        }
 
         if (!AllowedChars.includes(lastChar?.toUpperCase())) {
             props.LogAction(
@@ -128,7 +135,6 @@ export const Command21 = (props: Command21PropsType) => {
             return;
         }
 
-        if (currentVal.length % 2 != 0) return;
         if (currentVal.length > 16) {
             props.LogAction(
                 ErrorTypes.ERR1002,
@@ -140,6 +146,9 @@ export const Command21 = (props: Command21PropsType) => {
                 currentVal.length - 1
             );
         }
+
+        if (currentVal.length % 2 != 0) return;
+
         let completedVal = currentVal;
         while (completedVal.length < 16) {
             completedVal += "0";

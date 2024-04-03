@@ -27,15 +27,7 @@ import { ChaptersPropsType } from "../0_1/0_1";
 import Image from "next/image";
 import { animated, useTransition } from "react-spring";
 import { GlobalContext } from "../../../pages/_app";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
-import {
-    changeAliasPythonCode,
-    changeCommandLengthPythonCode,
-    changeMovesTypesPythonCode,
-    changeMultiMovesPythonCode,
-} from "../../../servo-engine/code-example-utils/python-code-utils";
+import { Command29CodeExample } from "./code-samples/code-sample";
 
 export interface MultiMoveChapterProps extends ChaptersPropsType {
     MoveCommands: MoveCommand[];
@@ -57,59 +49,7 @@ export interface MoveCommand {
 
 export const Command29 = (props: MultiMoveChapterProps) => {
     const globalContext = useContext(GlobalContext);
-
-    function getNewPythonCode(): string {
-        let alteredPyCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
-        );
-
-        //add the length in bytes for the payload,
-        alteredPyCode = changeCommandLengthPythonCode(
-            5 + props.MoveCommands.length * 8,
-            alteredPyCode
-        );
-        
-        const movesTypes =
-            u32BitMovementTypes.current == 0
-                ? ""
-                : u32BitMovementTypes.current.toString(2);
-        alteredPyCode = changeMovesTypesPythonCode(movesTypes, alteredPyCode);
-
-        const moveCmds: string[] = props.MoveCommands.map((item) => {
-            let moveValue = Number(0).toString(); //use 0 by default when input box is empty
-
-            if (item.MoveValue) {
-                //in case MoveValue is defined by the user use that value
-                moveValue = item.MoveValue.toString();
-            }
-
-            let timeValue = Number(0).toString(); //use 0 by default when input box is empty
-
-            if (item.TimeValue) {
-                //in case MoveValue is defined by the user use that value
-                timeValue = item.TimeValue.toString();
-            }
-
-            return " [" + moveValue + ", " + timeValue + "]";
-        });
-
-        const moveCmdsJoined = moveCmds.join(",");
-        alteredPyCode = changeMultiMovesPythonCode(
-            moveCmdsJoined,
-            alteredPyCode
-        );
-
-        return alteredPyCode;
-    }
-
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
-
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
-    }
+    const command29CodeExample = useRef(new Command29CodeExample());
 
     useEffect(() => {
         //on mount, run this effect
@@ -133,6 +73,35 @@ export const Command29 = (props: MultiMoveChapterProps) => {
     const u32BitMovementTypes = useRef(0);
     const timestepsHexa = useRef<string[]>([]);
     const movementComm = useRef<string[]>([]);
+
+    function updateCodeExamples() {
+        globalContext.codeExample.setPythonCode(
+            command29CodeExample.current.getNewCommand29PythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                u32BitMovementTypes.current,
+                props.MoveCommands
+            )
+        );
+
+        globalContext.codeExample.setWebCode(
+            command29CodeExample.current.getNewCommand29WebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                u32BitMovementTypes.current,
+                props.MoveCommands
+            )
+        );
+
+        globalContext.codeExample.setClangCode(
+            command29CodeExample.current.getNewCommand29CCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                u32BitMovementTypes.current,
+                props.MoveCommands
+            )
+        );
+    }
 
     useEffect(() => {
         //when adding or removing commands, run this effect

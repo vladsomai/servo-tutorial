@@ -2,43 +2,42 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { GlobalContext } from "../../../pages/_app";
 import { ChaptersPropsType } from "../0_1/0_1";
 import { ErrorTypes, Uint8ArrayToString } from "../../../servo-engine/utils";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
-import {
-    changeAliasPythonCode,
-    changeHallSensorDataTypePythonCode,
-} from "../../../servo-engine/code-example-utils/python-code-utils";
+import { Command7CodeExample } from "./code-samples/code-sample";
 
 export type DataToCapture = 0 | 1 | 2 | 3 | 4;
 
 export const Command7 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
+    const command7CodeExample = useRef(new Command7CodeExample());
 
     const selectPayloadInputBox = useRef<HTMLSelectElement | null>(null);
     const availableDataToCapture = useRef<number[]>([0, 1, 2, 3, 4]);
     const [dataToCapture, setDataToCapture] = useState<DataToCapture>(0);
 
-    function getNewPythonCode(): string {
-        let alteredPyCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
-        );
-
-        alteredPyCode = changeHallSensorDataTypePythonCode(
-            dataToCapture,
-            alteredPyCode
-        );
-
-        return alteredPyCode;
-    }
-
     function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
+        globalContext.codeExample.setPythonCode(
+            command7CodeExample.current.getNewCommand7PythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                dataToCapture
+            )
+        );
 
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setWebCode(
+            command7CodeExample.current.getNewCommand7WebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                dataToCapture
+            )
+        );
+
+        globalContext.codeExample.setClangCode(
+            command7CodeExample.current.getNewCommand7CCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                dataToCapture
+            )
+        );
     }
 
     useEffect(() => {

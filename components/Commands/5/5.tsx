@@ -11,16 +11,11 @@ import {
     Uint8ArrayToString,
 } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
-import {
-    changeAccelerationPythonCode,
-    changeAliasPythonCode,
-} from "../../../servo-engine/code-example-utils/python-code-utils";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
+import { Command5CodeExample } from "./code-samples/code-sample";
 
 export const Command5 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
+    const command3CodeExample = useRef(new Command5CodeExample());
 
     const AccelerationInputBox = useRef<HTMLInputElement | null>(null);
 
@@ -75,26 +70,30 @@ export const Command5 = (props: ChaptersPropsType) => {
         }
     };
 
-    function getNewPythonCode(): string {
-        let alteredPyCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
-        );
-
-        alteredPyCode = changeAccelerationPythonCode(
-            AccelerationRPM,
-            alteredPyCode
-        );
-
-        return alteredPyCode;
-    }
-
     function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
+        globalContext.codeExample.setPythonCode(
+            command3CodeExample.current.getNewCommand5PythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                AccelerationRPM
+            )
+        );
 
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setWebCode(
+            command3CodeExample.current.getNewCommand5WebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                AccelerationRPM
+            )
+        );
+
+        globalContext.codeExample.setClangCode(
+            command3CodeExample.current.getNewCommand5CCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                AccelerationRPM
+            )
+        );
     }
 
     useEffect(() => {

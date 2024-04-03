@@ -382,7 +382,7 @@
         "Description": "Set the maximum motor current and maximum regeneration current. The values are stored in non-volatile memory and survive a reset.",
         "Input": [
             {
-                "Description": "u16: The motor current. The units are some arbitrary units and not amps. A value of 50 or 100 is suitable.",
+                "Description": "u16: The motor current. The units are some arbitrary units and not amps. A value of 150 or 200 is suitable.",
                 "TooltipDisplayFormat": "%u"
             },
             {

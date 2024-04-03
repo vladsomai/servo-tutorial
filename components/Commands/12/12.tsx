@@ -1,29 +1,33 @@
-import { useContext, useEffect } from 'react';
-import { ChaptersPropsType } from '../0_1/0_1'
-import { changeAliasPythonCode } from '../../../servo-engine/code-example-utils/python-code-utils';
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
-import { GlobalContext } from '../../../pages/_app';
+import { useContext, useEffect, useRef } from "react";
+import { ChaptersPropsType } from "../0_1/0_1";
+import { GlobalContext } from "../../../pages/_app";
+import { GenericCodeExample } from "../../../servo-engine/code-example-utils/code-utils";
 
 export const Command12 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
-    
-    function getNewPythonCode(): string {
-        const alteredAliasPythonCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
-        );
-
-        return alteredAliasPythonCode;
-    }
+    const genericCodeExample = useRef(new GenericCodeExample());
 
     function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
+        globalContext.codeExample.setPythonCode(
+            genericCodeExample.current.getGenericPythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum
+            )
+        );
 
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setWebCode(
+            genericCodeExample.current.getGenericWebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum
+            )
+        );
+
+        globalContext.codeExample.setClangCode(
+            genericCodeExample.current.getGenericCCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum
+            )
+        );
     }
 
     useEffect(() => {
@@ -35,25 +39,25 @@ export const Command12 = (props: ChaptersPropsType) => {
         //when user changes the alias, run this effect
         updateCodeExamples();
     }, [globalContext.currentAxisCode.axisCode]);
-    
-  const e_stop = () => {
-    const selectedAxis = props.getAxisSelection()
-    if (selectedAxis == '') return
 
-    const rawData = props.constructCommand('')
-    props.sendDataToSerialPort(rawData)
-  }
-  
-  return (
-    <>
-      <div className="w-full text-center mb-5">
-        <div className="flex justify-center">
-          <div className="mr-4">{props.children}</div>
-          <button className="btn btn-primary btn-sm" onClick={e_stop}>
-            STOP
-          </button>
-        </div>
-      </div>
-    </>
-  )
-}
+    const e_stop = () => {
+        const selectedAxis = props.getAxisSelection();
+        if (selectedAxis == "") return;
+
+        const rawData = props.constructCommand("");
+        props.sendDataToSerialPort(rawData);
+    };
+
+    return (
+        <>
+            <div className="w-full text-center mb-5">
+                <div className="flex justify-center">
+                    <div className="mr-4">{props.children}</div>
+                    <button className="btn btn-primary btn-sm" onClick={e_stop}>
+                        STOP
+                    </button>
+                </div>
+            </div>
+        </>
+    );
+};

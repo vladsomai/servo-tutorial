@@ -1,9 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { GlobalContext } from "../../../pages/_app";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
-
 import {
     SecondToTimesteps,
     InternalAccelerationToCommAcceleration,
@@ -18,14 +14,11 @@ import {
     ErrorTypes,
 } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
-import {
-    changeAccelerationPythonCode,
-    changeAliasPythonCode,
-    changeTimePythonCode,
-} from "../../../servo-engine/code-example-utils/python-code-utils";
+import { Command19CodeExample } from "./code-samples/code-sample";
 
 export const Command19 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
+    const command19CodeExample = useRef(new Command19CodeExample());
 
     const AccelerationInputBox = useRef<HTMLInputElement | null>(null);
     const timeInputBox = useRef<HTMLInputElement | null>(null);
@@ -41,28 +34,33 @@ export const Command19 = (props: ChaptersPropsType) => {
     const [commAccelerationHexa, setCommAccelerationHexa] =
         useState<string>("00000000");
 
-    function getNewPythonCode(): string {
-        let alteredPyCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
-        );
-
-        alteredPyCode = changeAccelerationPythonCode(
-            AccelerationRPM,
-            alteredPyCode
-        );
-
-        alteredPyCode = changeTimePythonCode(timeValue, alteredPyCode);
-
-        return alteredPyCode;
-    }
-
     function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
+        globalContext.codeExample.setPythonCode(
+            command19CodeExample.current.getNewCommand19PythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                AccelerationRPM,
+                timeValue
+            )
+        );
 
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setWebCode(
+            command19CodeExample.current.getNewCommand19WebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                AccelerationRPM,
+                timeValue
+            )
+        );
+
+        globalContext.codeExample.setClangCode(
+            command19CodeExample.current.getNewCommand19CCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                AccelerationRPM,
+                timeValue
+            )
+        );
     }
 
     useEffect(() => {

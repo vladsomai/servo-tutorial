@@ -56,9 +56,6 @@ number_of_moves = len(moves_types_reversed)
 
 #add int and uint formats based on how many move commands we send
 for i in range(number_of_moves):
-
-    move_time_motor_units = int(multi_moves[i][TIME_INDEX] * MOVE_TIME_MOTOR_UNITS_PER_SECOND)
-    print(f"Timesteps: {move_time_motor_units}")
     
     if(moves_types_reversed[i]=='0'):
         #move with acceleration, convert to motor units and add it to the list
@@ -75,6 +72,8 @@ for i in range(number_of_moves):
         multi_moves_converted.append(communication_velocity)
 
     #after the velocity or acceleretion was added, add the time
+    move_time_motor_units = int(multi_moves[i][TIME_INDEX] * MOVE_TIME_MOTOR_UNITS_PER_SECOND)
+    print(f"Timesteps: {move_time_motor_units}")
     multi_moves_converted.append(move_time_motor_units)
 
     #add the move and the time in the format string

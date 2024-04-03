@@ -2,37 +2,39 @@ import { useContext, useRef, useEffect, useState, useCallback } from "react";
 import { ChaptersPropsType } from "../0_1/0_1";
 import { ErrorTypes } from "../../../servo-engine/utils";
 import { GlobalContext } from "../../../pages/_app";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
-import {
-    changeAliasPythonCode,
-    changePingTextPythonCode,
-} from "../../../servo-engine/code-example-utils/python-code-utils";
+import { Command31CodeExample } from "./code-samples/code-sample";
 
 export const Command31 = (props: ChaptersPropsType) => {
     const initialText = "0123456789";
     const [textPayload, setTextpayload] = useState<string>(initialText);
     const textPayloadInputBox = useRef<HTMLInputElement | null>(null);
     const globalContext = useContext(GlobalContext);
-
-    function getNewPythonCode(): string {
-        let alteredPyCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
-        );
-
-        alteredPyCode = changePingTextPythonCode(textPayload, alteredPyCode);
-
-        return alteredPyCode;
-    }
+    const command31CodeExample = useRef(new Command31CodeExample());
 
     function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
+        globalContext.codeExample.setPythonCode(
+            command31CodeExample.current.getNewCommand31PythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                textPayload,
+            )
+        );
 
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setWebCode(
+            command31CodeExample.current.getNewCommand31WebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                textPayload
+            )
+        );
+
+        globalContext.codeExample.setClangCode(
+            command31CodeExample.current.getNewCommand31CCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                textPayload,
+            )
+        );
     }
 
     useEffect(() => {

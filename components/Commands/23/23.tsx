@@ -3,10 +3,8 @@ import { crc32, ErrorTypes, sleep } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
 import Image from "next/image";
 import Link from "next/link";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
-import { changeAliasPythonCode } from "../../../servo-engine/code-example-utils/python-code-utils";
 import { GlobalContext } from "../../../pages/_app";
+import { Command23CodeExample } from "./code-samples/code-sample";
 
 interface FirmwareCmdProps extends ChaptersPropsType {
     isConnected: boolean;
@@ -21,21 +19,20 @@ export const Command23 = (props: FirmwareCmdProps) => {
 
     const globalContext = useContext(GlobalContext);
 
-    function getNewPythonCode(): string {
-        const alteredAliasPythonCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
-        );
-
-        return alteredAliasPythonCode;
-    }
+    const command23CodeExample = useRef(new Command23CodeExample());
 
     function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
+        globalContext.codeExample.setPythonCode(
+            command23CodeExample.current.getNewCommand23PythonCode()
+        );
 
-        //alter the other languages here
-        // globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setWebCode(
+            command23CodeExample.current.getNewCommand23WebCode()
+        );
+
+        globalContext.codeExample.setClangCode(
+            command23CodeExample.current.getNewCommand23CCode()
+        );
     }
 
     useEffect(() => {
@@ -250,16 +247,23 @@ export const Command23 = (props: FirmwareCmdProps) => {
                 props.sendDataToSerialPort(
                     byteArray.slice(0, 1000),
                     false,
-                    false
+                    false,
+                    true
                 );
                 await sleep(50);
                 props.sendDataToSerialPort(
                     byteArray.slice(1000, 2000),
                     false,
-                    false
+                    false,
+                    true
                 );
                 await sleep(50);
-                props.sendDataToSerialPort(byteArray.slice(2000), false, false);
+                props.sendDataToSerialPort(
+                    byteArray.slice(2000),
+                    false,
+                    false,
+                    true
+                );
                 await sleep(50);
 
                 remainingBytesToFlash =
@@ -272,10 +276,11 @@ export const Command23 = (props: FirmwareCmdProps) => {
 
         //System reset
         await props.sendDataToSerialPort("FF1B00", false, false);
+        await sleep(500);
 
-        await sleep(100);
         await execute_programming();
-        await sleep(100);
+
+        await sleep(500);
 
         //System reset
         await props.sendDataToSerialPort("FF1B00", false, false);

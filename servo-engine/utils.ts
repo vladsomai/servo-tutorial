@@ -170,33 +170,30 @@ export class ByteStringType {
 }
 
 /**
- * Returns a Uint8Array representing the bytes from the hex string 
+ * Returns a Uint8Array representing the bytes from the hex string
  * @param Input: "FF00A2" hex number as string to be converted to Uint8Array
- * @param Output: [0xFF,0,0xA2] 
+ * @param Output: [0xFF,0,0xA2]
  */
-export const stringToUint8Array = (_value: string): Uint8Array => {
+export const stringToUint8Array = (_value:string) => {
     const message = _value;
 
     if (message.length % 2 !== 0) {
         return new Uint8Array([]);
     }
 
-    let stringDataBytes: ByteStringType[] = [];
-
-    for (let i = 0; i < message.length; i += 2) {
-        let byte = new ByteStringType(new Char(message[i + 1]), new Char(message[i]));
-        stringDataBytes.push(byte);
+    let bytes = [];
+    for (let i = 0; i < _value.length; i += 2) {
+        const hexByteString = _value[i] + _value[i + 1];
+        bytes.push(parseInt(hexByteString, 16));
     }
 
-    //Convert all the bytes from the stringDataBytes to hex-> e.g. "FA" -> 0xFA
-    let RawBytes = new Uint8Array(stringDataBytes.length)
-    let i = 0;
-    for (const stringByte of stringDataBytes) {
-        RawBytes[i] = stringByte.toHexValue();
-        i++;
-    }
-    return RawBytes;
-}
+    //Convert all the bytes from the bytes array to Uint8Array
+    let result = new Uint8Array(bytes.length);
+
+    result.set(bytes);
+
+    return result;
+};
 
 //Input: Uint8Array e.g. [0xFF,0xA0,0]
 //Output: hexString e.g. "FFA000"
@@ -664,10 +661,8 @@ export const getCurrentBrowser = (): 'Opera' | 'Edge' | 'Chrome' | 'Safari' | 'F
     }
 }
 
-import { cCode } from "../components/Commands/0_1/code-samples/c-code-sample";
-import { pythonCode } from "../components/Commands/0_1/code-samples/python-code-sample";
-import { webCode } from "../components/Commands/0_1/code-samples/web-code-sample";
-
+import { GenericCodeExample } from "../servo-engine/code-example-utils/code-utils";
+const genericCodeExample = new GenericCodeExample()
 
 export const javascriptLanguage = 'javascript'
 export const pythonLanguage = 'python'
@@ -678,140 +673,16 @@ export type languages = typeof pythonLanguage | typeof cLanguage | typeof javasc
 export const SupportedCodeExamples = {
     "Python": {
         "prismLanguage": pythonLanguage,
-        "code": pythonCode
+        "code": genericCodeExample.getGenericPythonCode(255, 0)
     },
     "C": {
         "prismLanguage": cLanguage,
-        "code": cCode
+        "code": genericCodeExample.getGenericCCode(255, 0)
     },
     "JavaScript": {
         "prismLanguage": javascriptLanguage,
-        "code": webCode
+        "code": genericCodeExample.getGenericWebCode(255, 0)
     }
-}
-
-import RawMotorCommands from '../public/motor_commands.json' assert {type: 'json'};
-
-export const alterCodeSample = (_currentCommand: number, _currentAxis: string, currentCode: string, payload = ''): string => {
-
-    let sendLength = 0;
-    let rcvLength = 0;
-
-    RawMotorCommands.map((item) => {
-        if (item.CommandEnum == _currentCommand) {
-            for (const input of item.Input) {
-                if (typeof input == 'object') {
-                    sendLength += getNoOfBytesFromDescription(input.Description)
-                }
-            }
-            for (const output of item.Output) {
-                if (typeof output == 'object') {
-                    rcvLength += getNoOfBytesFromDescription(output.Description)
-                }
-            }
-        }
-    })
-    const currentAxisASCIICode = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(parseInt(_currentAxis), 1));
-    const currentCommandInHex = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(_currentCommand, 1))
-    let alteredCodeSample = ''
-
-    if (currentCode == SupportedCodeExamples.C.prismLanguage) {
-        const cCodeCmdToken = 'uint8_t cmd'
-        const cCodeBufferToken = 'uint8_t buffer'
-
-        {
-            const indexOfCmd = SupportedCodeExamples.C.code.indexOf(cCodeCmdToken)
-            const indexOfComma = SupportedCodeExamples.C.code.substring(indexOfCmd).indexOf(';')
-            alteredCodeSample = SupportedCodeExamples.C.code.substring(0, indexOfCmd)
-
-            let params = ''
-            if (payload != '') {
-                sendLength = payload.length / 2
-
-                for (let i = 0; i < payload.length; i += 2) {
-                    params += ', 0x' + payload[i].toUpperCase() + payload[i + 1].toUpperCase()
-                }
-
-            } else {
-                //set all bytes to 0, we don't know any parameters
-                for (let i = 0; i < sendLength; i++) {
-                    params += ', 0'
-                }
-            }
-            const sendLengthInHex = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(sendLength, 1))
-
-            alteredCodeSample += `uint8_t cmd[] = { ${currentAxisASCIICode}, ${currentCommandInHex}, ${sendLengthInHex}${params} };`
-            alteredCodeSample += SupportedCodeExamples.C.code.substring(indexOfCmd + indexOfComma + 1)
-        }
-        {
-            const alteredCodeAfterSendCmd = alteredCodeSample
-            const indexOfBuffer = alteredCodeAfterSendCmd.indexOf(cCodeBufferToken)
-            const indexOfComma = alteredCodeAfterSendCmd.substring(indexOfBuffer).indexOf(';')
-            alteredCodeSample = alteredCodeAfterSendCmd.substring(0, indexOfBuffer)
-            let buffer = ''
-            for (let i = 0; i < rcvLength; i++) {
-                buffer += ', 0'
-            }
-            alteredCodeSample += `uint8_t buffer[] = { 0, 0, 0${buffer} };`
-            alteredCodeSample += alteredCodeAfterSendCmd.substring(indexOfBuffer + indexOfComma + 1)
-        }
-    }
-    else if (currentCode == SupportedCodeExamples.JavaScript.prismLanguage) {
-        const javascriptCodeCmdToken = 'Uint8Array(['
-
-        const indexOfCmdStart = SupportedCodeExamples.JavaScript.code.indexOf(javascriptCodeCmdToken)
-        const indexOfCmdEnd = SupportedCodeExamples.JavaScript.code.substring(indexOfCmdStart).indexOf(']))')
-        alteredCodeSample = SupportedCodeExamples.JavaScript.code.substring(0, indexOfCmdStart)
-
-        let params = ''
-        if (payload != '') {
-            sendLength = payload.length / 2
-
-            for (let i = 0; i < payload.length; i += 2) {
-                params += ', 0x' + payload[i].toUpperCase() + payload[i + 1].toUpperCase()
-            }
-
-        } else {
-            //set all bytes to 0, we don't know any parameters
-            for (let i = 0; i < sendLength; i++) {
-                params += ', 0'
-            }
-        }
-        const sendLengthInHex = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(sendLength, 1))
-
-        alteredCodeSample += `Uint8Array([${currentAxisASCIICode}, ${currentCommandInHex}, ${sendLengthInHex}${params}]`
-        alteredCodeSample += SupportedCodeExamples.JavaScript.code.substring(indexOfCmdStart + indexOfCmdEnd + 1)
-
-    }
-    else if (currentCode == SupportedCodeExamples.Python.prismLanguage) {
-        const pythonCodeCmdToken = 'bytearray'
-
-        const indexOfCmdStart = SupportedCodeExamples.Python.code.indexOf(pythonCodeCmdToken)
-        const indexOfCmdEnd = SupportedCodeExamples.Python.code.substring(indexOfCmdStart).indexOf(']))')
-        alteredCodeSample = SupportedCodeExamples.Python.code.substring(0, indexOfCmdStart)
-
-        let params = ''
-        if (payload != '') {
-            sendLength = payload.length / 2
-
-            for (let i = 0; i < payload.length; i += 2) {
-                params += ', 0x' + payload[i].toUpperCase() + payload[i + 1].toUpperCase()
-            }
-
-        } else {
-            //set all bytes to 0, we don't know any parameters
-            for (let i = 0; i < sendLength; i++) {
-                params += ', 0'
-            }
-        }
-        const sendLengthInHex = '0x' + Uint8ArrayToString(transfNumberToUint8Arr(sendLength, 1))
-
-        alteredCodeSample += `bytearray([${currentAxisASCIICode}, ${currentCommandInHex}, ${sendLengthInHex}${params}]`
-        alteredCodeSample += SupportedCodeExamples.Python.code.substring(indexOfCmdStart + indexOfCmdEnd + 1)
-
-    }
-
-    return alteredCodeSample;
 }
 
 //This method will convert a string to a char when string is of length 1 or,

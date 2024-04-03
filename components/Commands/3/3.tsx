@@ -12,16 +12,12 @@ import {
     Uint8ArrayToString,
 } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
-import {
-    changeAliasPythonCode,
-    changeVelocityPythonCode,
-} from "../../../servo-engine/code-example-utils/python-code-utils";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
+import { Command3CodeExample } from "./code-samples/code-sample";
 
 export const Command3 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
+    const command3CodeExample = useRef(new Command3CodeExample());
+
     const velocityInputBox = useRef<HTMLInputElement | null>(null);
 
     //#region VELOCITY_CONVERSION
@@ -73,34 +69,41 @@ export const Command3 = (props: ChaptersPropsType) => {
         }
     };
 
-    function getNewPythonCode(): string {
-        let alteredPyCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
+    function updateCodeExamples() {
+        globalContext.codeExample.setPythonCode(
+            command3CodeExample.current.getNewCommand3PythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                velocityRPM
+            )
         );
 
-        alteredPyCode = changeVelocityPythonCode(velocityRPM, alteredPyCode);
+        globalContext.codeExample.setWebCode(
+            command3CodeExample.current.getNewCommand3WebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                velocityRPM
+            )
+        );
 
-        return alteredPyCode;
-    }
-
-    function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
-
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setClangCode(
+            command3CodeExample.current.getNewCommand3CCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                velocityRPM
+            )
+        );
     }
 
     useEffect(() => {
         //on axis code change, update the code example
         updateCodeExamples();
     }, [globalContext.currentAxisCode.axisCode]);
-    
+
     useEffect(() => {
         //on velocity change, update the code example
         updateCodeExamples();
-        
+
         setInternalVelocity(RPM_ToInternalVelocity(velocityRPM));
     }, [velocityRPM]);
 

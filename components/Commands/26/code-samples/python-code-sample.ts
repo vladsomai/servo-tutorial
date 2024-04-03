@@ -8,10 +8,10 @@ PORT = "COM7"
 
 # Define all the parameters for this command
 alias = 255
-velocity_rpm = 0
-move_time_seconds = 0
 motor_command = 26
 motor_command_length = 8
+velocity_rpm = 0
+move_time_seconds = 0
 
 # Define all the constants for this command
 MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION = 645120

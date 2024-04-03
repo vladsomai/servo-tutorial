@@ -1,20 +1,15 @@
 import { ErrorTypes } from "../../../servo-engine/utils";
 import { MainWindowProps } from "../../main-window";
-import { ReactElement, useContext, useEffect } from "react";
+import { ReactElement, useContext, useEffect, useRef } from "react";
 import { GlobalContext } from "../../../pages/_app";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
-import {
-    changeAliasPythonCode,
-    changeCommandPythonCode,
-} from "../../../servo-engine/code-example-utils/python-code-utils";
+import { GenericCodeExample } from "../../../servo-engine/code-example-utils/code-utils";
 
 export interface ChaptersPropsType extends MainWindowProps {
     sendDataToSerialPort: (
         dataToSend: string | Uint8Array,
         enableSentLogging?: boolean,
-        enableTimoutLogging?: boolean
+        enableTimoutLogging?: boolean,
+        isFirwareShot?: boolean
     ) => void;
     LogAction: (errorType: string, log: string) => void;
     constructCommand: (
@@ -28,27 +23,30 @@ export interface ChaptersPropsType extends MainWindowProps {
 
 export const Command1 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
-
-    function getNewPythonCode(): string {
-        const alteredAliasPythonCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
-        );
-
-        const alteredAliasAndCommandPythonCode = changeCommandPythonCode(
-            props.currentCommandDictionary.CommandEnum,
-            alteredAliasPythonCode
-        );
-
-        return alteredAliasAndCommandPythonCode;
-    }
+    const genericCodeExample = useRef(new GenericCodeExample());
 
     function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
+        
+        globalContext.codeExample.setPythonCode(
+            genericCodeExample.current.getGenericPythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum
+            )
+        );
 
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setWebCode(
+            genericCodeExample.current.getGenericWebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum
+            )
+        );
+
+        globalContext.codeExample.setClangCode(
+            genericCodeExample.current.getGenericCCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum
+            )
+        );
     }
 
     useEffect(() => {

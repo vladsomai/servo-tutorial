@@ -10,9 +10,9 @@ you can then open "send_command.html" using Chrome / Edge.
 */
 
 /** "send_command.js" */
-connectBtn = document.getElementById("connectBtn");
-disconnectBtn = document.getElementById("disconnectBtn");
-executeCmd = document.getElementById("executeCmd");
+const connectBtn = document.getElementById("connectBtn");
+const disconnectBtn = document.getElementById("disconnectBtn");
+const executeCmd = document.getElementById("executeCmd");
 
 let serialPort;
 let serialPortReader;

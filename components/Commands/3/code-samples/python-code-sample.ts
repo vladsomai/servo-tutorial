@@ -8,13 +8,13 @@ PORT = "COM7"
 
 # Define all the parameters for this command
 alias = 255
+motor_command = 3
+motor_command_length = 4
 velocity_rpm = 0
 
 # Define all the constants for this command
 MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION = 645120
 MOVE_TIME_MOTOR_UNITS_PER_SECOND = 31250
-SET_MAX_VELOCITY_MOTOR_COMMAND = 3
-SET_MAX_VELOCITY_MOTOR_COMMAND_LENGTH = 4
 
 if platform.system() == 'Windows':
     PORT_PREFIX = '\\\\\\\\.\\\\'
@@ -37,7 +37,7 @@ print(f"Communication velocity: {communication_velocity}")
 # Reference: https://docs.python.org/3/library/struct.html#format-characters
 command_format = '<BBBI'
 
-bytes = struct.pack(command_format, alias, SET_MAX_VELOCITY_MOTOR_COMMAND, SET_MAX_VELOCITY_MOTOR_COMMAND_LENGTH,
+bytes = struct.pack(command_format, alias, motor_command, motor_command_length,
                     communication_velocity)
 
 for d in bytes:

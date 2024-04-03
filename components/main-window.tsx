@@ -215,7 +215,8 @@ const Main = (props: MainWindowProps) => {
         async (
             dataToSend: string | Uint8Array,
             enableSentLogging = true,
-            enableTimoutLogging = true
+            enableTimoutLogging = true,
+            isFirwareShot = false
         ) => {
             if (dataToSend.length === 0) {
                 LogAction(
@@ -243,53 +244,59 @@ const Main = (props: MainWindowProps) => {
 
                 await writer.write(data);
 
-                let hexString = Uint8ArrayToString(data);
-                if (enableSentLogging) {
-                    LogAction(
-                        ErrorTypes.NO_ERR,
-                        "Sent: 0x" + hexString.toUpperCase()
-                    );
-                }
+                if (!isFirwareShot) {
+                    let hexString = Uint8ArrayToString(data);
+                    if (enableSentLogging) {
+                        LogAction(
+                            ErrorTypes.NO_ERR,
+                            "Sent: 0x" + hexString.toUpperCase()
+                        );
+                    }
+                    const cmdStr = hexString.slice(2, 4);
 
-                if (hexString.slice(0, 2) == "FF") {
-                    //do not log time out when sending a command to alias 0xFF / 255
-                    enableTimoutLogging = false;
-                }
+                    if (hexString.slice(0, 2) == "FF" || cmdStr == "23") {
+                        //do not log time out when sending a command to alias 0xFF / 255
+                        enableTimoutLogging = false;
+                    }
 
-                const cmdStr = hexString.slice(2, 4);
-                if (cmdStr == "14" || cmdStr == "29" || cmdStr == "15") {
-                    //command 0x14 / 20 responds randomly,
-                    //command 0x29 / 41 responds always, this command is based on UniqueId
-                    //command 0x15 / 21 responds always, this command is based on UniqueId
-                    //enable timeout logging if this is the case no metter the selected axes
-                    enableTimoutLogging = true;
-                }
+                    if (cmdStr == "14" || cmdStr == "29" || cmdStr == "15") {
+                        //command 0x14 / 20 responds randomly,
+                        //command 0x29 / 41 responds always, this command is based on UniqueId
+                        //command 0x15 / 21 responds always, this command is based on UniqueId
+                        //enable timeout logging if this is the case no metter the selected axes
+                        enableTimoutLogging = true;
+                    }
 
-                if (enableTimoutLogging) {
-                    timerHandle.current = setTimeout(() => {
-                        if (partialData.current.length == 0) {
-                            LogAction(
-                                ErrorTypes.ERR1003,
-                                "The command timed out."
-                            );
-                        } else {
-                            //the command responded but it was incomplete
-                            LogAction(
-                                ErrorTypes.ERR1004,
-                                "The message received is incomplete."
-                            );
-                            LogAction(
-                                ErrorTypes.ERR1004,
-                                "Received incomplete message: 0x" +
-                                    partialData.current
-                            );
-                            partialData.current = "";
-                        }
-                    }, 1000);
-                }
+                    if (enableTimoutLogging) {
+                        timerHandle.current = setTimeout(() => {
+                            if (partialData.current.length == 0) {
+                                console.log("time out while command ", cmdStr);
+                                LogAction(
+                                    ErrorTypes.ERR1003,
+                                    "The command timed out."
+                                );
+                            } else {
+                                //the command responded but it was incomplete
+                                LogAction(
+                                    ErrorTypes.ERR1004,
+                                    "The message received is incomplete."
+                                );
+                                LogAction(
+                                    ErrorTypes.ERR1004,
+                                    "Received incomplete message: 0x" +
+                                        partialData.current
+                                );
+                                partialData.current = "";
+                            }
+                        }, 1000);
+                    }
 
-                if (enableSentLogging && !enableTimoutLogging) {
-                    LogAction(ErrorTypes.NO_ERR, "No response is expected!");
+                    if (enableSentLogging && !enableTimoutLogging) {
+                        LogAction(
+                            ErrorTypes.NO_ERR,
+                            "No response is expected!"
+                        );
+                    }
                 }
 
                 writer.releaseLock();

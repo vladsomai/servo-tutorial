@@ -2,41 +2,40 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { ChaptersPropsType } from "../0_1/0_1";
 import { ErrorTypes, Uint8ArrayToString } from "../../../servo-engine/utils";
 import { GlobalContext } from "../../../pages/_app";
-import {
-    changeAliasPythonCode,
-    changeTurnOnOffGatheringPythonCode,
-} from "../../../servo-engine/code-example-utils/python-code-utils";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
+import { Command32CodeExample } from "./code-samples/code-sample";
 
 export const Command32 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
     const availableDataToCapture = useRef<number[]>([0, 1]);
     const [inputPayload, setInputPayload] = useState<string>("0");
-
-    function getNewPythonCode(): string {
-        let alteredPyCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
-        );
-
-        alteredPyCode = changeTurnOnOffGatheringPythonCode(
-            inputPayload,
-            alteredPyCode
-        );
-
-        return alteredPyCode;
-    }
+    const command32CodeExample = useRef(new Command32CodeExample());
 
     function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
+        globalContext.codeExample.setPythonCode(
+            command32CodeExample.current.getNewCommand32PythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                inputPayload
+            )
+        );
 
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setWebCode(
+            command32CodeExample.current.getNewCommand32WebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                inputPayload
+            )
+        );
+
+        globalContext.codeExample.setClangCode(
+            command32CodeExample.current.getNewCommand32CCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                inputPayload,
+            )
+        );
     }
-
+    
     useEffect(() => {
         //on mount, update the code example
         updateCodeExamples();

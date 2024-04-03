@@ -89,35 +89,29 @@ export default function Code({ currentCommand }: CodeProps) {
                                     Python
                                 </button>
 
-                                {/* firmware command does not support c code examples at the moment, remove the below if case when it will be  */}
-                                {null && (
-                                    <button
-                                        className={`ml-5 btn self-end rounded-b-none border-0 tracking-widest z-10 ${
-                                            language ===
-                                            SupportedCodeExamples.C
-                                                .prismLanguage
-                                                ? "bg-[#1e293b] btn-sm"
-                                                : "bg-slate-600 btn-xs"
-                                        }`}
-                                        onClick={showC}
-                                    >
-                                        C
-                                    </button>
-                                )}
-                                {null && (
-                                    <button
-                                        className={`ml-5 btn self-end rounded-b-none border-0 tracking-widest z-10 ${
-                                            language ===
-                                            SupportedCodeExamples.JavaScript
-                                                .prismLanguage
-                                                ? "bg-[#1e293b] btn-sm"
-                                                : "bg-slate-600 btn-xs"
-                                        }`}
-                                        onClick={showJavascript}
-                                    >
-                                        Web
-                                    </button>
-                                )}
+                                <button
+                                    className={`ml-5 btn self-end rounded-b-none border-0 tracking-widest z-10 ${
+                                        language ===
+                                        SupportedCodeExamples.C.prismLanguage
+                                            ? "bg-[#1e293b] btn-sm"
+                                            : "bg-slate-600 btn-xs"
+                                    }`}
+                                    onClick={showC}
+                                >
+                                    C
+                                </button>
+                                <button
+                                    className={`ml-5 btn self-end rounded-b-none border-0 tracking-widest z-10 ${
+                                        language ===
+                                        SupportedCodeExamples.JavaScript
+                                            .prismLanguage
+                                            ? "bg-[#1e293b] btn-sm"
+                                            : "bg-slate-600 btn-xs"
+                                    }`}
+                                    onClick={showJavascript}
+                                >
+                                    Web
+                                </button>
                             </div>
                         </div>
                     </div>

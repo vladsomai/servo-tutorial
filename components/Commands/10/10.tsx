@@ -1,40 +1,39 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { GlobalContext } from "../../../pages/_app";
 import { ResetCommandType } from "../8/8";
 import { Uint8ArrayToString } from "../../../servo-engine/utils";
-import {
-    changeAliasPythonCode,
-    changeElapsedTimeSinceResetPythonCode,
-} from "../../../servo-engine/code-example-utils/python-code-utils";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
+import { Command10CodeExample } from "./code-samples/code-sample";
 
 export const Command10 = (props: ResetCommandType) => {
     const globalContext = useContext(GlobalContext);
+    const command10CodeExample = useRef(new Command10CodeExample());
 
     const [elapsedTime_us, setElapsedTime_us] = useState<BigInt>(BigInt(0));
 
-    function getNewPythonCode(): string {
-        let alteredPyCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
-        );
-
-        alteredPyCode = changeElapsedTimeSinceResetPythonCode(
-            elapsedTime_us,
-            alteredPyCode
-        );
-
-        return alteredPyCode;
-    }
-
     function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
+        globalContext.codeExample.setPythonCode(
+            command10CodeExample.current.getNewCommand10PythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                elapsedTime_us
+            )
+        );
 
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setWebCode(
+            command10CodeExample.current.getNewCommand10WebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                elapsedTime_us
+            )
+        );
+
+        globalContext.codeExample.setClangCode(
+            command10CodeExample.current.getNewCommand10CCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                elapsedTime_us
+            )
+        );
     }
 
     useEffect(() => {

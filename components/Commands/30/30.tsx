@@ -11,39 +11,39 @@ import {
     transfNumberToUint8Arr,
 } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
-import { changeAliasPythonCode, changeDisplacementPythonCode, changeLowerRotationLimitPythonCode, changeUpperRotationUpperLimitPythonCode } from "../../../servo-engine/code-example-utils/python-code-utils";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
+import { Command30CodeExample } from "./code-samples/code-sample";
 
 export const Command30 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
-    
-    function getNewPythonCode(): string {
-        let alteredPyCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
-        );
-
-        alteredPyCode = changeUpperRotationUpperLimitPythonCode(
-            upperValue,
-            alteredPyCode
-        );
-        
-        alteredPyCode = changeLowerRotationLimitPythonCode(
-            lowerValue,
-            alteredPyCode
-        );
-
-        return alteredPyCode;
-    }
+    const command30CodeExample = useRef(new Command30CodeExample());
 
     function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
+        globalContext.codeExample.setPythonCode(
+            command30CodeExample.current.getNewCommand30PythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                lowerValue,
+                upperValue
+            )
+        );
 
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setWebCode(
+            command30CodeExample.current.getNewCommand30WebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                lowerValue,
+                upperValue
+            )
+        );
+
+        globalContext.codeExample.setClangCode(
+            command30CodeExample.current.getNewCommand30CCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                lowerValue,
+                upperValue
+            )
+        );
     }
 
     useEffect(() => {
@@ -55,8 +55,7 @@ export const Command30 = (props: ChaptersPropsType) => {
         //on axis code change, update the code example
         updateCodeExamples();
     }, [globalContext.currentAxisCode.axisCode]);
-    
-    
+
     const upperLimitInputBox = useRef<HTMLInputElement | null>(null);
     const lowerLimitInputBox = useRef<HTMLInputElement | null>(null);
 
@@ -114,8 +113,8 @@ export const Command30 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-                //on upper value change, update the code example
-                updateCodeExamples();
+        //on upper value change, update the code example
+        updateCodeExamples();
 
         setUpperMicrosteps(RotationsToMicrosteps(upperValue));
     }, [upperValue]);
@@ -178,8 +177,8 @@ export const Command30 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-                        //on upper value change, update the code example
-                        updateCodeExamples();
+        //on upper value change, update the code example
+        updateCodeExamples();
         setLowerMicrosteps(RotationsToMicrosteps(lowerValue));
     }, [lowerValue]);
 

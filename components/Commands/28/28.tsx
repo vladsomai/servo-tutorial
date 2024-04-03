@@ -6,61 +6,65 @@ import {
     Uint8ArrayToString,
     transfNumberToUint8Arr,
 } from "../../../servo-engine/utils";
-import {
-    changeAliasPythonCode,
-    changeMotorCurrentPythonCode,
-    changeRegenCurrentPythonCode,
-} from "../../../servo-engine/code-example-utils/python-code-utils";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
+import { Command28CodeExample } from "./code-samples/code-sample";
 
 export const Command28 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
-
-    function getNewPythonCode(): string {
-        let alteredPyCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
-        );
-
-        alteredPyCode = changeMotorCurrentPythonCode(maxCurrent, alteredPyCode);
-
-        alteredPyCode = changeRegenCurrentPythonCode(
-            regenCurrent,
-            alteredPyCode
-        );
-
-        return alteredPyCode;
-    }
+    const command28CodeExample = useRef(new Command28CodeExample());
 
     function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
+        globalContext.codeExample.setPythonCode(
+            command28CodeExample.current.getNewCommand28PythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                maxCurrent,
+                regenCurrent
+            )
+        );
 
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setWebCode(
+            command28CodeExample.current.getNewCommand28WebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                maxCurrent,
+                regenCurrent
+            )
+        );
+
+        globalContext.codeExample.setClangCode(
+            command28CodeExample.current.getNewCommand28CCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                maxCurrent,
+                regenCurrent
+            )
+        );
     }
+
+    const maxCurrentInputBox = useRef<HTMLInputElement | null>(null);
+    const regenerationInputBox = useRef<HTMLInputElement | null>(null);
+
+    const defaultCurrent = 200;
+
+    const [maxCurrent, setMaxCurrent] = useState<number>(defaultCurrent);
+    const [regenCurrent, setRegenCurrent] = useState<number>(defaultCurrent);
+
+    const [maxCurrentUint8Arr, setMaxCurrentUint8Arr] = useState<Uint8Array>();
+    const [regenCurrentuInt8Arr, setRegenCurrentuInt8Arr] =
+        useState<Uint8Array>();
 
     useEffect(() => {
         //on mount, run this effect
         updateCodeExamples();
+
+        setMaxCurrentUint8Arr(transfNumberToUint8Arr(defaultCurrent, 2));
+        setRegenCurrentuInt8Arr(transfNumberToUint8Arr(defaultCurrent, 2));
     }, []);
 
     useEffect(() => {
         //when user changes the alias, run this effect
         updateCodeExamples();
     }, [globalContext.currentAxisCode.axisCode]);
-
-    const maxCurrentInputBox = useRef<HTMLInputElement | null>(null);
-    const regenerationInputBox = useRef<HTMLInputElement | null>(null);
-
-    const [maxCurrent, setMaxCurrent] = useState<number>(150);
-    const [regenCurrent, setRegenCurrent] = useState<number>(150);
-
-    const [maxCurrentUint8Arr, setMaxCurrentUint8Arr] = useState<Uint8Array>();
-    const [regenCurrentuInt8Arr, setRegenCurrentuInt8Arr] =
-        useState<Uint8Array>();
 
     useEffect(() => {
         //on current change, run this effect
@@ -88,6 +92,7 @@ export const Command28 = (props: ChaptersPropsType) => {
         payload += Uint8ArrayToString(regenCurrentuInt8Arr);
 
         const rawData = props.constructCommand(payload);
+        console.log(rawData);
         props.sendDataToSerialPort(rawData);
     };
 
@@ -138,7 +143,7 @@ export const Command28 = (props: ChaptersPropsType) => {
                         onChange={handleCurrent}
                         type="text"
                         placeholder="Motor current"
-                        defaultValue={150}
+                        defaultValue={defaultCurrent}
                         className="input input-bordered  max-w-xs input-sm m-2"
                     />{" "}
                     <input
@@ -146,7 +151,7 @@ export const Command28 = (props: ChaptersPropsType) => {
                         onChange={handleRegen}
                         type="text"
                         placeholder="Regeneration current"
-                        defaultValue={150}
+                        defaultValue={defaultCurrent}
                         className="input input-bordered max-w-xs input-sm m-2"
                     />
                 </div>

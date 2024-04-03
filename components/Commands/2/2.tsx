@@ -14,22 +14,15 @@ import {
     littleEndianToBigEndian,
 } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
-import { cCode } from "./code-samples/c-code-sample";
-import { pythonCode } from "./code-samples/python-code-sample";
-import { webCode } from "./code-samples/web-code-sample";
-import {
-    changeAliasPythonCode,
-    changeDisplacementPythonCode,
-    changeTimePythonCode,
-} from "../../../servo-engine/code-example-utils/python-code-utils";
+import { Command2CodeExample } from "./code-samples/code-sample";
 
 export const Command2 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
+    const command2CodeExample = useRef(new Command2CodeExample());
 
     const positionInputBox = useRef<HTMLInputElement | null>(null);
     const timeInputBox = useRef<HTMLInputElement | null>(null);
 
-    //#region TIME_CONVERSION
     const [timeValue, setTimeValue] = useState<number>(0);
     const [timesteps, setTimestepsValue] = useState<number>(0);
     const [timestepsHexa, setTimestepsHexaValue] = useState<string>("00000000");
@@ -59,27 +52,33 @@ export const Command2 = (props: ChaptersPropsType) => {
         }
     };
 
-    function getNewPythonCode(): string {
-        let alteredPyCode = changeAliasPythonCode(
-            globalContext.currentAxisCode.axisCode,
-            pythonCode
-        );
-
-        alteredPyCode = changeDisplacementPythonCode(
-            positionValue,
-            alteredPyCode
-        );
-
-        alteredPyCode = changeTimePythonCode(timeValue, alteredPyCode);
-        return alteredPyCode;
-    }
-
     function updateCodeExamples() {
-        globalContext.codeExample.setPythonCode(getNewPythonCode());
+        globalContext.codeExample.setPythonCode(
+            command2CodeExample.current.getNewCommand2PythonCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                positionValue,
+                timeValue
+            )
+        );
 
-        //alter the other languages here
-        globalContext.codeExample.setClangCode(cCode);
-        globalContext.codeExample.setWebCode(webCode);
+        globalContext.codeExample.setWebCode(
+            command2CodeExample.current.getNewCommand2WebCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                positionValue,
+                timeValue
+            )
+        );
+
+        globalContext.codeExample.setClangCode(
+            command2CodeExample.current.getNewCommand2CCode(
+                globalContext.currentAxisCode.axisCode,
+                props.currentCommandDictionary.CommandEnum,
+                positionValue,
+                timeValue
+            )
+        );
     }
 
     useEffect(() => {
@@ -125,9 +124,6 @@ export const Command2 = (props: ChaptersPropsType) => {
             setTimestepsHexaValue(strTimesteps);
         }
     }, [timesteps, microstepsHexa]);
-    //#endregion TIME_CONVERSION
-
-    //#region POSITION_CONVERSION
 
     const onPositionInputBoxChange = () => {
         if (positionInputBox && positionInputBox.current) {
@@ -192,7 +188,6 @@ export const Command2 = (props: ChaptersPropsType) => {
             setMicrostepsHexaValue(strMicrosteps);
         }
     }, [microsteps, timestepsHexa]);
-    //#endregion POSITION_CONVERSION
 
     const trapezoid_move = () => {
         if (
