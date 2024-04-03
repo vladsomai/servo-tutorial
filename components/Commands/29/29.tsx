@@ -512,9 +512,9 @@ export const Command29 = (props: MultiMoveChapterProps) => {
                             <animated.div
                                 style={style}
                                 ref={(el) =>
-                                    (commandsDivElement.current[
+                                    {commandsDivElement.current[
                                         props.MoveCommands.indexOf(MoveCommand)
-                                    ] = el)
+                                    ] = el}
                                 }
                                 className="flex flex-col xl:flex-row justify-center items-center"
                             >
@@ -524,13 +524,13 @@ export const Command29 = (props: MultiMoveChapterProps) => {
                                     .
                                 </p>
                                 <select
-                                    ref={(el) =>
-                                        (movementTypeSelectionBox.current[
+                                    ref={(el) => {
+                                        movementTypeSelectionBox.current[
                                             props.MoveCommands.indexOf(
                                                 MoveCommand
                                             )
-                                        ] = el)
-                                    }
+                                        ] = el;
+                                    }}
                                     className="select select-bordered select-sm max-w-xs m-2"
                                     value={MoveCommand.MovementType.Name}
                                     onChange={(e) =>
@@ -551,13 +551,13 @@ export const Command29 = (props: MultiMoveChapterProps) => {
                                     ))}
                                 </select>
                                 <input
-                                    ref={(el) =>
-                                        (acceleretionOrVelocityInputBox.current[
+                                    ref={(el) => {
+                                        acceleretionOrVelocityInputBox.current[
                                             props.MoveCommands.indexOf(
                                                 MoveCommand
                                             )
-                                        ] = el)
-                                    }
+                                        ] = el;
+                                    }}
                                     onChange={(e) =>
                                         onAccOrVelInputBoxChange(
                                             e,
@@ -573,13 +573,13 @@ export const Command29 = (props: MultiMoveChapterProps) => {
                                 />
 
                                 <input
-                                    ref={(el) =>
-                                        (timeInputBox.current![
+                                    ref={(el) => {
+                                        timeInputBox.current![
                                             props.MoveCommands.indexOf(
                                                 MoveCommand
                                             )
-                                        ] = el)
-                                    }
+                                        ] = el;
+                                    }}
                                     onChange={(e) =>
                                         onTimeInputBoxChange(
                                             e,

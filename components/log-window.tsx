@@ -58,10 +58,6 @@ const Log = (props: {
         }
     }, [props.logs]);
 
-    useEffect(() => {
-        globalContext.detectedDevices.setDevices([]);
-    }, [globalContext.detectedDevices]);
-
     const [styleSpring] = useSpring(
         () => ({
             from: { opacity: 0 },

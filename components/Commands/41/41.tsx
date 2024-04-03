@@ -120,8 +120,11 @@ export const Command41 = (props: Command41PropsType) => {
         }
 
         if (uniqueIdInputBox.current && uniqueIdInputBox) {
-            console.log(uniqueIdInputBox.current.value.length);
-            if (uniqueIdInputBox.current.value.length != 16) {
+            let currentUniqueID = uniqueIdInputBox.current.value;
+            if (props.MountedByQuickStart) {
+                currentUniqueID = props.UniqueID as string;
+            }
+            if (currentUniqueID.length != 16) {
                 props.LogAction(
                     ErrorTypes.NO_ERR,
                     "The unique id must be exactly 8 bytes! e.g. '7C661210B2026558'"
@@ -130,23 +133,8 @@ export const Command41 = (props: Command41PropsType) => {
             }
 
             let rawData: Uint8Array;
-            if (props.MountedByQuickStart) {
-                if (props.UniqueID) {
-                    console.log(props.UniqueID);
-                    rawData = props.constructCommand(props.UniqueID, 41, "255");
-                } else {
-                    props.LogAction(
-                        ErrorTypes.ERR1001,
-                        "Unique ID not provided, please contact us to solve this issue."
-                    );
-                    return;
-                }
-            } else {
-                rawData = props.constructCommand(
-                    uniqueIdInputBox.current.value,
-                    41
-                );
-            }
+
+            rawData = props.constructCommand(currentUniqueID, 41);
 
             props.sendDataToSerialPort(rawData, true, true);
         }
