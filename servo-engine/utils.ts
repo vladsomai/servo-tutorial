@@ -1,5 +1,23 @@
 import { languages } from "prismjs";
 
+export enum MotorTypeEnum {
+    Unknown,
+    HashOne,
+    HashThree,
+}
+
+export interface MotorTypeObj {
+    TypeName: string,
+    ImageSrc: string,
+    StepsPerRevolution: number
+}
+
+export const MotorType = new Map<MotorTypeEnum, MotorTypeObj>([
+    [MotorTypeEnum.Unknown, { TypeName: "Unknown", ImageSrc: "/unknown_motor.svg", StepsPerRevolution: 639744 }],
+    [MotorTypeEnum.HashOne, { TypeName: "Low precision", ImageSrc: "/motor_m1.png", StepsPerRevolution: 639744 }],
+    [MotorTypeEnum.HashThree, { TypeName: "High precision", ImageSrc: "/motor_m3.png", StepsPerRevolution: 4569600 }],
+])
+
 /*
 This Class will be used to register any values like 'F', Since TypeScript does not have a char type.
 toString(): will return the string representation of that char: e.g.:'A'
@@ -174,7 +192,7 @@ export class ByteStringType {
  * @param Input: "FF00A2" hex number as string to be converted to Uint8Array
  * @param Output: [0xFF,0,0xA2]
  */
-export const stringToUint8Array = (_value:string) => {
+export const stringToUint8Array = (_value: string) => {
     const message = _value;
 
     if (message.length % 2 !== 0) {
@@ -215,8 +233,8 @@ export const Uint8ArrayToString = (data: Uint8Array | undefined): string => {
 
 
 //#region Position
-export const RotationsToMicrosteps = (rotations: number): number => {
-    return rotations * 645120;
+export const RotationsToMicrosteps = (rotations: number, microstepsPerRoation: number): number => {
+    return rotations * microstepsPerRoation;
 }
 
 export const minimumNegativePosition = -0.0000032
@@ -236,7 +254,7 @@ export const maximumPositiveTime = 137438.95344
 //#endregion Time
 
 //#region Velocity
-export const RPM_ToInternalVelocity = (_rpm: number | string): number => {
+export const RPM_ToInternalVelocity = (_rpm: number | string, microstepsPerRoation: number): number => {
     let rpm = 0
 
     if (typeof _rpm == 'string') {
@@ -246,7 +264,7 @@ export const RPM_ToInternalVelocity = (_rpm: number | string): number => {
         rpm = _rpm
     }
 
-    return (rpm / 60) * (645120 / 31250) * (2 ** 32);
+    return (rpm / 60) * (microstepsPerRoation / 31250) * (2 ** 32);
 }
 
 export const InternalVelocityToCommVelocity = (internalVelocity: number): number => {
@@ -260,15 +278,15 @@ export const minimumPositiveVelocity = 0.0000027
 export const maximumPositiveVelocity = 99.20634916015264 * 60
 
 // max internal velocity = 8796093018112
-// MAX_RPS = internal_velocity / (645120 / 31250) * (2^32)
+// MAX_RPS = internal_velocity / (MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION / 31250) * (2^32)
 // MAX_RPS = 8796093018112 / 20.64384 * 4294967296
 // MAX_RPS = 99.2063491601526500686766609313
 // MAX_RPM = MAX_RPS * 60
 //#endregion Velocity
 
 //#region Acceleration
-export const RPMSquared_ToInternalAcceleration = (rpmsq: number): number => {
-    return (rpmsq / 60 ** 2) * (645120 / 31250 ** 2) * (2 ** 32);
+export const RPMSquared_ToInternalAcceleration = (rpmsq: number, microstepsPerRoation: number): number => {
+    return (rpmsq / 60 ** 2) * (microstepsPerRoation / 31250 ** 2) * (2 ** 32);
 }
 
 export const InternalAccelerationToCommAcceleration = (internalAcceleration: number): number => {
@@ -284,9 +302,9 @@ export const maximumPositiveAcceleration = 697544642.54
 
 //the following computation is done to find the maximum positive acceleration for rotations/second sqared
 //it will then be used to transform it to RPM^2
-// max internal acc = 549755813632 = x * (645120 / 31250**2) * (2 ** 32);
-// MAX_ACC_RPS^2 = (internal_acc) / (645120 / 31250^2) * (2^32))
-// MAX_ACC_RPS^2 = (internal_acc) / (645120 / 976562500) * (4294967296))
+// max internal acc = 549755813632 = x * (MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION / 31250**2) * (2 ** 32);
+// MAX_ACC_RPS^2 = (internal_acc) / (MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION / 31250^2) * (2^32))
+// MAX_ACC_RPS^2 = (internal_acc) / (MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION / 976562500) * (4294967296))
 // MAX_ACC_RPS^2 = (internal_acc) / (0.00066060288) * (4294967296))
 // MAX_ACC_RPS^2 = (internal_acc) / 2,837,267.76524341248
 

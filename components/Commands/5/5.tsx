@@ -114,9 +114,9 @@ export const Command5 = (props: ChaptersPropsType) => {
 
     useEffect(() => {
         setInternalAcceleration(
-            RPMSquared_ToInternalAcceleration(AccelerationRPM)
+            RPMSquared_ToInternalAcceleration(AccelerationRPM,  globalContext.motorType.currentMotorType.StepsPerRevolution)
         );
-    }, [AccelerationRPM]);
+    }, [AccelerationRPM, globalContext.motorType.currentMotorType.StepsPerRevolution]);
 
     useEffect(() => {
         setCommAcceleration(
@@ -213,7 +213,7 @@ export const Command5 = (props: ChaptersPropsType) => {
                             the formula used is:
                             <br></br>
                             <i>
-                                Internal_Acceleration = (RPM^2 / 60^2) * (645120
+                                Internal_Acceleration = (RPM^2 / 60^2) * ({globalContext.motorType.currentMotorType.StepsPerRevolution}
                                 / 31250^2) * (2^32)
                             </i>
                             <br></br>

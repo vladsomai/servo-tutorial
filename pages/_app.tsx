@@ -6,7 +6,12 @@ import type { NextPage } from "next";
 import { createContext } from "react";
 import { firebaseAuth } from "../Firebase/initialize";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { Device } from "../servo-engine/utils";
+import {
+    Device,
+    MotorTypeEnum,
+    MotorType,
+    MotorTypeObj,
+} from "../servo-engine/utils";
 
 export type GlobalStateType = {
     theme: {
@@ -47,6 +52,11 @@ export type GlobalStateType = {
     detectedDevices: {
         Devices: Device[];
         setDevices: Function;
+    };
+
+    motorType: {
+        currentMotorType: MotorTypeObj;
+        setCurrentMotorType: Function;
     };
 };
 
@@ -90,6 +100,11 @@ const DefaultGlobalState: GlobalStateType = {
         Devices: [],
         setDevices: () => {},
     },
+
+    motorType: {
+        currentMotorType: MotorType.get(MotorTypeEnum.Unknown) as MotorTypeObj,
+        setCurrentMotorType: () => {},
+    },
 };
 
 export const UserContext = createContext<User | null>(null);
@@ -130,6 +145,9 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     const [_webCode, _setWebCode] = useState("");
     const [_pythonCode, _setPythonCode] = useState("");
     const [_axisCode, _setAxisCode] = useState(255);
+    const [_currentMotorType, _setCurrentMotorType] = useState(
+        MotorType.get(MotorTypeEnum.Unknown) as MotorTypeObj
+    );
 
     const GlobalState: GlobalStateType = {
         theme: {
@@ -170,6 +188,11 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         detectedDevices: {
             Devices: _devices,
             setDevices: _setDevices,
+        },
+
+        motorType: {
+            currentMotorType: _currentMotorType,
+            setCurrentMotorType: _setCurrentMotorType,
         },
     };
 

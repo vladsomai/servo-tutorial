@@ -161,8 +161,8 @@ export const Command26 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        setInternalVelocity(RPM_ToInternalVelocity(velocityRPM));
-    }, [velocityRPM]);
+        setInternalVelocity(RPM_ToInternalVelocity(velocityRPM, globalContext.motorType.currentMotorType.StepsPerRevolution));
+    }, [velocityRPM, globalContext.motorType.currentMotorType.StepsPerRevolution]);
 
     useEffect(() => {
         setCommVelocity(InternalVelocityToCommVelocity(internalVelocity));
@@ -302,7 +302,7 @@ export const Command26 = (props: ChaptersPropsType) => {
                             formula used is:
                             <br></br>
                             <i>
-                                Internal_velocity = (RPM / 60) * (645120 /
+                                Internal_velocity = (RPM / 60) * ({globalContext.motorType.currentMotorType.StepsPerRevolution} /
                                 31250) * (2 ^ 32)
                             </i>
                             <br></br>

@@ -99,3 +99,8 @@ export function changeTurnOnOffGatheringClangCode(turnOnOffGathering: string, cl
     const regEx = new RegExp('turn_on_off_gathering\\s=\\s.*\\n')
     return clangCode.replace(regEx, "turn_on_off_gathering = " + turnOnOffGathering + ';\n');
 }
+
+export function changeStepsPerRevolutionClangCode(stepsPerRevolution: number, clangCode: string): string {
+    const regEx = new RegExp('MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION\\s=\\s.*\\n')
+    return clangCode.replace(regEx, "MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION = " + stepsPerRevolution + ';\n');
+}

@@ -94,3 +94,8 @@ export function changeTurnOnOffGatheringWebCode(turnOnOffGathering: string, webC
     const regEx = new RegExp('const turn_on_off_gathering\\s=\\s.*\\n')
     return webCode.replace(regEx, "const turn_on_off_gathering = " + turnOnOffGathering + '\n');
 }
+
+export function changeStepsPerRevolutionWebCode(stepsPerRevolution: number, clangCode: string): string {
+    const regEx = new RegExp('MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION\\s=\\s.*\\n')
+    return clangCode.replace(regEx, "MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION = " + stepsPerRevolution + '\n');
+}

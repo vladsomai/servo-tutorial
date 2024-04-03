@@ -14,6 +14,7 @@ import {
 } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
 import { Command2CodeExample } from "../2/code-samples/code-sample";
+import MotorSelection from "../../motor-selection";
 
 export const Command4 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
@@ -177,8 +178,16 @@ export const Command4 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        setMicrostepsValue(RotationsToMicrosteps(positionValue));
-    }, [positionValue]);
+        setMicrostepsValue(
+            RotationsToMicrosteps(
+                positionValue,
+                globalContext.motorType.currentMotorType.StepsPerRevolution
+            )
+        );
+    }, [
+        positionValue,
+        globalContext.motorType.currentMotorType.StepsPerRevolution,
+    ]);
 
     useEffect(() => {
         if (microsteps == 0) {
@@ -255,6 +264,7 @@ export const Command4 = (props: ChaptersPropsType) => {
     return (
         <>
             <div className="w-full text-center mb-5">
+                <MotorSelection />
                 <div className="flex flex-col xl:flex-row justify-center items-center">
                     <div className="m-2">{props.children}</div>
                     <div
@@ -297,7 +307,13 @@ export const Command4 = (props: ChaptersPropsType) => {
                             Transforming position to Microsteps, the formula
                             used is:
                             <br></br>
-                            <i>Microsteps = rotations * 645120</i>
+                            <i>
+                                Microsteps = rotations *{" "}
+                                {
+                                    globalContext.motorType.currentMotorType
+                                        .StepsPerRevolution
+                                }
+                            </i>
                             <br></br>
                             {`Input: ${positionValue.toString()} rotations`}
                             <br></br>

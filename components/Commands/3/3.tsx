@@ -13,6 +13,7 @@ import {
 } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
 import { Command3CodeExample } from "./code-samples/code-sample";
+import MotorSelection from "../../motor-selection";
 
 export const Command3 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
@@ -111,8 +112,16 @@ export const Command3 = (props: ChaptersPropsType) => {
     ]);
 
     useEffect(() => {
-        setInternalVelocity(RPM_ToInternalVelocity(velocityRPM));
-    }, [velocityRPM]);
+        setInternalVelocity(
+            RPM_ToInternalVelocity(
+                velocityRPM,
+                globalContext.motorType.currentMotorType.StepsPerRevolution
+            )
+        );
+    }, [
+        velocityRPM,
+        globalContext.motorType.currentMotorType.StepsPerRevolution,
+    ]);
 
     useEffect(() => {
         setCommVelocity(InternalVelocityToCommVelocity(internalVelocity));
@@ -171,7 +180,8 @@ export const Command3 = (props: ChaptersPropsType) => {
     return (
         <>
             <div className="w-full text-center mb-5">
-                <div className="flex justify-center">
+                <MotorSelection />
+                <div className="flex justify-center mt-2">
                     <div className="mx-2">{props.children}</div>
                     <div
                         className="tooltip tooltip-ghost"
@@ -203,8 +213,12 @@ export const Command3 = (props: ChaptersPropsType) => {
                             formula used is:
                             <br></br>
                             <i>
-                                Internal_velocity = (RPM / 60) * (645120 /
-                                31250) * (2 ^ 32)
+                                Internal_velocity = (RPM / 60) * (
+                                {
+                                    globalContext.motorType.currentMotorType
+                                        .StepsPerRevolution
+                                }{" "}
+                                / 31250) * (2 ^ 32)
                             </i>
                             <br></br>
                             {`Input: ${velocityRPM.toString()} RPM`}

@@ -115,7 +115,7 @@ async function SendDataToSerialPort() {
     );
 
     //convert input values to motor units
-    const internal_acceleration = (acceleration_rpm2 / 60 ** 2) * (645120 / 31250 ** 2) * (2 ** 32)
+    const internal_acceleration = (acceleration_rpm2 / 60 ** 2) * (MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION / MOVE_TIME_MOTOR_UNITS_PER_SECOND ** 2) * (2 ** 32)
     const communication_acceleration = get4BytesFromNumber(internal_acceleration / (2 ** 8))
 
     bytes.set([alias]);

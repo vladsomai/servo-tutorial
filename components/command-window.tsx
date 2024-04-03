@@ -15,6 +15,7 @@ import {
 import Code from "./code-examples";
 import Tutorial, { TutorialProps } from "./Commands/tutorial/tutorial";
 import FeedbackButton from "./feedback-button";
+import MotorSelection from "./motor-selection";
 
 export interface CommandWindowProps extends MainWindowProps {
     sendDataToSerialPort: (

@@ -29,7 +29,7 @@ except:
 print(f"Successfully opened the serial port: {serialPort.name}")
 
 #convert input values to motor units
-internal_acceleration = int((acceleration_rpm2 / 60 ** 2) * (645120 / 31250 ** 2) * (2 ** 32))
+internal_acceleration = int((acceleration_rpm2 / 60 ** 2) * (MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION / MOVE_TIME_MOTOR_UNITS_PER_SECOND ** 2) * (2 ** 32))
 communication_acceleration = int(internal_acceleration / (2 ** 8))
 print(f"Communication acceleration: {communication_acceleration}")
 

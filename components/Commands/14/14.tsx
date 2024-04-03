@@ -161,8 +161,8 @@ export const Command14 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        setMicrostepsValue(RotationsToMicrosteps(positionValue));
-    }, [positionValue]);
+        setMicrostepsValue(RotationsToMicrosteps(positionValue, globalContext.motorType.currentMotorType.StepsPerRevolution));
+    }, [positionValue, globalContext.motorType.currentMotorType.StepsPerRevolution]);
 
     useEffect(() => {
         if (microsteps == 0) {
@@ -299,7 +299,7 @@ export const Command14 = (props: ChaptersPropsType) => {
                             Transforming position to Microsteps, the formula
                             used is:
                             <br></br>
-                            <i>Microsteps = rotations * 645120</i>
+                            <i>Microsteps = rotations * {globalContext.motorType.currentMotorType.StepsPerRevolution}</i>
                             <br></br>
                             {`Input: ${positionValue.toString()} rotations`}
                             <br></br>

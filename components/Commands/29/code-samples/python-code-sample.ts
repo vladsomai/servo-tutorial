@@ -59,7 +59,7 @@ for i in range(number_of_moves):
     
     if(moves_types_reversed[i]=='0'):
         #move with acceleration, convert to motor units and add it to the list
-        internal_acceleration = int((multi_moves[i][ACC_VEL_INDEX] / 60 ** 2) * (645120 / 31250 ** 2) * (2 ** 32))
+        internal_acceleration = int((multi_moves[i][ACC_VEL_INDEX] / 60 ** 2) * (MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION / MOVE_TIME_MOTOR_UNITS_PER_SECOND ** 2) * (2 ** 32))
         communication_acceleration = int(internal_acceleration / (2 ** 8))
         print(f"Communication acceleration: {communication_acceleration}")
         multi_moves_converted.append(communication_acceleration)

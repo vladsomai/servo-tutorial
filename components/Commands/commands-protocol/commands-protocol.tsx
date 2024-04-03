@@ -1,8 +1,12 @@
 import Head from "next/head";
 import { animated, useSpring } from "react-spring";
 import { MainWindowProps } from "../../main-window";
+import { useContext } from "react";
+import { GlobalContext } from "../../../pages/_app";
 
 const CommandsProtocol = (props: MainWindowProps) => {
+    
+    const globalContext = useContext(GlobalContext);
     const [styleSpring] = useSpring(
         () => ({
             from: { opacity: 0 },
@@ -123,7 +127,7 @@ const CommandsProtocol = (props: MainWindowProps) => {
                             </li>
                             <li>
                                 The internal unit is the{" "}
-                                <strong>microstep</strong>. There are 645120
+                                <strong>microstep</strong>. There are {globalContext.motorType.currentMotorType.StepsPerRevolution}
                                 microsteps in one shaft rotation. This can be
                                 positive or negative.
                             </li>
@@ -137,9 +141,9 @@ const CommandsProtocol = (props: MainWindowProps) => {
                                 The conversion is as follows:
                                 <br></br>
                                 position_internal = position_radians / 2 / PI *
-                                645120
+                                {globalContext.motorType.currentMotorType.StepsPerRevolution}
                                 <br></br>
-                                position_internal = position_rotations * 645120
+                                position_internal = position_rotations * {globalContext.motorType.currentMotorType.StepsPerRevolution}
                                 <br></br>
                                 Example: 0.5 rotations = 322560 microsteps
                             </li>
@@ -177,14 +181,14 @@ const CommandsProtocol = (props: MainWindowProps) => {
                                 The conversion is as follows:
                                 <br></br>
                                 velocity_internal = velocity_radians_per_second
-                                / 2 / PI * 645120 / 31250 * 2^32
+                                / 2 / PI * {globalContext.motorType.currentMotorType.StepsPerRevolution} / 31250 * 2^32
                                 <br></br>
                                 velocity_internal =
-                                velocity_rotations_per_second * 645120 / 31250 *
+                                velocity_rotations_per_second * {globalContext.motorType.currentMotorType.StepsPerRevolution} / 31250 *
                                 2^32
                                 <br></br>
                                 velocity_internal =
-                                velocity_rotations_per_minute / 60 * 645120 /
+                                velocity_rotations_per_minute / 60 * {globalContext.motorType.currentMotorType.StepsPerRevolution} /
                                 31250 * 2^32
                                 <br></br>
                                 velocity_communication = velocity_internal /
@@ -240,15 +244,15 @@ const CommandsProtocol = (props: MainWindowProps) => {
                                 <br></br>
                                 acceleration_internal =
                                 acceleration_radians_per_second_squared / 2 / PI
-                                * 645120 / 31250^2 * 2^32
+                                * {globalContext.motorType.currentMotorType.StepsPerRevolution} / 31250^2 * 2^32
                                 <br></br>
                                 acceleration_internal =
                                 acceleration_rotations_per_second_squared *
-                                645120 / 31250^2 * 2^32
+                                {globalContext.motorType.currentMotorType.StepsPerRevolution} / 31250^2 * 2^32
                                 <br></br>
                                 acceleration_internal =
                                 acceleration_rotations_per_minute_squared / 60^2
-                                * 645120 / 31250^2 * 2^32
+                                * {globalContext.motorType.currentMotorType.StepsPerRevolution} / 31250^2 * 2^32
                                 <br></br>
                                 acceleration_communication =
                                 acceleration_internal / 2^8

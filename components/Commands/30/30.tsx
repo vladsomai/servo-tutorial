@@ -111,8 +111,8 @@ export const Command30 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        setUpperMicrosteps(RotationsToMicrosteps(upperValue));
-    }, [upperValue]);
+        setUpperMicrosteps(RotationsToMicrosteps(upperValue, globalContext.motorType.currentMotorType.StepsPerRevolution));
+    }, [upperValue, globalContext.motorType.currentMotorType.StepsPerRevolution]);
 
     useEffect(() => {
         if (upperMicrosteps == 0) {
@@ -172,8 +172,8 @@ export const Command30 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        setLowerMicrosteps(RotationsToMicrosteps(lowerValue));
-    }, [lowerValue]);
+        setLowerMicrosteps(RotationsToMicrosteps(lowerValue, globalContext.motorType.currentMotorType.StepsPerRevolution));
+    }, [lowerValue, globalContext.motorType.currentMotorType.StepsPerRevolution]);
 
     useEffect(() => {
         if (lowerMicrosteps == 0) {
@@ -299,7 +299,7 @@ export const Command30 = (props: ChaptersPropsType) => {
                             Transforming position to Microsteps, the formula
                             used is:
                             <br></br>
-                            <i>Microsteps = rotations * 645120</i>
+                            <i>Microsteps = rotations * {globalContext.motorType.currentMotorType.StepsPerRevolution}</i>
                             <br></br>
                             {`Input: ${lowerValue.toString()} rotations`}
                             <br></br>
@@ -320,7 +320,7 @@ export const Command30 = (props: ChaptersPropsType) => {
                             Transforming position to Microsteps, the formula
                             used is:
                             <br></br>
-                            <i>Microsteps = rotations * 645120</i>
+                            <i>Microsteps = rotations * {globalContext.motorType.currentMotorType.StepsPerRevolution}</i>
                             <br></br>
                             {`Input: ${upperValue.toString()} rotations`}
                             <br></br>

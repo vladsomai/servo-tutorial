@@ -94,3 +94,8 @@ export function changeTurnOnOffGatheringPythonCode(turnOnOffGathering: string, p
     const regEx = new RegExp('turn_on_off_gathering\\s=\\s.*\\n')
     return pythonCode.replace(regEx, "turn_on_off_gathering = " + turnOnOffGathering + '\n');
 }
+
+export function changeStepsPerRevolutionPythonCode(stepsPerRevolution: number, clangCode: string): string {
+    const regEx = new RegExp('MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION\\s=\\s.*\\n')
+    return clangCode.replace(regEx, "MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION = " + stepsPerRevolution + '\n');
+}

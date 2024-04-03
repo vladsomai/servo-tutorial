@@ -116,25 +116,6 @@ export const Command29 = (props: MultiMoveChapterProps) => {
         props.MoveCommands,
     ]);
 
-    useEffect(
-        (arr = props.MoveCommands) => {
-            let movementTypes = 0;
-            arr.map((item) => {
-                if (item.MovementType.Name == "Velocity") {
-                    //set ith bit when using velocity movement
-                    const mask = 1 << arr.indexOf(item);
-                    movementTypes |= mask;
-                }
-            });
-            u32BitMovementTypes.current = movementTypes;
-            timestepsHexa.current = arr.map((item) =>
-                convertTime(item.TimeValue)
-            );
-            movementComm.current = arr.map((item) => convertAccOrVel(item));
-        },
-        [props.MoveCommands]
-    );
-
     //#region TRANSITION
     const transitionMulimoves = useTransition(props.MoveCommands, {
         from: { y: -100, opacity: 0 },
@@ -287,28 +268,35 @@ export const Command29 = (props: MultiMoveChapterProps) => {
     //#endregion TIME_CONVERSION
 
     //#region Acceleration_CONVERSION
-    const convertAccOrVel = (cmd: MoveCommand): string => {
-        let ret: Uint8Array = new Uint8Array();
+    const convertAccOrVel = useCallback(
+        (cmd: MoveCommand): string => {
+            let ret: Uint8Array = new Uint8Array();
 
-        if (cmd.MovementType.Name == "Acceleration") {
-            const internalAcceleration = RPMSquared_ToInternalAcceleration(
-                cmd.MoveValue === "" ? 0 : parseFloat(cmd.MoveValue)
-            );
-            const commAcceleration =
-                InternalAccelerationToCommAcceleration(internalAcceleration);
-            ret = transfNumberToUint8Arr(commAcceleration, 4);
-        } else if (cmd.MovementType.Name == "Velocity") {
-            const internalVelocity = RPM_ToInternalVelocity(
-                cmd.MoveValue === "" ? 0 : parseFloat(cmd.MoveValue)
-            );
-            const commVelocity =
-                InternalVelocityToCommVelocity(internalVelocity);
+            if (cmd.MovementType.Name == "Acceleration") {
+                const internalAcceleration = RPMSquared_ToInternalAcceleration(
+                    cmd.MoveValue === "" ? 0 : parseFloat(cmd.MoveValue),
+                    globalContext.motorType.currentMotorType.StepsPerRevolution
+                );
+                const commAcceleration =
+                    InternalAccelerationToCommAcceleration(
+                        internalAcceleration
+                    );
+                ret = transfNumberToUint8Arr(commAcceleration, 4);
+            } else if (cmd.MovementType.Name == "Velocity") {
+                const internalVelocity = RPM_ToInternalVelocity(
+                    cmd.MoveValue === "" ? 0 : parseFloat(cmd.MoveValue),
+                    globalContext.motorType.currentMotorType.StepsPerRevolution
+                );
+                const commVelocity =
+                    InternalVelocityToCommVelocity(internalVelocity);
 
-            ret = transfNumberToUint8Arr(commVelocity, 4);
-        }
+                ret = transfNumberToUint8Arr(commVelocity, 4);
+            }
 
-        return Uint8ArrayToString(ret);
-    };
+            return Uint8ArrayToString(ret);
+        },
+        [globalContext.motorType.currentMotorType.StepsPerRevolution]
+    );
 
     const onAccOrVelInputBoxChange = (e: SyntheticEvent, command: number) => {
         const currentInputBox = e.target as HTMLInputElement;
@@ -386,6 +374,26 @@ export const Command29 = (props: MultiMoveChapterProps) => {
         props.setMoveCommands(arr);
     };
     //#endregion Acceleration_CONVERSION
+
+    useEffect(
+        (arr = props.MoveCommands) => {
+            let movementTypes = 0;
+            arr.map((item) => {
+                if (item.MovementType.Name == "Velocity") {
+                    //set ith bit when using velocity movement
+                    const mask = 1 << arr.indexOf(item);
+                    movementTypes |= mask;
+                }
+            });
+            u32BitMovementTypes.current = movementTypes;
+            timestepsHexa.current = arr.map((item) =>
+                convertTime(item.TimeValue)
+            );
+            movementComm.current = arr.map((item) => convertAccOrVel(item));
+        },
+        [props.MoveCommands, convertAccOrVel]
+    );
+
     useEffect(() => {
         const updateCommands = () => {
             let list_2d = "";
@@ -511,11 +519,11 @@ export const Command29 = (props: MultiMoveChapterProps) => {
                         {transitionMulimoves((style, MoveCommand) => (
                             <animated.div
                                 style={style}
-                                ref={(el) =>
-                                    {commandsDivElement.current[
+                                ref={(el) => {
+                                    commandsDivElement.current[
                                         props.MoveCommands.indexOf(MoveCommand)
-                                    ] = el}
-                                }
+                                    ] = el;
+                                }}
                                 className="flex flex-col xl:flex-row justify-center items-center"
                             >
                                 <p className="m-2 self-center xl:self-end ">

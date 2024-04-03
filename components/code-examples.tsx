@@ -9,6 +9,9 @@ import "prismjs/components/prism-python.min.js";
 import "prismjs/components/prism-javascript.min.js";
 
 import { languages, SupportedCodeExamples } from "../servo-engine/utils";
+import { changeStepsPerRevolutionClangCode } from "../servo-engine/code-example-utils/c-code-utils";
+import { changeStepsPerRevolutionPythonCode } from "../servo-engine/code-example-utils/python-code-utils";
+import { changeStepsPerRevolutionWebCode } from "../servo-engine/code-example-utils/web-code-utils";
 
 interface CodeProps {
     currentCommand: number;
@@ -34,13 +37,29 @@ export default function Code({ currentCommand }: CodeProps) {
         function setRenderedCode(languageParam: languages) {
             switch (languageParam) {
                 case SupportedCodeExamples.C.prismLanguage:
-                    setCode(globalContext.codeExample.cCode);
+                    const alteredClangCode = changeStepsPerRevolutionClangCode(
+                        globalContext.motorType.currentMotorType
+                            .StepsPerRevolution,
+                        globalContext.codeExample.cCode
+                    );
+                    setCode(alteredClangCode);
                     break;
                 case SupportedCodeExamples.Python.prismLanguage:
-                    setCode(globalContext.codeExample.pythonCode);
+                    const alteredPythonCode =
+                        changeStepsPerRevolutionPythonCode(
+                            globalContext.motorType.currentMotorType
+                                .StepsPerRevolution,
+                            globalContext.codeExample.pythonCode
+                        );
+                    setCode(alteredPythonCode);
                     break;
                 case SupportedCodeExamples.JavaScript.prismLanguage:
-                    setCode(globalContext.codeExample.webCode);
+                    const alteredWebCode = changeStepsPerRevolutionWebCode(
+                        globalContext.motorType.currentMotorType
+                            .StepsPerRevolution,
+                        globalContext.codeExample.webCode
+                    );
+                    setCode(alteredWebCode);
                     break;
                 default:
                     setCode("");
@@ -56,7 +75,8 @@ export default function Code({ currentCommand }: CodeProps) {
         //also when the user changes the inputs for the command, we want to update the code samples.
         globalContext.codeExample.pythonCode,
         globalContext.codeExample.webCode,
-        globalContext.codeExample.cCode
+        globalContext.codeExample.cCode,
+        globalContext.motorType.currentMotorType,
     ]);
 
     const showC = () => {

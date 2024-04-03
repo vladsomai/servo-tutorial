@@ -145,7 +145,7 @@ async function SendDataToSerialPort() {
             //move with acceleration, convert to motor units and add it to the list
             const internal_acceleration = parseInt(
                 (multi_moves[i][ACC_VEL_INDEX] / 60 ** 2) *
-                    (645120 / 31250 ** 2) *
+                    (MOVE_DISPLACEMENT_MOTOR_UNITS_PER_ROTATION / MOVE_TIME_MOTOR_UNITS_PER_SECOND ** 2) *
                     2 ** 32
             );
             const communication_acceleration = parseInt(
