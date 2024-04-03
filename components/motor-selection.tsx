@@ -5,21 +5,22 @@ import { MotorType } from "../servo-engine/utils";
 
 const MotorSelection = () => {
     const globalContext = useContext(GlobalContext);
-    const dropDownRefDiv = useRef<HTMLDivElement>(null);
+    const dropDownRefContent = useRef<HTMLUListElement>(null);
 
     function handleMotorChange(e: SyntheticEvent, motorIndex: number) {
         globalContext.motorType.setCurrentMotorType(MotorType.get(motorIndex));
+        dropDownRefContent.current?.classList.add("hidden");
     }
 
     return (
-        <div
-            className="dropdown dropdown-bottom w-full flex justify-center items-center text-center"
-            ref={dropDownRefDiv}
-        >
+        <div className="dropdown dropdown-bottom w-full flex justify-center items-center text-center">
             <div
                 tabIndex={0}
                 role="button"
                 className="m-1 btn h-[60px] relative"
+                onClick={() => {
+                    dropDownRefContent.current?.classList.remove("hidden");
+                }}
             >
                 <Image
                     className="rounded-lg mr-3 m-0"
@@ -34,6 +35,7 @@ const MotorSelection = () => {
             <ul
                 tabIndex={0}
                 className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box  flex justify-center items-center"
+                ref={dropDownRefContent}
             >
                 {[...MotorType].map((item, index) => (
                     <button
