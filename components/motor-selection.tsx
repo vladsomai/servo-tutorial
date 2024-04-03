@@ -13,19 +13,19 @@ const MotorSelection = () => {
 
     return (
         <div
-            className="dropdown dropdown-bottom w-full flex justify-center items-center"
+            className="dropdown dropdown-bottom w-full flex justify-center items-center text-center"
             ref={dropDownRefDiv}
         >
             <div
                 tabIndex={0}
                 role="button"
-                className="m-1 btn h-[70px] relative"
+                className="m-1 btn h-[60px] relative"
             >
                 <Image
-                    className="rounded-lg mr-3"
+                    className="rounded-lg mr-3 m-0"
                     src={"/motor-icon.png"}
-                    width={50}
-                    height={100}
+                    width={40}
+                    height={40}
                     alt="select your motor type"
                     priority
                 ></Image>
@@ -44,7 +44,7 @@ const MotorSelection = () => {
                         }}
                     >
                         <Image
-                            className="rounded-lg mr-3"
+                            className="rounded-lg mr-3  m-0"
                             src={item[1].ImageSrc}
                             width={70}
                             height={70}

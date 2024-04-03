@@ -4783,22 +4783,6 @@ html {
   top: 1rem;
 }
 
-.left-2 {
-  left: 0.5rem;
-}
-
-.left-52 {
-  left: 13rem;
-}
-
-.left-48 {
-  left: 12rem;
-}
-
-.right-10 {
-  right: 2.5rem;
-}
-
 .z-10 {
   z-index: 10;
 }
@@ -5045,6 +5029,10 @@ html {
   margin-top: 1vh;
 }
 
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+
 .\!block {
   display: block !important;
 }
@@ -5225,6 +5213,10 @@ html {
 
 .h-px {
   height: 1px;
+}
+
+.h-\[60px\] {
+  height: 60px;
 }
 
 .w-1\/12 {
@@ -6768,10 +6760,6 @@ html {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
-}
-
-.text-\[3px\] {
-  font-size: 3px;
 }
 
 .font-bold {
