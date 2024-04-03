@@ -526,14 +526,24 @@ export const Command23 = (props: FirmwareCmdProps) => {
                         width={200}
                         height={200}
                         src="/motor_m1.png"
-                        alt="firmware file example"
+                        alt="download firmware motor M1"
                         priority
                     ></Image>
                     <Link
                         href={latestFirmwareM1}
-                        className="btn btn-primary tracking-widest"
+                        className="btn btn-primary tracking-widest mt-2"
                     >
-                        Download firmware Motor #1
+                        <Image
+                            className="rounded-box h-[20px] w-auto"
+                            width={20}
+                            height={20}
+                            src="/download.svg"
+                            alt="download firmware motor M1"
+                            priority
+                        ></Image>
+                        <p>
+                            Low precision motor (M1)<br></br> Download firmware
+                        </p>
                     </Link>
                 </div>
                 <div className="flex flex-col justify-center items-center">
@@ -542,14 +552,25 @@ export const Command23 = (props: FirmwareCmdProps) => {
                         width={200}
                         height={200}
                         src="/motor_m3.png"
-                        alt="firmware file example"
+                        alt="download firmware motor M3"
                         priority
                     ></Image>
                     <Link
                         href={latestFirmwareM3}
-                        className="btn btn-primary tracking-widest"
+                        className="btn btn-primary tracking-widest mt-2"
                     >
-                        Download firmware Motor #3
+                        <Image
+                            className="rounded-box h-[20px] w-auto"
+                            width={20}
+                            height={20}
+                            src="/download.svg"
+                            alt="download firmware motor M3"
+                            priority
+                        ></Image>
+                        <p>
+                            High precision motor (M3)<br></br>
+                            Download firmware
+                        </p>
                     </Link>
                 </div>
             </div>
