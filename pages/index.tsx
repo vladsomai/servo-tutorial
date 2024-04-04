@@ -166,61 +166,64 @@ const Home: NextPageWithLayout = () => {
                                 </p>
                             </div>
 
-                            <div
-                                ref={loadingDiv}
-                                className="absolute w-full h-full flex flex-col justify-start items-center bg-base-100"
-                            >
-                                <progress className="progress progress-primary w-56"></progress>
-                                <h1 className="text-3xl mt-5">
-                                    Loading 3D assets...
-                                </h1>
-                            </div>
-                            <div className="w-[40vw] h-[500px] mr-10 mb-[40vh] md:mb-[25vh]">
-                                <article className="prose prose-slate">
-                                    <h3 className="text-3xl text-left mb-5">
-                                        High precision motor
-                                    </h3>
-                                    <ul className="text-left">
-                                        <li>
-                                            <p>High precision</p>
-                                        </li>
-                                        <li>
-                                            <p>Lower cost</p>
-                                        </li>
-                                        <li>
-                                            <p>Robust (stronger body)</p>
-                                        </li>
-                                    </ul>
-                                </article>
-                                <canvas
-                                    ref={canvasMotor3Ref}
-                                    className={`focus:outline-none rounded-2xl bg-slate-800 w-full h-full `}
-                                ></canvas>
-                            </div>
-                            <div className="w-[40vw] h-[500px] mb-[40vh] md:mb-[25vh]">
-                                <article className="prose prose-slate">
-                                    <h3 className="text-3xl text-left mb-5">
-                                        Educational motor
-                                    </h3>
-                                    <ul className="text-left">
-                                        <li>
-                                            <p>Higher maximum speed</p>
-                                        </li>
-                                        <li>
-                                            <p>Light weight</p>
-                                        </li>
-                                        <li>
-                                            <p>
-                                                Visible electronics(for
-                                                educational purposes)
-                                            </p>
-                                        </li>
-                                    </ul>
-                                </article>
-                                <canvas
-                                    ref={canvasMotor1Ref}
-                                    className={`focus:outline-none rounded-2xl bg-slate-800 w-full h-full`}
-                                ></canvas>
+                            <div className="relative w-full">
+                                <div
+                                    ref={loadingDiv}
+                                    className="absolute w-full h-full flex flex-col justify-start items-center bg-base-100 z-20"
+                                >
+                                    <progress className="progress progress-primary w-56"></progress>
+                                    <h1 className="text-3xl mt-5">
+                                        Loading 3D assets...
+                                    </h1>
+                                </div>
+
+                                <div className="w-[40vw] h-[500px] mr-10 mb-[40vh] md:mb-[25vh]">
+                                    <article className="prose prose-slate">
+                                        <h3 className="text-3xl text-left mb-5">
+                                            High precision motor
+                                        </h3>
+                                        <ul className="text-left">
+                                            <li>
+                                                <p>High precision</p>
+                                            </li>
+                                            <li>
+                                                <p>Lower cost</p>
+                                            </li>
+                                            <li>
+                                                <p>Robust (stronger body)</p>
+                                            </li>
+                                        </ul>
+                                    </article>
+                                    <canvas
+                                        ref={canvasMotor3Ref}
+                                        className={`focus:outline-none rounded-2xl bg-slate-800 w-full h-full `}
+                                    ></canvas>
+                                </div>
+                                <div className="w-[40vw] h-[500px] mb-[40vh] md:mb-[25vh]">
+                                    <article className="prose prose-slate">
+                                        <h3 className="text-3xl text-left mb-5">
+                                            Educational motor
+                                        </h3>
+                                        <ul className="text-left">
+                                            <li>
+                                                <p>Higher maximum speed</p>
+                                            </li>
+                                            <li>
+                                                <p>Light weight</p>
+                                            </li>
+                                            <li>
+                                                <p>
+                                                    Visible electronics(for
+                                                    educational purposes)
+                                                </p>
+                                            </li>
+                                        </ul>
+                                    </article>
+                                    <canvas
+                                        ref={canvasMotor1Ref}
+                                        className={`focus:outline-none rounded-2xl bg-slate-800 w-full h-full`}
+                                    ></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
