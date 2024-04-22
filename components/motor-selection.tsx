@@ -30,7 +30,10 @@ const MotorSelection = () => {
                     alt="select your motor type"
                     priority
                 ></Image>
-                {globalContext.motorType.currentMotorType.TypeName}
+                <div>
+                    <p className="mb-2 text-slate-400 text-[11px]">Motor type</p>
+                    <p>{globalContext.motorType.currentMotorType.TypeName}</p>
+                </div>
             </div>
             <ul
                 tabIndex={0}
@@ -39,7 +42,7 @@ const MotorSelection = () => {
             >
                 {[...MotorType].map((item, index) => (
                     <button
-                        className="py-3 btn-ghost flex rounded-lg justify-center items-center btn w-[230px] h-[100px]"
+                        className="py-3 btn-ghost flex rounded-lg justify-start items-center btn w-[230px] h-[100px]"
                         key={index}
                         onClick={(e) => {
                             handleMotorChange(e, index);
