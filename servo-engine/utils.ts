@@ -15,7 +15,7 @@ export interface MotorTypeObj {
 export const MotorType = new Map<MotorTypeEnum, MotorTypeObj>([
     [MotorTypeEnum.Unknown, { TypeName: "Unknown", ImageSrc: "/unknown_motor.svg", StepsPerRevolution: 639744 }],
     [MotorTypeEnum.HashOne, { TypeName: "Low precision", ImageSrc: "/motor_m1.png", StepsPerRevolution: 639744 }],
-    [MotorTypeEnum.HashThree, { TypeName: "High precision", ImageSrc: "/motor_m3.png", StepsPerRevolution: 4569600 }],
+    [MotorTypeEnum.HashThree, { TypeName: "High precision", ImageSrc: "/motor_m3.png", StepsPerRevolution: 4320000 }],
 ])
 
 /*
