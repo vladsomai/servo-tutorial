@@ -180,7 +180,7 @@ const Home: NextPageWithLayout = () => {
                                 <div className="w-[40vw] h-[500px] mr-10 mb-[40vh] md:mb-[25vh]">
                                     <article className="prose prose-slate">
                                         <h3 className="text-3xl text-left mb-5">
-                                            High precision motor
+                                            High precision motor (M3)
                                         </h3>
                                         <ul className="text-left">
                                             <li>
@@ -202,7 +202,7 @@ const Home: NextPageWithLayout = () => {
                                 <div className="w-[40vw] h-[500px] mb-[40vh] md:mb-[25vh]">
                                     <article className="prose prose-slate">
                                         <h3 className="text-3xl text-left mb-5">
-                                            Educational motor
+                                            Educational motor (M1)
                                         </h3>
                                         <ul className="text-left">
                                             <li>
