@@ -67,7 +67,9 @@ export const Command22 = (props: Command22PropsType) => {
                         className="btn btn-primary btn-sm"
                         onClick={execute_command}
                     >
-                        Get product info
+                        {props.MountedByOtherCommand
+                            ? "Autodetect motor type"
+                            : "Get product info"}
                     </button>
                 </div>
             </div>
