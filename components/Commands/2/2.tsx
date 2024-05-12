@@ -116,7 +116,7 @@ export const Command2 = (props: ChaptersPropsType) => {
         );
     }, [
         positionValue,
-        globalContext.motorType.currentMotorType.StepsPerRevolution,
+        globalContext.motorType.currentMotorType,
     ]);
 
     useEffect(() => {

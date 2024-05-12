@@ -123,7 +123,7 @@ export const Command5 = (props: ChaptersPropsType) => {
         );
     }, [
         AccelerationRPM,
-        globalContext.motorType.currentMotorType.StepsPerRevolution,
+        globalContext.motorType.currentMotorType,
     ]);
 
     useEffect(() => {

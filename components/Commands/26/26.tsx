@@ -171,7 +171,7 @@ export const Command26 = (props: ChaptersPropsType) => {
         );
     }, [
         velocityRPM,
-        globalContext.motorType.currentMotorType.StepsPerRevolution,
+        globalContext.motorType.currentMotorType,
     ]);
 
     useEffect(() => {

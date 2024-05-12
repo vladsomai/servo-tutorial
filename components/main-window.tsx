@@ -373,6 +373,7 @@ const Main = (props: MainWindowProps) => {
                         if (err instanceof Error) {
                             LogAction(ErrorTypes.ERR1999, err!.message);
                         }
+                        console.log(err);
                         reader.current?.releaseLock();
                         reader.current = null;
                     } finally {
@@ -405,8 +406,11 @@ const Main = (props: MainWindowProps) => {
             const motorType = MotorType.get(
                 motorTypeStr as MotorTypeStr
             ) as MotorTypeObj;
-
-            globalContext.motorType.setCurrentMotorType(motorType);
+            
+            if (motorType != undefined || motorType != null) {
+                console.log("Changing motor type to ", motorType);
+                globalContext.motorType.setCurrentMotorType(motorType);
+            }
         }
         globalContext.lastCommandResponse.setResponse("");
     }, [

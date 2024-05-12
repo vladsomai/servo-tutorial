@@ -121,7 +121,7 @@ export const Command30 = (props: ChaptersPropsType) => {
         );
     }, [
         upperValue,
-        globalContext.motorType.currentMotorType.StepsPerRevolution,
+        globalContext.motorType.currentMotorType,
     ]);
 
     useEffect(() => {
@@ -190,7 +190,7 @@ export const Command30 = (props: ChaptersPropsType) => {
         );
     }, [
         lowerValue,
-        globalContext.motorType.currentMotorType.StepsPerRevolution,
+        globalContext.motorType.currentMotorType,
     ]);
 
     useEffect(() => {

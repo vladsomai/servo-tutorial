@@ -288,7 +288,7 @@ export const Command23 = (props: FirmwareCmdProps) => {
 
         props.LogAction(
             ErrorTypes.NO_ERR,
-            "Firmware upgrade finished succesfully!"
+            "Firmware upgrade finished!"
         );
         setWaitFirmwareUpgrade(false);
     };
