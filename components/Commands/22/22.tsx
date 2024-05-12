@@ -3,7 +3,11 @@ import { ChaptersPropsType } from "../0_1/0_1";
 import { GlobalContext } from "../../../pages/_app";
 import { GenericCodeExample } from "../../../servo-engine/code-example-utils/code-utils";
 
-export const Command22 = (props: ChaptersPropsType) => {
+export interface Command22PropsType extends ChaptersPropsType {
+    MountedByOtherCommand?: boolean;
+}
+
+export const Command22 = (props: Command22PropsType) => {
     const globalContext = useContext(GlobalContext);
     const genericCodeExample = useRef(new GenericCodeExample());
 
@@ -45,19 +49,25 @@ export const Command22 = (props: ChaptersPropsType) => {
         const selectedAxis = props.getAxisSelection();
         if (selectedAxis == "") return;
 
-        const rawData = props.constructCommand("");
+        globalContext.lastSentCommand.setSentCommand(22);
+        const rawData = props.constructCommand("", 22);
         props.sendDataToSerialPort(rawData);
     };
+
     return (
         <>
             <div className="w-full text-center mb-5">
                 <div className="flex justify-center">
-                    <div className="mr-4">{props.children}</div>
+                    {props.MountedByOtherCommand ? (
+                        <></>
+                    ) : (
+                        <div className="mr-4">{props.children}</div>
+                    )}
                     <button
                         className="btn btn-primary btn-sm"
                         onClick={execute_command}
                     >
-                        execute
+                        Get product info
                     </button>
                 </div>
             </div>

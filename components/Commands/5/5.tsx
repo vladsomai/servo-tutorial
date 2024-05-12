@@ -12,6 +12,8 @@ import {
 } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
 import { Command5CodeExample } from "./code-samples/code-sample";
+import { Command22 } from "../22/22";
+import MotorSelection from "../../motor-selection";
 
 export const Command5 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
@@ -114,9 +116,15 @@ export const Command5 = (props: ChaptersPropsType) => {
 
     useEffect(() => {
         setInternalAcceleration(
-            RPMSquared_ToInternalAcceleration(AccelerationRPM,  globalContext.motorType.currentMotorType.StepsPerRevolution)
+            RPMSquared_ToInternalAcceleration(
+                AccelerationRPM,
+                globalContext.motorType.currentMotorType.StepsPerRevolution
+            )
         );
-    }, [AccelerationRPM, globalContext.motorType.currentMotorType.StepsPerRevolution]);
+    }, [
+        AccelerationRPM,
+        globalContext.motorType.currentMotorType.StepsPerRevolution,
+    ]);
 
     useEffect(() => {
         setCommAcceleration(
@@ -180,7 +188,8 @@ export const Command5 = (props: ChaptersPropsType) => {
     return (
         <>
             <div className="w-full text-center mb-5">
-                <div className="flex justify-center">
+                <MotorSelection />
+                <div className="mt-2 flex justify-center">
                     <div className="mx-2">{props.children}</div>
 
                     <div
@@ -196,12 +205,20 @@ export const Command5 = (props: ChaptersPropsType) => {
                         />
                     </div>
                 </div>
-                <button
-                    className="btn btn-primary btn-sm mt-4"
-                    onClick={execute_command}
-                >
-                    set max Acceleration
-                </button>
+                {globalContext.motorType.currentMotorType.TypeName == "" ? (
+                    <div className="mt-4">
+                        <Command22 MountedByOtherCommand={true} {...props} />
+                    </div>
+                ) : (
+                    <>
+                        <button
+                            className="btn btn-primary btn-sm mt-4"
+                            onClick={execute_command}
+                        >
+                            set max Acceleration
+                        </button>
+                    </>
+                )}
             </div>
 
             <article className="mb-10 prose prose-slate max-w-full">
@@ -213,7 +230,11 @@ export const Command5 = (props: ChaptersPropsType) => {
                             the formula used is:
                             <br></br>
                             <i>
-                                Internal_Acceleration = (RPM^2 / 60^2) * ({globalContext.motorType.currentMotorType.StepsPerRevolution}
+                                Internal_Acceleration = (RPM^2 / 60^2) * (
+                                {
+                                    globalContext.motorType.currentMotorType
+                                        .StepsPerRevolution
+                                }
                                 / 31250^2) * (2^32)
                             </i>
                             <br></br>

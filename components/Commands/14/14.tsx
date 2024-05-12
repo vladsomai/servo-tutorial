@@ -14,6 +14,8 @@ import {
 } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
 import { Command2CodeExample } from "../2/code-samples/code-sample";
+import { Command22 } from "../22/22";
+import MotorSelection from "../../motor-selection";
 
 export const Command14 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
@@ -161,8 +163,16 @@ export const Command14 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        setMicrostepsValue(RotationsToMicrosteps(positionValue, globalContext.motorType.currentMotorType.StepsPerRevolution));
-    }, [positionValue, globalContext.motorType.currentMotorType.StepsPerRevolution]);
+        setMicrostepsValue(
+            RotationsToMicrosteps(
+                positionValue,
+                globalContext.motorType.currentMotorType.StepsPerRevolution
+            )
+        );
+    }, [
+        positionValue,
+        globalContext.motorType.currentMotorType.StepsPerRevolution,
+    ]);
 
     useEffect(() => {
         if (microsteps == 0) {
@@ -255,6 +265,7 @@ export const Command14 = (props: ChaptersPropsType) => {
     return (
         <>
             <div className="w-full text-center mb-5">
+                <MotorSelection />
                 <div>
                     <div className="flex flex-col xl:flex-row justify-center items-center">
                         <div className="m-2">{props.children}</div>
@@ -283,12 +294,23 @@ export const Command14 = (props: ChaptersPropsType) => {
                             />
                         </div>
                     </div>
-                    <button
-                        className="btn btn-primary btn-sm mt-2"
-                        onClick={execute_command}
-                    >
-                        execute
-                    </button>
+                    {globalContext.motorType.currentMotorType.TypeName == "" ? (
+                        <div className="mt-4">
+                            <Command22
+                                MountedByOtherCommand={true}
+                                {...props}
+                            />
+                        </div>
+                    ) : (
+                        <>
+                            <button
+                                className="btn btn-primary btn-sm mt-2"
+                                onClick={execute_command}
+                            >
+                                execute
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
             <article className="mb-10 prose prose-slate max-w-full">
@@ -299,7 +321,13 @@ export const Command14 = (props: ChaptersPropsType) => {
                             Transforming position to Microsteps, the formula
                             used is:
                             <br></br>
-                            <i>Microsteps = rotations * {globalContext.motorType.currentMotorType.StepsPerRevolution}</i>
+                            <i>
+                                Microsteps = rotations *{" "}
+                                {
+                                    globalContext.motorType.currentMotorType
+                                        .StepsPerRevolution
+                                }
+                            </i>
                             <br></br>
                             {`Input: ${positionValue.toString()} rotations`}
                             <br></br>

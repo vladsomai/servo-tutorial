@@ -15,6 +15,8 @@ import {
 } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
 import { Command26CodeExample } from "./code-samples/code-sample";
+import { Command22 } from "../22/22";
+import MotorSelection from "../../motor-selection";
 
 export const Command26 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
@@ -161,8 +163,16 @@ export const Command26 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        setInternalVelocity(RPM_ToInternalVelocity(velocityRPM, globalContext.motorType.currentMotorType.StepsPerRevolution));
-    }, [velocityRPM, globalContext.motorType.currentMotorType.StepsPerRevolution]);
+        setInternalVelocity(
+            RPM_ToInternalVelocity(
+                velocityRPM,
+                globalContext.motorType.currentMotorType.StepsPerRevolution
+            )
+        );
+    }, [
+        velocityRPM,
+        globalContext.motorType.currentMotorType.StepsPerRevolution,
+    ]);
 
     useEffect(() => {
         setCommVelocity(InternalVelocityToCommVelocity(internalVelocity));
@@ -258,6 +268,7 @@ export const Command26 = (props: ChaptersPropsType) => {
     return (
         <>
             <div className="w-full text-center mb-5">
+                <MotorSelection />
                 <div className="flex flex-col xl:flex-row justify-center items-center">
                     <div className="m-2">{props.children}</div>
                     <div
@@ -285,12 +296,20 @@ export const Command26 = (props: ChaptersPropsType) => {
                         />
                     </div>
                 </div>
-                <button
-                    className="btn btn-primary btn-sm mt-2"
-                    onClick={execute_command}
-                >
-                    execute
-                </button>
+                {globalContext.motorType.currentMotorType.TypeName == "" ? (
+                    <div className="mt-4">
+                        <Command22 MountedByOtherCommand={true} {...props} />
+                    </div>
+                ) : (
+                    <>
+                        <button
+                            className="btn btn-primary btn-sm mt-2"
+                            onClick={execute_command}
+                        >
+                            execute
+                        </button>
+                    </>
+                )}
             </div>
 
             <article className="mb-10 prose prose-slate max-w-full">
@@ -302,8 +321,12 @@ export const Command26 = (props: ChaptersPropsType) => {
                             formula used is:
                             <br></br>
                             <i>
-                                Internal_velocity = (RPM / 60) * ({globalContext.motorType.currentMotorType.StepsPerRevolution} /
-                                31250) * (2 ^ 32)
+                                Internal_velocity = (RPM / 60) * (
+                                {
+                                    globalContext.motorType.currentMotorType
+                                        .StepsPerRevolution
+                                }{" "}
+                                / 31250) * (2 ^ 32)
                             </i>
                             <br></br>
                             {`Input: ${velocityRPM.toString()} RPM`}

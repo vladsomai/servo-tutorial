@@ -12,6 +12,8 @@ import {
 } from "../../../servo-engine/utils";
 import { ChaptersPropsType } from "../0_1/0_1";
 import { Command30CodeExample } from "./code-samples/code-sample";
+import { Command22 } from "../22/22";
+import MotorSelection from "../../motor-selection";
 
 export const Command30 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
@@ -111,8 +113,16 @@ export const Command30 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        setUpperMicrosteps(RotationsToMicrosteps(upperValue, globalContext.motorType.currentMotorType.StepsPerRevolution));
-    }, [upperValue, globalContext.motorType.currentMotorType.StepsPerRevolution]);
+        setUpperMicrosteps(
+            RotationsToMicrosteps(
+                upperValue,
+                globalContext.motorType.currentMotorType.StepsPerRevolution
+            )
+        );
+    }, [
+        upperValue,
+        globalContext.motorType.currentMotorType.StepsPerRevolution,
+    ]);
 
     useEffect(() => {
         if (upperMicrosteps == 0) {
@@ -172,8 +182,16 @@ export const Command30 = (props: ChaptersPropsType) => {
     };
 
     useEffect(() => {
-        setLowerMicrosteps(RotationsToMicrosteps(lowerValue, globalContext.motorType.currentMotorType.StepsPerRevolution));
-    }, [lowerValue, globalContext.motorType.currentMotorType.StepsPerRevolution]);
+        setLowerMicrosteps(
+            RotationsToMicrosteps(
+                lowerValue,
+                globalContext.motorType.currentMotorType.StepsPerRevolution
+            )
+        );
+    }, [
+        lowerValue,
+        globalContext.motorType.currentMotorType.StepsPerRevolution,
+    ]);
 
     useEffect(() => {
         if (lowerMicrosteps == 0) {
@@ -201,7 +219,7 @@ export const Command30 = (props: ChaptersPropsType) => {
         lowerValue,
         upperValue,
     ]);
-    
+
     const execute_command = () => {
         if (
             lowerLimitInputBox &&
@@ -257,6 +275,7 @@ export const Command30 = (props: ChaptersPropsType) => {
     return (
         <>
             <div className="w-full text-center mb-5">
+                <MotorSelection />
                 <div className="flex flex-col xl:flex-row justify-center items-center">
                     <div className="m-2">{props.children}</div>
                     <div
@@ -284,12 +303,20 @@ export const Command30 = (props: ChaptersPropsType) => {
                         />
                     </div>
                 </div>
-                <button
-                    className="btn btn-primary btn-sm mt-2"
-                    onClick={execute_command}
-                >
-                    execute
-                </button>
+                {globalContext.motorType.currentMotorType.TypeName == "" ? (
+                    <div className="mt-4">
+                        <Command22 MountedByOtherCommand={true} {...props} />
+                    </div>
+                ) : (
+                    <>
+                        <button
+                            className="btn btn-primary btn-sm mt-2"
+                            onClick={execute_command}
+                        >
+                            execute
+                        </button>
+                    </>
+                )}
             </div>
             <article className="mb-10 prose prose-slate max-w-full">
                 <ol className="flex">
@@ -299,7 +326,13 @@ export const Command30 = (props: ChaptersPropsType) => {
                             Transforming position to Microsteps, the formula
                             used is:
                             <br></br>
-                            <i>Microsteps = rotations * {globalContext.motorType.currentMotorType.StepsPerRevolution}</i>
+                            <i>
+                                Microsteps = rotations *{" "}
+                                {
+                                    globalContext.motorType.currentMotorType
+                                        .StepsPerRevolution
+                                }
+                            </i>
                             <br></br>
                             {`Input: ${lowerValue.toString()} rotations`}
                             <br></br>
@@ -320,7 +353,13 @@ export const Command30 = (props: ChaptersPropsType) => {
                             Transforming position to Microsteps, the formula
                             used is:
                             <br></br>
-                            <i>Microsteps = rotations * {globalContext.motorType.currentMotorType.StepsPerRevolution}</i>
+                            <i>
+                                Microsteps = rotations *{" "}
+                                {
+                                    globalContext.motorType.currentMotorType
+                                        .StepsPerRevolution
+                                }
+                            </i>
                             <br></br>
                             {`Input: ${upperValue.toString()} rotations`}
                             <br></br>

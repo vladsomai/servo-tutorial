@@ -37,7 +37,7 @@ function Tutorial(props: TutorialProps) {
                 <title>Quick start | Gearotons</title>
             </Head>
             <animated.div
-                className="flex flex-col justify-center items-center  mt-16"
+                className="flex flex-col justify-center items-center mt-16"
                 style={styleSpring}
             >
                 <div className="">

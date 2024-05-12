@@ -14,6 +14,7 @@ import {
 import { ChaptersPropsType } from "../0_1/0_1";
 import { Command3CodeExample } from "./code-samples/code-sample";
 import MotorSelection from "../../motor-selection";
+import { Command22 } from "../22/22";
 
 export const Command3 = (props: ChaptersPropsType) => {
     const globalContext = useContext(GlobalContext);
@@ -196,12 +197,19 @@ export const Command3 = (props: ChaptersPropsType) => {
                         />
                     </div>
                 </div>
-                <button
-                    className="btn btn-primary btn-sm mt-4"
-                    onClick={execute_command}
-                >
-                    set max velocity
-                </button>
+                {globalContext.motorType.currentMotorType.TypeName ==
+                "" ? (
+                    <div className="mt-4">
+                        <Command22 MountedByOtherCommand={true} {...props} />
+                    </div>
+                ) : (
+                    <button
+                        className="btn btn-primary btn-sm mt-4"
+                        onClick={execute_command}
+                    >
+                        set max velocity
+                    </button>
+                )}
             </div>
 
             <article className="mb-10 prose prose-slate max-w-full">

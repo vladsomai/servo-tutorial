@@ -1,14 +1,13 @@
 import "../styles/output.css";
 import "../styles/prism-vsc-dark.css";
 import type { AppProps } from "next/app";
-import { ReactElement, ReactNode, useEffect, useState } from "react";
+import { ReactElement, ReactNode, useEffect, useRef, useState } from "react";
 import type { NextPage } from "next";
 import { createContext } from "react";
 import { firebaseAuth } from "../Firebase/initialize";
 import { onAuthStateChanged, User } from "firebase/auth";
 import {
     Device,
-    MotorTypeEnum,
     MotorType,
     MotorTypeObj,
 } from "../servo-engine/utils";
@@ -58,6 +57,16 @@ export type GlobalStateType = {
         currentMotorType: MotorTypeObj;
         setCurrentMotorType: Function;
     };
+
+    lastSentCommand: {
+        sentCommand: number;
+        setSentCommand: Function;
+    };
+
+    lastCommandResponse: {
+        response: string;
+        setResponse: Function;
+    };
 };
 
 const DefaultGlobalState: GlobalStateType = {
@@ -102,8 +111,18 @@ const DefaultGlobalState: GlobalStateType = {
     },
 
     motorType: {
-        currentMotorType: MotorType.get(MotorTypeEnum.Unknown) as MotorTypeObj,
+        currentMotorType: MotorType.get("Unknown") as MotorTypeObj,
         setCurrentMotorType: () => {},
+    },
+
+    lastSentCommand: {
+        sentCommand: 0,
+        setSentCommand: () => {},
+    },
+
+    lastCommandResponse: {
+        response: "",
+        setResponse: () => {},
     },
 };
 
@@ -146,8 +165,10 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     const [_pythonCode, _setPythonCode] = useState("");
     const [_axisCode, _setAxisCode] = useState(255);
     const [_currentMotorType, _setCurrentMotorType] = useState(
-        MotorType.get(MotorTypeEnum.Unknown) as MotorTypeObj
+        MotorType.get("Unknown") as MotorTypeObj
     );
+    const [_lastCommandResponse, _setLastCommandResponse] = useState("");
+    const [_lastSentCommand, _setLastSentCommand] = useState(0);
 
     const GlobalState: GlobalStateType = {
         theme: {
@@ -193,6 +214,16 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         motorType: {
             currentMotorType: _currentMotorType,
             setCurrentMotorType: _setCurrentMotorType,
+        },
+
+        lastSentCommand: {
+            sentCommand: _lastSentCommand,
+            setSentCommand: _setLastSentCommand,
+        },
+
+        lastCommandResponse: {
+            response: _lastCommandResponse,
+            setResponse: _setLastCommandResponse,
         },
     };
 

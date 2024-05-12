@@ -1,21 +1,18 @@
 import { languages } from "prismjs";
 
-export enum MotorTypeEnum {
-    Unknown,
-    HashOne,
-    HashThree,
-}
+export type MotorTypeStr = "Unknown" | "M1" | "M3"
 
 export interface MotorTypeObj {
-    TypeName: string,
+    TypeName: "" | "M1" | "M3",
+    Description: "Unknown" | "Low precision" | "High precision"
     ImageSrc: string,
     StepsPerRevolution: number
 }
 
-export const MotorType = new Map<MotorTypeEnum, MotorTypeObj>([
-    [MotorTypeEnum.Unknown, { TypeName: "Unknown", ImageSrc: "/unknown_motor.svg", StepsPerRevolution: 639744 }],
-    [MotorTypeEnum.HashOne, { TypeName: "Low precision", ImageSrc: "/motor_m1.png", StepsPerRevolution: 639744 }],
-    [MotorTypeEnum.HashThree, { TypeName: "High precision", ImageSrc: "/motor_m3.png", StepsPerRevolution: 4320000 }],
+export const MotorType = new Map<MotorTypeStr, MotorTypeObj>([
+    ["Unknown", { Description: "Unknown", TypeName: "", ImageSrc: "/unknown_motor.svg", StepsPerRevolution: 639744 }],
+    ["M1", { Description: "Low precision", TypeName: "M1", ImageSrc: "/motor_m1.png", StepsPerRevolution: 639744 }],
+    ["M3", { Description: "High precision", TypeName: "M3", ImageSrc: "/motor_m3.png", StepsPerRevolution: 4320000 }],
 ])
 
 /*

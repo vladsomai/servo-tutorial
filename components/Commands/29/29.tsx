@@ -29,6 +29,8 @@ import Image from "next/image";
 import { animated, useTransition } from "react-spring";
 import { GlobalContext } from "../../../pages/_app";
 import { Command29CodeExample } from "./code-samples/code-sample";
+import { Command22 } from "../22/22";
+import MotorSelection from "../../motor-selection";
 
 export interface MultiMoveChapterProps extends ChaptersPropsType {
     MoveCommands: MoveCommand[];
@@ -636,14 +638,23 @@ export const Command29 = (props: MultiMoveChapterProps) => {
                         ))}
                     </div>
                 </div>
-                <div className="flex justify-center transition-all">
+                <MotorSelection />
+                <div className="mt-2 flex justify-center transition-all">
                     <div className="mr-4 ">{props.children}</div>
-                    <button
+                    {globalContext.motorType.currentMotorType.TypeName == "" ? (
+                    <div className="">
+                        <Command22 MountedByOtherCommand={true} {...props} />
+                    </div>
+                ) : (
+                    <>
+                               <button
                         className="btn btn-primary btn-sm"
                         onClick={execute_command}
                     >
                         execute
                     </button>
+                    </>
+                )}
                 </div>
             </div>
         </>

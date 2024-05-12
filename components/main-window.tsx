@@ -16,6 +16,10 @@ import {
     ErrorTypes,
     getCurrentBrowser,
     Char,
+    hexStringToASCII,
+    MotorTypeObj,
+    MotorType,
+    MotorTypeStr,
 } from "../servo-engine/utils";
 import {
     InputOutputObjects,
@@ -343,23 +347,21 @@ const Main = (props: MainWindowProps) => {
                                             partialData.current.slice(4, 6)
                                         )[0];
 
-                                        if (receiveLength == 0) {
-                                            LogAction(
-                                                ErrorTypes.NO_ERR,
-                                                "Received: 0x" +
-                                                    partialData.current
-                                            );
-                                            clearTimeout(timerHandle.current);
-                                            partialData.current = "";
-                                        } else if (
+                                        if (
+                                            receiveLength == 0 ||
                                             partialData.current.length / 2 ==
-                                            receiveLength + 3
+                                                receiveLength + 3
                                         ) {
                                             LogAction(
                                                 ErrorTypes.NO_ERR,
                                                 "Received: 0x" +
                                                     partialData.current
                                             );
+
+                                            globalContext.lastCommandResponse.setResponse(
+                                                partialData.current
+                                            );
+
                                             partialData.current = "";
                                             clearTimeout(timerHandle.current);
                                         }
@@ -388,6 +390,31 @@ const Main = (props: MainWindowProps) => {
             }
         }
     };
+
+    useEffect(() => {
+        if (
+            globalContext.lastSentCommand.sentCommand == 22 &&
+            globalContext.lastCommandResponse.response != ""
+        ) {
+            //motor type comes as a two byte character
+            //e.g. "M1", "M3"
+            const motorTypeStr = hexStringToASCII(
+                globalContext.lastCommandResponse.response.substring(6, 10)
+            );
+
+            const motorType = MotorType.get(
+                motorTypeStr as MotorTypeStr
+            ) as MotorTypeObj;
+
+            globalContext.motorType.setCurrentMotorType(motorType);
+        }
+        globalContext.lastCommandResponse.setResponse("");
+    }, [
+        globalContext.motorType,
+        globalContext.lastCommandResponse,
+        globalContext.lastSentCommand.sentCommand,
+        globalContext.lastCommandResponse.response,
+    ]);
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
