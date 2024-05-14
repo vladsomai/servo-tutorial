@@ -272,7 +272,10 @@ const Main = (props: MainWindowProps) => {
                     if (enableTimoutLogging) {
                         timerHandle.current = setTimeout(() => {
                             if (partialData.current.length == 0) {
-                                console.log("time out while command ", cmdStr);
+                                console.log(
+                                    "time out while command 0x",
+                                    cmdStr
+                                );
                                 LogAction(
                                     ErrorTypes.ERR1003,
                                     "The command timed out."
@@ -406,7 +409,7 @@ const Main = (props: MainWindowProps) => {
             const motorType = MotorType.get(
                 motorTypeStr as MotorTypeStr
             ) as MotorTypeObj;
-            
+
             if (motorType != undefined || motorType != null) {
                 console.log("Changing motor type to ", motorType);
                 globalContext.motorType.setCurrentMotorType(motorType);
@@ -491,6 +494,9 @@ const Main = (props: MainWindowProps) => {
         let axisCodeLocal = globalContext.currentAxisCode.axisCode;
         if (_axis != null) {
             axisCodeLocal = parseInt(_axis);
+            if (Number.isNaN(axisCodeLocal) || axisCodeLocal == undefined) {
+                axisCodeLocal = parseInt(_axis, 16);
+            }
         }
         initialRawBytes.set([axisCodeLocal]);
 

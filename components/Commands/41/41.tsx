@@ -134,7 +134,7 @@ export const Command41 = (props: Command41PropsType) => {
 
             let rawData: Uint8Array;
 
-            rawData = props.constructCommand(currentUniqueID, 41);
+            rawData = props.constructCommand(currentUniqueID, 41, "FF");
 
             props.sendDataToSerialPort(rawData, true, true);
         }

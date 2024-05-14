@@ -277,11 +277,11 @@ export const Command23 = (props: FirmwareCmdProps) => {
 
         //System reset
         await props.sendDataToSerialPort("FF1B00", false, false);
-        await sleep(500);
+        await sleep(100);
 
         await execute_programming();
 
-        await sleep(500);
+        await sleep(100);
 
         //System reset
         await props.sendDataToSerialPort("FF1B00", false, false);
