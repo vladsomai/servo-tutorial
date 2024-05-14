@@ -118,7 +118,7 @@ data = firmware_size.to_bytes(4, "little") + data[4:] + firmware_crc.to_bytes(4,
 print("Will write this many bytes:", len(data))
 
 system_reset_command(serialPort)
-time.sleep(1) # wait for it to reset
+time.sleep(0.1) # wait for it to reset
 
 page_number = FIRST_FIRMWARE_PAGE_NUMBER
 while len(data) > 0:
