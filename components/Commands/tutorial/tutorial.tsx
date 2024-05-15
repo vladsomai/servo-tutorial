@@ -339,16 +339,24 @@ function Tutorial(props: TutorialProps) {
                         <h2>Find out your device alias</h2>
                         <p>
                             Before you can use the docs to test supported
-                            commands, you must find your motor alias.
+                            commands, you must know or set your motor&apos;s
+                            alias.
                             <br />
                             The alias is simply a number ranging from 0 to 253
-                            that you can set to identify your motor.
+                            that you can set to identify your motor. Out of the
+                            factory, the motor&apos;s alias will not be set to
+                            anything.
                         </p>
                         <p>
                             Let&apos;s execute the DETECT DEVICES command with
                             the alias input box set to &apos;255&apos;. That
                             means we will send the detect devices command to all
-                            devices connected to the serial port.
+                            devices connected to the serial port. All connected
+                            motors will respond with their unique id, current
+                            alias, and a CRC32 payload.
+                            <br />
+                            For your convenience, devices will be listed right
+                            here if they are successfully detected.
                         </p>
                         <Command20
                             MountedByQuickStart={true}
@@ -366,95 +374,6 @@ function Tutorial(props: TutorialProps) {
                                 }
                             />
                         </Command20>
-                        <p>
-                            The motor will respond with its unique id, current
-                            alias, and a CRC32 payload that is not currently
-                            supported.
-                            <br />
-                            Click on the alias byte to see its ASCII and decimal
-                            representation, keep it in mind because we will use
-                            it in our future exploration.
-                        </p>
-                        <p>
-                            The Unique ID replied by &quot;Detect devices&quot;
-                            can be copy-pasted directly from the log window as
-                            is.
-                        </p>
-                        <hr />
-
-                        <h2>Identify your device</h2>
-                        <p>
-                            Using the &quot;Detect devices&quot; command you
-                            were able to find out your motor&apos;s Unique ID
-                            and the current alias.
-                        </p>
-                        <p>
-                            By sending the Identify command, you can identify
-                            each motor by its unique ID. The motor will flash
-                            its green LED three times. The command must be sent
-                            using the Unique ID of the motor you want to
-                            identify, allowing you to set a particular alias for
-                            that motor afterward. This command is helpful in
-                            case you have multiple motors in a daisy chain and
-                            you want to name them differently.
-                        </p>
-                        <h2>Set device alias</h2>
-                        <div className="my-5">
-                            <p>
-                                The &quot;Alias&quot; of your motor was replied
-                                by &quot;Detect devices&quot;, click on the
-                                alias byte to see the ASCII or decimal
-                                representation and set that alias to the
-                                left-most input box below.
-                            </p>
-                            <p>
-                                You can set a new alias to a valid ASCII
-                                character, some examples: A, B, P, l, d.
-                                <br />
-                                Or set the new alias to any value ranging from 0
-                                to 253 and press execute.
-                            </p>
-                            <p className="font-extrabold text-warning mb-0 pb-0">
-                                Note:
-                            </p>
-                            <ul className="my-0">
-                                <li className="my-0">
-                                    <p className="my-0">
-                                        Alias 254 is reserved for response
-                                        messages and cannot be used.
-                                    </p>
-                                </li>
-                                <li className="my-0">
-                                    <p className="my-0">
-                                        Alias 255 is reserved for sending a
-                                        command to all connected aliases and
-                                        cannot be used. When you want to use
-                                        multiple motors in a chain, sending a
-                                        command with the 255 alias will send
-                                        that command to all devices chained
-                                        together.
-                                    </p>
-                                </li>
-                                <li className="my-0">
-                                    <p className="my-0">
-                                        Make sure you reset the motor using
-                                        &quot;System reset&quot; command before
-                                        and after issuing the &quot;Set device
-                                        alias&quot; command.
-                                    </p>
-                                </li>
-                                <li className="my-0">
-                                    <p className="my-0">
-                                        If you want to set the new alias to a
-                                        decimal value ranging from &quot;0&quot;
-                                        to &quot;9&quot; you must specify it as
-                                        &quot;00&quot; or &quot;09&quot;
-                                        Otherwise it will be considered an ASCII
-                                        character.
-                                    </p>
-                                </li>
-                            </ul>
-                        </div>
                         {globalContext.detectedDevices.Devices.map(
                             (item, index) => (
                                 <div
@@ -523,6 +442,73 @@ function Tutorial(props: TutorialProps) {
                             )
                         )}
                         <hr />
+                        <h2>Identify your device</h2>
+                        <p>
+                            Using the &quot;Detect devices&quot; command you
+                            were able to find out your motor&apos;s Unique ID
+                            and the current alias.
+                        </p>
+                        <p>
+                            By sending the Identify command, you can identify
+                            each motor by its unique ID. The motor will flash
+                            its green LED rapidly for 3 seconds. The command
+                            must be sent using the Unique ID of the motor you
+                            want to identify, allowing you to set a particular
+                            alias for that motor afterward. This command is
+                            helpful in case you have multiple motors in a daisy
+                            chain and you want to name them differently.
+                        </p>
+                        <h2>Set device alias</h2>
+                        <div className="my-5">
+                            <p>
+                                The &quot;Alias&quot; of your motor was replied
+                                by &quot;Detect devices&quot;, click on the
+                                alias byte to see the ASCII or decimal
+                                representation and set that alias to the
+                                left-most input box below.
+                            </p>
+                            <p>
+                                You can set a new alias to a valid ASCII
+                                character, some examples: A, B, P, l, d.
+                                <br />
+                                Or set the new alias to any value ranging from 0
+                                to 253 and press execute.
+                            </p>
+                            <p className="font-extrabold text-warning mb-0 pb-0">
+                                Note:
+                            </p>
+                            <ul className="my-0">
+                                <li className="my-0">
+                                    <p className="my-0">
+                                        Alias 254 is reserved for response
+                                        messages and cannot be used.
+                                    </p>
+                                </li>
+                                <li className="my-0">
+                                    <p className="my-0">
+                                        Alias 255 is reserved for sending a
+                                        command to all connected aliases and
+                                        cannot be used. When you want to use
+                                        multiple motors in a chain, sending a
+                                        command with the 255 alias will send
+                                        that command to all devices chained
+                                        together.
+                                    </p>
+                                </li>
+                                <li className="my-0">
+                                    <p className="my-0">
+                                        If you want to set the new alias to a
+                                        decimal value ranging from &quot;0&quot;
+                                        to &quot;9&quot; you must specify it as
+                                        &quot;00&quot; or &quot;09&quot;
+                                        Otherwise it will be considered an ASCII
+                                        character.
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <hr />
                         <h2>Ping your alias</h2>
                         <p>
                             You can send some arbitrary data to the motor using
@@ -569,9 +555,10 @@ function Tutorial(props: TutorialProps) {
                                 you do not know your motor type, you can use the
                                 autodetect feature. This step is required as
                                 different motor types have different steps per
-                                revolution. Set the motor type to &ldquo;Unknown&ldquo; and
-                                press the &ldquo;Autodetect motor type&ldquo; button to set
-                                the appropirate motor type automatically.
+                                revolution. Set the motor type to
+                                &ldquo;Unknown&ldquo; and press the
+                                &ldquo;Autodetect motor type&ldquo; button to
+                                set the appropirate motor type automatically.
                             </li>
                             <li>
                                 Click on the &apos;ENABLE FETS&apos; button from
