@@ -883,6 +883,7 @@ const Main = (props: MainWindowProps) => {
                 sendDataToSerialPort={sendDataToSerialPort}
                 LogAction={LogAction}
                 constructCommand={constructCommand}
+                setAxisSelectionValue={setAxisSelectionValue}
             >
                 <SelectAxis
                     LogAction={LogAction}

@@ -1,7 +1,5 @@
 import { useRef } from "react";
-import { MotorAxes, MotorAxisType } from "../servo-engine/motor-axes";
 import {
-    Char,
     ErrorTypes,
     convertAxisSelectionValue,
 } from "../servo-engine/utils";

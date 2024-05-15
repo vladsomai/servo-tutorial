@@ -49,7 +49,7 @@ function Tutorial(props: TutorialProps) {
                         </p>
                         <ol>
                             <li>Gearotons Servo motor</li>
-                            <li>12V Power supply</li>
+                            <li>12V to 24V Power supply</li>
                             <li>USB to RS-485 adapter</li>
                             <li>
                                 Wires to connect the motor to the power supply
@@ -58,12 +58,28 @@ function Tutorial(props: TutorialProps) {
                         </ol>
                         <h2 className="mb-2">Powering the motor on</h2>
                         <p>
-                            The motor has two markings on the PCBA with the
-                            positive(+) and negative(-) pins (you can check the
-                            exact location of those pins on our 3D model from
-                            the home page), those pins must be soldered to a 12V
-                            power supply and when the motor is powered on, a
-                            green or red LED flashes.
+                            The motor has two markings with the positive(+) and
+                            negative(-) pins (you can check the exact location
+                            of those pins on our &nbsp;
+                            <button
+                                className="underline"
+                                title="3D Model"
+                                onClick={() => {
+                                    window.open(
+                                        "/",
+                                        "_blank",
+                                        "noopener,noreferrer"
+                                    );
+                                }}
+                            >
+                                3D model
+                            </button>
+                            &nbsp; from the home page), those pins will have two
+                            wires that need to be connected to a 12V to 24V
+                            power supply.
+                            <br />
+                            When the motor is powered on, a green or red LED
+                            flashes.
                         </p>
                         <ol>
                             <li>
@@ -84,8 +100,22 @@ function Tutorial(props: TutorialProps) {
                             When the motor is in a state identical to points 2
                             and 3 from above, you should send a reset command.
                             For now, you can reset the motor by pressing the
-                            reset button. Check out its exact location on our 3D
-                            model.
+                            reset button. Check out its exact location on our
+                            &nbsp;
+                            <button
+                                className="underline"
+                                title="3D Model"
+                                onClick={() => {
+                                    window.open(
+                                        "/",
+                                        "_blank",
+                                        "noopener,noreferrer"
+                                    );
+                                }}
+                            >
+                                3D model
+                            </button>
+                            .
                         </p>
                         <h4>Verify the motor spins</h4>
                         <p>
@@ -96,20 +126,50 @@ function Tutorial(props: TutorialProps) {
                         </p>
                         <ol>
                             <li>
-                                Pressing the rotate button should rotate the
-                                motor for 2 seconds in one direction.
+                                Pressing the rotate button quickly should rotate
+                                the motor for 2 seconds in one direction.
                             </li>
                             <li>
-                                Pressing and holding the rotate button for 1
-                                second, should rotate the motor for 2 seconds in
-                                the other direction.
+                                Pressing and releasing after 0.5 seconds, should
+                                rotate the motor for 2 seconds in the other
+                                direction.
+                            </li>
+                            <li>
+                                Pressing and releasing after 3 seconds will
+                                cause the motor to go into closed loop control
+                                mode.
+                            </li>
+                            <li>
+                                Pressing and releasing after 15 seconds will
+                                cause the motor to perform a self calibration.
+                                Make sure that there is nothing connected to the
+                                shaft.
+                                <br />
+                                <p className="font-extrabold text-warning inline">
+                                    CAUTION:{" "}
+                                </p>
+                                The motor will spin several times back and forth
+                                during the calibration.
                             </li>
                         </ol>
                         <h2 className="mb-2">Connecting to the motor</h2>
                         <p>
                             The motor has 4 RS-485 pins, marked with B A B A on
-                            the PCBA(check the exact location using the 3D
-                            model), we will only use one pair of B A for now.
+                            the PCBA(check the exact location using the &nbsp;
+                            <button
+                                className="underline"
+                                title="3D Model"
+                                onClick={() => {
+                                    window.open(
+                                        "/",
+                                        "_blank",
+                                        "noopener,noreferrer"
+                                    );
+                                }}
+                            >
+                                3D model
+                            </button>
+                            &nbsp;), we will only use one pair of B A for now.
                             Using some wires, physically connect the B A pins
                             from the motor to the B A pins of the RS-485 adapter
                             as shown in the figure below.
@@ -504,6 +564,15 @@ function Tutorial(props: TutorialProps) {
                             setting the position to a negative value.
                         </p>
                         <ol>
+                            <li>
+                                Gearotons offers 2 motor types: M1 and M3. If
+                                you do not know your motor type, you can use the
+                                autodetect feature. This step is required as
+                                different motor types have different steps per
+                                revolution. Set the motor type to "Unknown" and
+                                press the "Autodetect motor type" button to set
+                                the appropirate motor type automatically.
+                            </li>
                             <li>
                                 Click on the &apos;ENABLE FETS&apos; button from
                                 the Log Window.

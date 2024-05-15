@@ -15,6 +15,7 @@ export interface Command21PropsType extends ChaptersPropsType {
     UniqueID?: string;
     Alias?: string;
     MountedByQuickStart?: boolean;
+    setAxisSelectionValue: Function;
 }
 
 export const Command21 = (props: Command21PropsType) => {
@@ -268,6 +269,7 @@ export const Command21 = (props: Command21PropsType) => {
             }
 
             props.sendDataToSerialPort(rawData, true, false);
+            props.setAxisSelectionValue(aliasInputBox.current.value);
         }
     };
 
