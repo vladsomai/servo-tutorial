@@ -569,8 +569,8 @@ function Tutorial(props: TutorialProps) {
                                 you do not know your motor type, you can use the
                                 autodetect feature. This step is required as
                                 different motor types have different steps per
-                                revolution. Set the motor type to "Unknown" and
-                                press the "Autodetect motor type" button to set
+                                revolution. Set the motor type to &ldquo;Unknown&ldquo; and
+                                press the &ldquo;Autodetect motor type&ldquo; button to set
                                 the appropirate motor type automatically.
                             </li>
                             <li>
