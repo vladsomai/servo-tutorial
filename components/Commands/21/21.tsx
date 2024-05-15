@@ -23,7 +23,6 @@ export const Command21 = (props: Command21PropsType) => {
     const command21CodeExample = useRef(new Command21CodeExample());
 
     const [uniqueId, setUniqueId] = useState("0000000000000000");
-    const [hexAlias, setHexAlias] = useState("00");
     const [aliasCode, setAliasCode] = useState<number>(0);
 
     const uniqueIdInputBox = useRef<HTMLInputElement | null>(null);
@@ -210,12 +209,7 @@ export const Command21 = (props: Command21PropsType) => {
             return;
         }
 
-        const tempHexaAlias = Uint8ArrayToString(
-            transfNumberToUint8Arr(newAlias, 1)
-        );
-
         setAliasCode(newAlias);
-        setHexAlias(tempHexaAlias);
     };
 
     const execute_command = () => {
@@ -255,15 +249,19 @@ export const Command21 = (props: Command21PropsType) => {
 
             let rawData: Uint8Array;
 
+            const tempHexaAlias = Uint8ArrayToString(
+                transfNumberToUint8Arr(newAlias, 1)
+            );
+
             if (props.MountedByQuickStart) {
                 rawData = props.constructCommand(
-                    uniqueIdInputBox.current.value + hexAlias,
+                    uniqueIdInputBox.current.value + tempHexaAlias,
                     21,
                     "255"
                 );
             } else {
                 rawData = props.constructCommand(
-                    uniqueIdInputBox.current.value + hexAlias,
+                    uniqueIdInputBox.current.value + tempHexaAlias,
                     21
                 );
             }

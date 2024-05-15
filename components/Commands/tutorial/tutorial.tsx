@@ -462,17 +462,13 @@ function Tutorial(props: TutorialProps) {
                         <div className="my-5">
                             <p>
                                 The &quot;Alias&quot; of your motor was replied
-                                by &quot;Detect devices&quot;, click on the
-                                alias byte to see the ASCII or decimal
-                                representation and set that alias to the
-                                left-most input box below.
-                            </p>
-                            <p>
-                                You can set a new alias to a valid ASCII
-                                character, some examples: A, B, P, l, d.
-                                <br />
-                                Or set the new alias to any value ranging from 0
-                                to 253 and press execute.
+                                by &quot;Detect devices&quot;. You can change
+                                the alias using the input box above and then
+                                clicking &quot;Set Alias&quot;. The motor will
+                                remember this alias through power cycles. You
+                                can set a new alias to a valid ASCII character
+                                (examples: A, B, P, l, d) or you can set the
+                                alias to any decimal value between 0 and 253.
                             </p>
                             <p className="font-extrabold text-warning mb-0 pb-0">
                                 Note:
@@ -511,15 +507,12 @@ function Tutorial(props: TutorialProps) {
                         <hr />
                         <h2>Ping your alias</h2>
                         <p>
-                            You can send some arbitrary data to the motor using
-                            the PING COMMAND, it shall reply exactly the same
-                            data you send.
+                            You can send some arbitrary data (10 characters
+                            long) to the motor using the PING COMMAND, it shall
+                            reply exactly the same data you sent.
                             <br />
-                            Use the alias you just set and change the current
-                            value to &apos;HelloWorld&apos;.
-                            <br />
-                            Click on the response to verify the reply matches
-                            your input.
+                            Make sure to use the right alias of your device that
+                            you set above.
                         </p>
                         <Command31
                             {...props}
@@ -572,9 +565,8 @@ function Tutorial(props: TutorialProps) {
                             </li>
                         </ol>
                         <p>
-                            After you press the execute button the motor should
-                            start spinning for 2 seconds and respond with 0x 52
-                            00 00.
+                            After you press the execute button, the motor will
+                            spin two revolutions in two seconds.
                         </p>
                         <p>
                             You can see below the actual conversions that are
