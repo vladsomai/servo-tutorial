@@ -5380,6 +5380,10 @@ html {
   width: 100%;
 }
 
+.w-\[300px\] {
+  width: 300px;
+}
+
 .max-w-2xl {
   max-width: 42rem;
 }
@@ -6760,6 +6764,11 @@ html {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
+}
+
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
 }
 
 .font-bold {
