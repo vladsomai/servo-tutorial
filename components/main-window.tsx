@@ -61,7 +61,12 @@ import { Command30 } from "./Commands/30/30";
 import { Command31 } from "./Commands/31/31";
 import { Command32 } from "./Commands/32/32";
 import { Command33 } from "./Commands/33/33";
+import { Command34 } from "./Commands/34/34";
+import { Command37 } from "./Commands/37/37";
+import { Command38 } from "./Commands/38/38";
+import { Command39 } from "./Commands/39/39";
 import { Command41 } from "./Commands/41/41";
+import { Command42 } from "./Commands/42/42";
 import { Command254 } from "./Commands/254/254";
 import { useRouter } from "next/router";
 import { GlobalContext } from "../pages/_app";
@@ -1087,7 +1092,75 @@ const Main = (props: MainWindowProps) => {
                 />
             </Command33>
         );
-    } else if (props.currentCommandDictionary.CommandEnum == 41) {
+    } else if (props.currentCommandDictionary.CommandEnum == 34) {
+        currentCommandLayout = (
+            <Command34
+                {...props}
+                getAxisSelection={getAxisSelection}
+                sendDataToSerialPort={sendDataToSerialPort}
+                LogAction={LogAction}
+                constructCommand={constructCommand}
+            >
+                <SelectAxis
+                    LogAction={LogAction}
+                    axisSelectionValue={axisSelectionValue}
+                    setAxisSelectionValue={setAxisSelectionValue}
+                />
+            </Command34>
+        );
+    }
+    else if (props.currentCommandDictionary.CommandEnum == 37) {
+        currentCommandLayout = (
+            <Command37
+                {...props}
+                getAxisSelection={getAxisSelection}
+                sendDataToSerialPort={sendDataToSerialPort}
+                LogAction={LogAction}
+                constructCommand={constructCommand}
+            >
+                <SelectAxis
+                    LogAction={LogAction}
+                    axisSelectionValue={axisSelectionValue}
+                    setAxisSelectionValue={setAxisSelectionValue}
+                />
+            </Command37>
+        );
+    } 
+    else if (props.currentCommandDictionary.CommandEnum == 38) {
+        currentCommandLayout = (
+            <Command38
+                {...props}
+                getAxisSelection={getAxisSelection}
+                sendDataToSerialPort={sendDataToSerialPort}
+                LogAction={LogAction}
+                constructCommand={constructCommand}
+            >
+                <SelectAxis
+                    LogAction={LogAction}
+                    axisSelectionValue={axisSelectionValue}
+                    setAxisSelectionValue={setAxisSelectionValue}
+                />
+            </Command38>
+        );
+    } 
+    else if (props.currentCommandDictionary.CommandEnum == 39) {
+        currentCommandLayout = (
+            <Command39
+                {...props}
+                getAxisSelection={getAxisSelection}
+                sendDataToSerialPort={sendDataToSerialPort}
+                LogAction={LogAction}
+                constructCommand={constructCommand}
+            >
+                <SelectAxis
+                    LogAction={LogAction}
+                    axisSelectionValue={axisSelectionValue}
+                    setAxisSelectionValue={setAxisSelectionValue}
+                />
+            </Command39>
+        );
+    } 
+    else if (props.currentCommandDictionary.CommandEnum == 41) {
         currentCommandLayout = (
             <Command41
                 {...props}
@@ -1103,7 +1176,25 @@ const Main = (props: MainWindowProps) => {
                 />
             </Command41>
         );
-    } else if (props.currentCommandDictionary.CommandEnum == 254)
+    }
+    else if (props.currentCommandDictionary.CommandEnum == 42) {
+        currentCommandLayout = (
+            <Command42
+                {...props}
+                getAxisSelection={getAxisSelection}
+                sendDataToSerialPort={sendDataToSerialPort}
+                LogAction={LogAction}
+                constructCommand={constructCommand}
+            >
+                <SelectAxis
+                    LogAction={LogAction}
+                    axisSelectionValue={axisSelectionValue}
+                    setAxisSelectionValue={setAxisSelectionValue}
+                />
+            </Command42>
+        );
+    }  
+    else if (props.currentCommandDictionary.CommandEnum == 254)
         currentCommandLayout = (
             <Command254
                 {...props}

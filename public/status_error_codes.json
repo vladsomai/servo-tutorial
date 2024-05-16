@@ -158,5 +158,9 @@
     {
         "ErrorCode": 39,
         "Description": "Go to closed loop failed"
+    },
+    {
+        "ErrorCode": 40,
+        "Description": "Overheat"
     }
 ]

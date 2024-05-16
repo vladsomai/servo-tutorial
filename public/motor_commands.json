@@ -42,15 +42,18 @@
         "Output": "Success_response"
     },
     {
-        "CommandString": "Set position and finish time",
+        "CommandString": "Go to position",
         "CommandEnum": 4,
-        "Description": "Move to this new given position and finish the move at the given absolution time",
+        "Description": "Move to this new given position in the amount of time specified. Acceleration and deceleration will be applied to make the move smooth.",
         "Input": [
             {
-                "Description": "i32: Position value.",
+                "Description": "i32: New absolute position value.",
                 "TooltipDisplayFormat": "%d"
             },
-            { "Description": "u32: Time value.", "TooltipDisplayFormat": "%u" }
+            {
+                "Description": "u32: Time allowed for executing the move.",
+                "TooltipDisplayFormat": "%u"
+            }
         ],
         "Output": "Success_response"
     },
@@ -72,18 +75,6 @@
         "Description": "Starts a calibration, which will determine the average values of the hall sensors and will determine if they are working correctly",
         "Input": "None",
         "Output": "None"
-    },
-    {
-        "CommandString": "Capture hall sensor data",
-        "CommandEnum": 7,
-        "Description": "Start sending hall sensor data (work in progress; don't send this command)",
-        "Input": [
-            {
-                "Description": "u8: Indicates the type of data to read. Currently 1 to 4 are valid. 0 indicates turning off the reading.",
-                "TooltipDisplayFormat": "%u"
-            }
-        ],
-        "Output": "unknown_data: Various data. This is work in progress."
     },
     {
         "CommandString": "Reset time",
@@ -168,13 +159,13 @@
         "Output": "Success_response"
     },
     {
-        "CommandString": "Get current position",
+        "CommandString": "Get hall sensor position",
         "CommandEnum": 15,
-        "Description": "Gets the current position",
+        "Description": "Get the position as measured by the hall sensors (this should be the actual position of the motor and if everything is ok then it will be about the same as the desired position)",
         "Input": "None",
         "Output": [
             {
-                "Description": "i32: The current position",
+                "Description": "i32: The current position as determined by the hall sensors",
                 "TooltipDisplayFormat": "%d"
             }
         ]
@@ -506,6 +497,66 @@
         ]
     },
     {
+        "CommandString": "Get position",
+        "CommandEnum": 34,
+        "Description": "Get the current desired position (which may not always be the actual position as measured by the hall sensors)",
+        "Input": "None",
+        "Output": [
+            {
+                "Description": "i32: The current desired position",
+                "TooltipDisplayFormat": "%d"
+            }
+        ]
+    },
+    {
+        "CommandString": "Get comprehensive position",
+        "CommandEnum": 37,
+        "Description": "Get the electrical commutation position, hall sensor position, and external encoder position all in one shot",
+        "Input": "None",
+        "Output": [
+            {
+                "Description": "i32: The electrical commutation position",
+                "TooltipDisplayFormat": "%d"
+            },
+            {
+                "Description": "i32: The hall sensor position",
+                "TooltipDisplayFormat": "%d"
+            },
+            {
+                "Description": "i32: The external encoder position. This needs special hardware attached to the motor to work",
+                "TooltipDisplayFormat": "%d"
+            }
+        ]
+    },
+    {
+        "CommandString": "Get supply voltage",
+        "CommandEnum": 38,
+        "Description": "Get the measured voltage of the power supply.",
+        "Input": "None",
+        "Output": [
+            {
+                "Description": "u16: The voltage. Divide this number by 10 to get the actual voltage in volts.",
+                "TooltipDisplayFormat": "%d"
+            }
+        ]
+    },
+    {
+        "CommandString": "Get max PID error",
+        "CommandEnum": 39,
+        "Description": "Get the minimum and maximum error value ovserved in the PID control loop since the last read.",
+        "Input": "None",
+        "Output": [
+            {
+                "Description": "i32: The minimum PID error value.",
+                "TooltipDisplayFormat": "%d"
+            },
+            {
+                "Description": "i32: The maximum PID error value.",
+                "TooltipDisplayFormat": "%d"
+            }
+        ]
+    },
+    {
         "CommandString": "Identify",
         "CommandEnum": 41,
         "Description": "Identify your motor by sending this command. The motor's green LED will flash rapidly for 3 seconds.",
@@ -518,10 +569,16 @@
         "Output": "Success_response"
     },
     {
-        "CommandString": "Add to queue test",
-        "CommandEnum": 254,
-        "Description": "Used for testing of some calculations that predict of the motion will go out of the set safety limits",
+        "CommandString": "Get temperature",
+        "CommandEnum": 42,
+        "Description": "Get the measured temperature of the motor.",
         "Input": "None",
-        "Output": "Success_response"
+        "Output": [
+            {
+                "Description": "i16: The temperature in degrees celcius. The accuracy is about +/- 3 degrees celcius and is measured at the motor driver PCB.",
+                "TooltipDisplayFormat": "%d"
+            }
+       
+        ]
     }
 ]

@@ -19,10 +19,10 @@ interface FirmwareCmdProps extends ChaptersPropsType {
 
 export const Command23 = (props: FirmwareCmdProps) => {
     const latestFirmwareM1 =
-        "https://raw.githubusercontent.com/tomrodinger/servomotor/main/servomotor/firmware_releases/motor_firmware_M1_V26_fw0.8.6.firmware";
+        "https://raw.githubusercontent.com/tomrodinger/servomotor/main/servomotor/firmware_releases/motor_firmware_M1_V26_fw0.8.7.firmware";
 
     const latestFirmwareM3 =
-        "https://raw.githubusercontent.com/tomrodinger/servomotor/main/servomotor/firmware_releases/motor_firmware_M3_V2_fw0.8.3.firmware";
+        "https://raw.githubusercontent.com/tomrodinger/servomotor/main/servomotor/firmware_releases/motor_firmware_M3_V2_fw0.8.7.firmware";
 
     const globalContext = useContext(GlobalContext);
 

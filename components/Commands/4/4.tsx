@@ -249,12 +249,7 @@ export const Command4 = (props: ChaptersPropsType) => {
                         `Minimum value for negative position is ${minimumNegativePosition} (one microstep), consider using a smaller value.`
                     );
                 }
-            } else if (positionValue < minimumPositivePosition) {
-                props.LogAction(
-                    ErrorTypes.ERR1002,
-                    `Minimum value for positive position is ${minimumPositivePosition} (one microstep), consider using a larger value.`
-                );
-            }
+            } 
 
             const rawData = props.constructCommand(
                 microstepsHexa + timestepsHexa

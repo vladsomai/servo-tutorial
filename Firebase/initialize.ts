@@ -14,6 +14,8 @@ export const firebaseConfig = {
   measurementId: "G-LE0KT6GPTR",
 }
 
+export const geminiAPIKey = "AIzaSyC1DCMUZM1zennnH5CfeNih12x1ex-Omu8"
+
 // Initialize Firebase
 export const firebaseApp = initializeApp(firebaseConfig);
 export const firebaseStore = getFirestore(firebaseApp);
