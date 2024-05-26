@@ -103,31 +103,38 @@ const Docs = () => {
                 </title>
             </Head>
             {currentCommandDictionary != null ? (
-                <animated.div
-                    className="flex w-full h-full px-3"
-                    style={styleSpring}
-                >
-                    <Chapters
-                        {...{
-                            MotorCommands,
-                            currentCommandDictionary,
-                            setCurrentCommandDictionary,
-                        }}
-                    />
-                    <Main
-                        {...({
-                            currentCommandDictionary,
-                            MotorCommands,
-                        } as MainWindowProps)}
-                    />
-                    {/* <Drawer
+                <>
+                    <animated.div
+                        className="hidden lg:flex w-full h-full px-3"
+                        style={styleSpring}
+                    >
+                        <Chapters
+                            {...{
+                                MotorCommands,
+                                currentCommandDictionary,
+                                setCurrentCommandDictionary,
+                            }}
+                        />
+                        <Main
+                            {...({
+                                currentCommandDictionary,
+                                MotorCommands,
+                            } as MainWindowProps)}
+                        />
+                        {/* <Drawer
                         {...{
                             MotorCommands,
                             currentCommandDictionary,
                             setCurrentCommandDictionary,
                         }}
                     ></Drawer> */}
-                </animated.div>
+                    </animated.div>
+                    <main className="lg:hidden fixed h-screen w-screen flex justify-center items-center text-center">
+                        <h1 className="text-3xl">
+                            You cannot view this website on small screens!
+                        </h1>
+                    </main>
+                </>
             ) : null}
         </>
     );
