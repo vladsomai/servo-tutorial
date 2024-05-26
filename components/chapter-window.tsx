@@ -1,4 +1,10 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import {
+    MutableRefObject,
+    ReactElement,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import Link from "next/link";
 import { MotorCommandsDictionary } from "../servo-engine/motor-commands";
 import Image from "next/image";
@@ -8,6 +14,7 @@ export type ChaptersProps = {
     MotorCommands: MutableRefObject<MotorCommandsDictionary[]>;
     currentCommandDictionary: MotorCommandsDictionary;
     setCurrentCommandDictionary: Function;
+    children?: ReactElement;
 };
 
 const Chapters = (props: ChaptersProps) => {
@@ -47,8 +54,13 @@ const Chapters = (props: ChaptersProps) => {
 
     return (
         <>
+            <label
+                htmlFor="my-drawer-2"
+                aria-label="close sidebar"
+                className="drawer-overlay"
+            ></label>
             <animated.div
-                className="h-full bg-base-300 rounded-box mr-2 px-1 flex flex-col items-center"
+                className="h-full bg-base-300 rounded-box mr-2 px-1 flex-col items-center flex"
                 style={styleSpring}
             >
                 <Link href="/">

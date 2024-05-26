@@ -15,7 +15,6 @@ import {
 import Code from "./code-examples";
 import Tutorial, { TutorialProps } from "./Commands/tutorial/tutorial";
 import FeedbackButton from "./feedback-button";
-import MotorSelection from "./motor-selection";
 
 export interface CommandWindowProps extends MainWindowProps {
     sendDataToSerialPort: (
@@ -127,7 +126,7 @@ const Command = (props: TutorialProps, children: ReactElement) => {
             <animated.div
                 ref={commandWindowDiv}
                 style={styleSpring}
-                className={`overflow-auto relative px-5 w-6/12`}
+                className={`overflow-auto relative px-5 w-full lg:w-6/12`}
             >
                 <FeedbackButton />
                 <Tutorial {...props} />
@@ -151,7 +150,7 @@ const Command = (props: TutorialProps, children: ReactElement) => {
             <animated.div
                 style={styleSpring}
                 ref={commandWindowDiv}
-                className={`overflow-auto relative px-5 w-6/12`}
+                className={`overflow-auto relative px-5 w-full lg:w-6/12`}
             >
                 {commandsWithShortcuts.includes(
                     props.currentCommandDictionary.CommandEnum

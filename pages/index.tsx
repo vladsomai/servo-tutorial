@@ -144,7 +144,7 @@ const Home: NextPageWithLayout = () => {
             <Head>
                 <title>Home | Gearotons</title>
             </Head>
-            <div className="w-[40vw] m-auto mt-10">
+            <div className="w-[90vw] lg:w-[40vw] m-auto mt-10">
                 <Navbar />
                 <animated.div className="mt-10" style={styleSpring}>
                     <div className="flex justify-center items-center w-full">
@@ -177,9 +177,9 @@ const Home: NextPageWithLayout = () => {
                                     </h1>
                                 </div>
 
-                                <div className="w-[40vw] h-[500px] mr-10 mb-[40vh] md:mb-[25vh]">
+                                <div className="w-full h-[500px] mr-10 mb-[40vh] md:mb-[25vh] mx-auto">
                                     <article className="prose prose-slate">
-                                        <h3 className="text-3xl text-left mb-5">
+                                        <h3 className="text-xl md:text-3xl text-left mb-5">
                                             High precision motor (M3)
                                         </h3>
                                         <ul className="text-left">
@@ -199,9 +199,9 @@ const Home: NextPageWithLayout = () => {
                                         className={`focus:outline-none rounded-2xl bg-slate-800 w-full h-full `}
                                     ></canvas>
                                 </div>
-                                <div className="w-[40vw] h-[500px] mb-[40vh] md:mb-[25vh]">
+                                <div className="w-full h-[500px] mb-[40vh] md:mb-[25vh] mx-auto">
                                     <article className="prose prose-slate">
-                                        <h3 className="text-3xl text-left mb-5">
+                                        <h3 className="text-xl md:text-3xl text-left mb-5">
                                             Educational motor (M1)
                                         </h3>
                                         <ul className="text-left">

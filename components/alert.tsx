@@ -44,7 +44,7 @@ const Alert = ({}) => {
   return transition(({ life, ...style }, item) => (
     <animated.div
       style={style}
-      className="absolute bottom-[6%] right-[2%] w-auto max-w-[30%] alert shadow-lg z-10"
+      className="fixed bottom-[6%] right-[2%] w-auto lg:max-w-[30%] alert shadow-lg z-10"
     >
       <Life style={{ right: life }} />
       <>

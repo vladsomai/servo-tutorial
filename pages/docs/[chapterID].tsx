@@ -3,6 +3,7 @@ import { ReactElement, useEffect, useRef, useState } from "react";
 import Layout from "../../components/layout";
 import Chapters from "../../components/chapter-window";
 import Main, { MainWindowProps } from "../../components/main-window";
+import Drawer from "../../components/drawer";
 import {
     MotorCommandsDictionary,
     CommandsProtocolChapter,
@@ -65,8 +66,8 @@ const Docs = () => {
                     <>
                         <p>
                             The code automatically changes when you select a
-                            different axis/alias, change the parameters or navigate
-                            through the commands.
+                            different axis/alias, change the parameters or
+                            navigate through the commands.
                         </p>
                     </>
                 );
@@ -89,7 +90,7 @@ const Docs = () => {
         () => ({
             from: { opacity: 0 },
             to: { opacity: 1 },
-            //   config: { duration: 1000 },
+            //config: { duration: 1000 },
         }),
         []
     );
@@ -103,7 +104,7 @@ const Docs = () => {
             </Head>
             {currentCommandDictionary != null ? (
                 <animated.div
-                    className="flex h-full w-full"
+                    className="flex w-full h-full px-3"
                     style={styleSpring}
                 >
                     <Chapters
@@ -119,6 +120,13 @@ const Docs = () => {
                             MotorCommands,
                         } as MainWindowProps)}
                     />
+                    {/* <Drawer
+                        {...{
+                            MotorCommands,
+                            currentCommandDictionary,
+                            setCurrentCommandDictionary,
+                        }}
+                    ></Drawer> */}
                 </animated.div>
             ) : null}
         </>

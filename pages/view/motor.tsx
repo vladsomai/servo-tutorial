@@ -35,7 +35,7 @@ class Playground {
       )
       light.intensity = 4
 
-    BABYLON.SceneLoader.Append('/', 'motor_with_textures.glb', scene, function (scene) {
+    BABYLON.SceneLoader.Append('/', 'motor3.glb', scene, function (scene) {
       // // Create a default arc rotate camera and light.
       scene.createDefaultCameraOrLight(true, true, true)
       //@ts-ignore

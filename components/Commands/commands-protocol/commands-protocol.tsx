@@ -25,7 +25,7 @@ const CommandsProtocol = (props: MainWindowProps) => {
                 className="flex flex-col justify-center items-center"
                 style={styleSpring}
             >
-                <div className="w-8/12">
+                <div className="w-full px-5 lg:w-8/12 lg:px-0">
                     <article className="mb-5 prose prose-slate max-w-full">
                         <div className="flex justify-center">
                             <h2>

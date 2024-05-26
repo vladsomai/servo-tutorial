@@ -9,7 +9,7 @@ const Modal = () => {
       <input type="checkbox" id="my-modal-4" className="modal-toggle" />
       <label htmlFor="my-modal-4" className={`modal`}>
         <label
-          className="modal-box w-auto max-w-[60vw] pt-10 relative"
+          className="modal-box w-auto md:max-w-[60vw] pt-10 relative mx-3"
           htmlFor=""
         >
           <label

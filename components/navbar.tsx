@@ -19,7 +19,7 @@ const Navbar = () => {
             >
                 <Link href="/">
                     <Image
-                        className="w-[165px] h-auto"
+                        className="w-[130px] md:w-[165px] h-auto"
                         loading="eager"
                         src={"/Logo.png"}
                         sizes="100vw"
@@ -31,13 +31,13 @@ const Navbar = () => {
                 <div>
                     <Link
                         href="/docs/1002"
-                        className="text-xl btn btn-primary rounded-full"
+                        className="btn btn-xs md:btn-md lg:btn-lg btn-primary rounded-full"
                     >
                         Quick start
                     </Link>
                     <Link
                         href="/docs/1001"
-                        className="text-xl btn btn-primary rounded-full ml-10"
+                        className=" btn btn-xs md:btn-md lg:btn-lg btn-primary rounded-full ml-5"
                     >
                         Docs
                     </Link>

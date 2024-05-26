@@ -69,7 +69,7 @@ const Log = (props: {
     return (
         <>
             <animated.div
-                className="rounded-box px-2 py-2 h-full w-6/12 flex flex-col justify-center content-center overflow-auto "
+                className="rounded-box px-2 py-2 h-full w-6/12 flex-col justify-center content-center overflow-auto hidden lg:flex"
                 style={styleSpring}
             >
                 <div className=" relative h-16 w-full rounded-t-box rounded-b-none py-5 bg-slate-700 ">
