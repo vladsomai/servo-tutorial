@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/test/(.*)",
+      "destination": "https://google.com/"
+    },
+    {
+      "source": "/webapp2/(.*)",
+      "destination": "https://google.com/"
+    }
+  ]
+}
